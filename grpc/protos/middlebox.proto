@@ -136,8 +136,6 @@ message SetParametersResponse {
 
 message UpdateTimeoutsRequest {
   int32 device_id = 1;
-  float read_timeout = 10;
-  float write_timeout = 11;
 }
 
 message UpdateTimeoutsResponse {
