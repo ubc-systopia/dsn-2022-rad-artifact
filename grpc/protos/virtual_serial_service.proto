@@ -1,0 +1,250 @@
+syntax = "proto3";
+
+// package virtualserialservice;
+
+service VirtualSerialService {
+  // Get info about all serial devices connected to the computer
+  rpc ListDevices(ListDevicesRequest) returns (ListDevicesResponse) {}
+
+  // Get a list of COM port strings for connected serial devices
+  rpc ListDevicePorts(ListDevicePortsRequest) returns (ListDevicePortsResponse) {}
+
+  // Get a list of device serial numbers for connected FTDI devices
+  rpc ListDeviceSerials(LisDevicetSerialsRequest) returns (ListDeviceSerialsResponse) {}
+
+  // Initialize a connection to the specified serial device
+  rpc Init(InitRequest) returns (InitResponse) {}
+
+  // Connect to the specified serial device if a connection hasn't been made
+  rpc Connect(ConnectRequest) returns (ConnectResponse) {}
+
+  // Disconnect the specified serial device
+  rpc Disconnect(DisconnectRequest) returns (DisconnectResponse) {}
+
+  // Change the serial connection parameters for the specified serial device
+  rpc SetParameters(SetParametersRequest) returns (SetParametersResponse) {}
+
+  // Update timeouts for the specified serial device
+  rpc UpdateTimeouts(UpdateTimeoutsRequest) returns (UpdateTimeoutsResponse) {}
+
+  // Get info about the specified serial device
+  rpc Info(InfoRequest) returns (InfoResponse) {}
+
+  // Get the serial number of the specified serial device
+  rpc SerialNumber(SerialNumberRequest) returns (SerialNumberResponse) {}
+
+  // Read bytes from the specified serial device
+  rpc Read(ReadRequest) returns (ReadResponse) {}
+
+  // Read a "line" of data from the specifiedserial device until the given line ending is found
+  rpc ReadLine(ReadLineRequest) returns (ReadLineResponse) {}
+
+  // Write the given data to the specified serial device
+  rpc Write(WriteRequest) returns (WriteResponse) {}
+
+  // Perform a "request", which writes the given data and then reads the "response" from the serial device until the given line ending is found
+  rpc Request(RequestRequest) returns (RequestResponse) {}
+}
+
+message ListDevicesRequest {
+}
+
+message ListDevicesResponse {
+  repeated SerialDeviceInfo devices_info = 1;
+}
+
+message ListDevicePortsRequest {
+}
+
+message ListDevicePortsResponse {
+  repeated string ports = 1;
+}
+
+message LisDevicetSerialsRequest {
+}
+
+message ListDeviceSerialsResponse {
+  repeated string serial_numbers = 1;
+}
+
+message InitRequest {
+  // On the server and client side, we expect to have only one class instance
+  // per device connection, and therefore multiple instances of the
+  // VirtualSerial class, but all these instances communicate using a single
+  // gRPC service, the VirtualSerialService; thus, in addition all the existing
+  // method parameters, I am adding an extra device_id parameter, which
+  // identifies the class instances on both sides;
+  // we do this for all device-specific methods
+  int32 device_id = 1;
+
+  SerialDeviceType device_type = 2;
+
+  // If the string is empty, replace with None in Python
+  string device_serial = 3;
+
+  // If the string is empty, replace with None in Python,
+  // otherwise, cast into a Python integer
+  // (and vice versa when encoding)
+  string device_number = 4;
+
+  // If the string is empty, replace with None in Python
+  string device_port = 5;
+
+  int32 baudrate = 6;
+  int32 parity = 7;
+  int32 stop_bits = 8;
+  int32 data_bits = 9;
+  float read_timeout = 10;
+  float write_timeout = 11;
+  float connect_timeout = 12;
+  bool connect_retry = 13;
+  float connect_settle_time = 14;
+  bool connect = 15;
+}
+
+message InitResponse {
+}
+
+message ConnectRequest {
+  int32 device_id = 1;
+}
+
+message ConnectResponse {
+}
+
+message DisconnectRequest {
+  int32 device_id = 1;
+}
+
+message DisconnectResponse {
+}
+
+message SetParametersRequest {
+  int32 device_id = 1;
+
+  // If any of these strings is empty, replace it with None in Python,
+  // and for each string that is not empty, cast it into a Python integer;
+  // only set those parameters that are not None
+  string baudrate = 2;
+  string parity = 3;
+  string stop_bits = 4;
+  string data_bits = 5;
+}
+
+message SetParametersResponse {
+}
+
+message UpdateTimeoutsRequest {
+  int32 device_id = 1;
+  float read_timeout = 10;
+  float write_timeout = 11;
+}
+
+message UpdateTimeoutsResponse {
+}
+
+message InfoRequest {
+  int32 device_id = 1;
+}
+
+message InfoResponse {
+  SerialDeviceInfo device_info = 1;
+}
+
+message SerialNumberRequest {
+  int32 device_id = 1;
+}
+
+message SerialNumberResponse {
+  // If the string is empty, replace with None in Python
+  string device_serial = 1;
+}
+
+message ReadRequest {
+  int32 device_id = 1;
+
+  // If the string is empty, replace with None in Python,
+  // otherwise, cast into a Python integer
+  string num_bytes = 2;
+
+  // If the string is empty, replace with None in Python,
+  // otherwise, cast into a Python float
+  string timeout = 3;
+}
+
+message ReadResponse {
+  bytes data = 1;
+}
+
+message ReadLineRequest {
+  int32 device_id = 1;
+  bytes line_ending = 2;
+
+  // If the string is empty, replace with None in Python,
+  // otherwise, cast into a Python float
+  string timeout = 3;
+}
+
+message ReadLineResponse {
+  bytes data = 1;
+}
+
+message WriteRequest {
+  int32 device_id = 1;
+
+  // Since either a string or bytes of data if supplied by the caller
+  oneof data {
+    string data_string = 2;
+    bytes data_bytes = 3;
+  } 
+
+  // If the string is empty, replace with None in Python,
+  // otherwise, cast into a Python float
+  string timeout = 4;
+}
+
+message WriteResponse {
+  int32 num_bytes = 1;
+}
+
+message RequestRequest {
+  int32 device_id = 1;
+  bytes data = 2;
+
+  // If the string is empty, replace with None in Python,
+  // otherwise, cast into a Python float
+  string timeout = 3;
+
+  bytes line_ending = 4;
+}
+
+message RequestResponse {
+  bytes data = 1;
+}
+
+message SerialDeviceType {
+  enum Format {
+    INT = 0;
+    STRING = 1;
+  }
+  Format format = 1;
+
+  // If the string is empty, replace with None in Python,
+  // otherwise, parse it as per the format field
+  string device_type = 2;
+}
+
+message SerialDeviceInfo {
+  // If the string is empty, replace with None in Python,
+  // otherwise, cast into a Python integer
+  string index = 1;
+
+  // If the string is empty, leave it as it is
+  string serial = 2;
+
+  // If the string is empty, replace with None in Python
+  string port = 3;
+
+  // If the string is empty, replace with None in Python
+  string description = 4;
+}
