@@ -1,8 +1,8 @@
 syntax = "proto3";
 
-// package virtualserialservice;
+// package middlebox;
 
-service VirtualSerialService {
+service Middlebox {
   // Get info about all serial devices connected to the computer
   rpc ListDevices(ListDevicesRequest) returns (ListDevicesResponse) {}
 
@@ -13,7 +13,7 @@ service VirtualSerialService {
   rpc ListDeviceSerials(LisDevicetSerialsRequest) returns (ListDeviceSerialsResponse) {}
 
   // Initialize a connection to the specified serial device
-  rpc Init(InitRequest) returns (InitResponse) {}
+  rpc Initialize(InitializeRequest) returns (InitializeResponse) {}
 
   // Connect to the specified serial device if a connection hasn't been made
   rpc Connect(ConnectRequest) returns (ConnectResponse) {}
@@ -67,11 +67,11 @@ message ListDeviceSerialsResponse {
   repeated string serial_numbers = 1;
 }
 
-message InitRequest {
+message InitializeRequest {
   // On the server and client side, we expect to have only one class instance
   // per device connection, and therefore multiple instances of the
   // VirtualSerial class, but all these instances communicate using a single
-  // gRPC service, the VirtualSerialService; thus, in addition all the existing
+  // gRPC service, the Middlebox; thus, in addition all the existing
   // method parameters, I am adding an extra device_id parameter, which
   // identifies the class instances on both sides;
   // we do this for all device-specific methods
@@ -102,7 +102,7 @@ message InitRequest {
   bool connect = 15;
 }
 
-message InitResponse {
+message InitializeResponse {
 }
 
 message ConnectRequest {
