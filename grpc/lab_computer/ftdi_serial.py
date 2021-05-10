@@ -4,7 +4,9 @@ import middlebox_client
 SerialDeviceType = Union[str, int, 'Device']
 NumberType = Union[float, int]
 
-class VirtualSerial:
+middlebox_client = MiddleboxClient()
+
+class Serial:
 
     PARITY_NONE = 0
     PARITY_ODD = 1
@@ -15,7 +17,6 @@ class VirtualSerial:
     DATA_BITS_8 = 8
 
     def __init__(self,
-                 middlebox_client: MiddleboxClient,
                  device: Optional[SerialDeviceType]=None,
                  device_serial: Optional[str]=None,
                  device_number: Optional[int]=None,
@@ -46,7 +47,6 @@ class VirtualSerial:
         :param connect_settle_time: [Optional] amount of time to wait after connection before setup, defaults to 3
         :param connect: [Optional] automatically connect to the device when created if True, defaults to True
         """
-        self.middlebox_client = middlebox_client
         self.id = middlebox_client.initialize(device,
                                               device_serial,
                                               device_number,
@@ -70,13 +70,13 @@ class VirtualSerial:
         """
         Connect to the serial device if a connection hasn't been made (this is not needed in most cases)
         """
-        self.middlebox_client.connect(self.id)
+        middlebox_client.connect(self.id)
 
     def disconnect(self):
         """
         Disconnect the serial device
         """
-        self.middlebox_client.disconnect(self.id)
+        middlebox_client.disconnect(self.id)
 
     def init_device(self):
         """ This interface needn't be exposed on the client side """
@@ -86,13 +86,13 @@ class VirtualSerial:
         """
         Change the serial connection parameters for the serial device
         """
-        self.middlebox_client.set_parameters(self.id, baudrate, parity, stop_bits, data_bits)
+        middlebox_client.set_parameters(self.id, baudrate, parity, stop_bits, data_bits)
 
     def update_timeouts(self):
         """
         Change the timeout parameters for the serial device
         """
-        self.middlebox_client.update_timeouts(self.id)
+        middlebox_client.update_timeouts(self.id)
 
     @property
     def info(self) -> SerialDeviceInfo:
@@ -101,7 +101,7 @@ class VirtualSerial:
 
         :return: SerialDeviceInfo instance
         """
-        return self.middlebox_client.info(self.id)
+        return middlebox_client.info(self.id)
 
     @property
     def serial_number(self)-> str:
@@ -110,7 +110,7 @@ class VirtualSerial:
 
         :return: serial number string
         """
-        return self.middlebox_client.serial_number(self.id)
+        return middlebox_client.serial_number(self.id)
 
     @property
     def in_waiting(self) -> int:
@@ -151,7 +151,7 @@ class VirtualSerial:
 
         :return: data bytes
         """
-        return self.middlebox_client.read(self.id, num_bytes, timeout)
+        return middlebox_client.read(self.id, num_bytes, timeout)
 
     def read_line(self, line_ending: bytes=b'\r', timeout: Optional[NumberType]=None) -> bytes:
         """
@@ -161,7 +161,7 @@ class VirtualSerial:
         :param timeout: the timeout to use while reading data, will be reset to default afterwards
         :return: bytes of data
         """
-        return self.middlebox_client.read_line(self.id, line_ending, timeout)
+        return middlebox_client.read_line(self.id, line_ending, timeout)
 
 
     def write(self, data: Union[bytes, str], timeout: Optional[NumberType]=None) -> int:
@@ -173,7 +173,7 @@ class VirtualSerial:
 
         :return: number of bytes written
         """
-        return self.middlebox_client.write(self.id, data, timeout)
+        return middlebox_client.write(self.id, data, timeout)
 
     def request(self, data: bytes, timeout: Optional[NumberType]=None, line_ending: bytes=b'\r'):
         """
@@ -185,7 +185,7 @@ class VirtualSerial:
         :param line_ending: [Optional] line ending byte(s) to look for in response, defaults to ``b'\\r'``
         :return: bytes of response data
         """
-        return self.middlebox_client.request(self.id, data, timeout, line_ending)
+        return middlebox_client.request(self.id, data, timeout, line_ending)
 
     def flush(self):
         """ This interface needn't be exposed on the client side """

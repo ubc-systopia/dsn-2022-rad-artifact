@@ -30,9 +30,9 @@ class SerialDeviceInfo:
 class MiddleboxClient:
     """
     The MiddleboxClient class encapsulates a gRPC client, which forwards all calls
-    from class VirtualSerial to the middlebox, which in turn is connected to 
-    the modules via actual serial communication. Unlike class VirtualSerial,
-    there is only one instance of class MiddleboxClient.
+    from class Serial on Lab Computer to the middlebox, which in turn is connected to 
+    the modules via actual serial communication. Unlike class Serial,
+    there is only one global instance of class MiddleboxClient.
     """
 
     def __init__(self):
