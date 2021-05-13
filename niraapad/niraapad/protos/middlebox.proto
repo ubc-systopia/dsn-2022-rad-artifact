@@ -190,11 +190,12 @@ message ReadLineResponse {
 message WriteRequest {
   int32 device_id = 1;
 
-  // Since either a string or bytes of data if supplied by the caller
-  oneof data {
-    string data_string = 2;
-    bytes data_bytes = 3;
-  } 
+  enum Format {
+    STRING = 0;
+    BYTES = 1;
+  }
+  Format data_format = 2;
+  string data = 3;
 
   // If the string is empty, replace with None in Python,
   // otherwise, cast into a Python float
@@ -225,7 +226,7 @@ message SerialDeviceType {
     INT = 0;
     STRING = 1;
   }
-  Format format = 1;
+  Format device_type_format = 1;
 
   // If the string is empty, replace with None in Python,
   // otherwise, parse it as per the format field

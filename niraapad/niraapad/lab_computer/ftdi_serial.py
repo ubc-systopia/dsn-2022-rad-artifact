@@ -1,5 +1,7 @@
 from typing import Any, Union, List, Optional, Callable
-import middlebox_client
+from niraapad.lab_computer.middlebox_client import MiddleboxClient
+
+from niraapad.shared.utils import *
 
 SerialDeviceType = Union[str, int, 'Device']
 NumberType = Union[float, int]
@@ -15,6 +17,33 @@ class Serial:
     STOP_BITS_2 = 2
     DATA_BITS_7 = 7
     DATA_BITS_8 = 8
+
+    @staticmethod
+    def list_devices() -> List[SerialDeviceInfo]:
+        """
+        Get a list of SerialDeviceInfo instanes with information about serial devices connected to the computer
+
+        :return: list of SerialDeviceInfo instances
+        """
+        return middlebox_client.list_devices()
+
+    @staticmethod
+    def list_device_ports() -> List[str]:
+        """
+        Get a list of COM port strings for connected serial devices
+
+        :return: List of COM port strings
+        """
+        return middlebox_client.list_device_ports()
+
+    @classmethod
+    def list_device_serials(cls) -> List[str]:
+        """
+        Get a list of device serial numbers for connected FTDI devices
+
+        :return: List of device serial number strings
+        """
+        return [device.serial for device in cls.list_devices() if device.serial]
 
     def __init__(self,
                  device: Optional[SerialDeviceType]=None,
@@ -175,7 +204,7 @@ class Serial:
         """
         return middlebox_client.write(self.id, data, timeout)
 
-    def request(self, data: bytes, timeout: Optional[NumberType]=None, line_ending: bytes=b'\r'):
+    def request(self, data: bytes, timeout: Optional[NumberType]=None, line_ending: bytes=b'\r') -> bytes:
         """
         Perform a "request", which writes the given data and then reads the "response" from the serial device until the
         given line ending is found

@@ -318,6 +318,7 @@ class Serial:
         """
 
         if FTD2XX_AVAILABLE:
+            print("FTD2XX available")
             devices = ftd2xx.listDevices()
 
             if devices is None:
@@ -326,6 +327,7 @@ class Serial:
             num_devices = len(devices)
             return [SerialDeviceInfo(**ftd2xx.getDeviceInfoDetail(i)) for i in range(0, num_devices)]
         else:
+            print("FTD2XX NOT available")
             return [SerialDeviceInfo(port=p.device, description=p.description) for p in comports()]
 
     @staticmethod
@@ -335,6 +337,7 @@ class Serial:
 
         :return: List of COM port strings
         """
+        print("Serial.list_device_ports")
         return [info.device for info in comports()]
 
     @classmethod
@@ -383,6 +386,7 @@ class Serial:
         self.device_port = device_port
 
         # check to see if we were passed something other then a Device as the first parameter
+        self.device = device
         if self.device is not None and not isinstance(self.device, Device):
             if isinstance(self.device, int) or isinstance(self.device, float):
                 self.device_serial = self.device
@@ -471,6 +475,7 @@ class Serial:
         self.connected = False
 
     def init_device(self):
+        if self.device == None: return # TODO Introduced for testing, remove otherwise
         self.device.reset()
         self.device.set_baud_rate(self.baudrate)
         self.device.set_parameters(self.data_bits, self.stop_bits, self.parity)
@@ -487,6 +492,7 @@ class Serial:
         self.init_device()
 
     def update_timeouts(self):
+        if self.device == None: return # TODO Introduced for testing, remove otherwise
         self.device.set_timeouts(int(self.read_timeout_value * 1000), int(self.write_timeout_value * 1000))
 
     @property
@@ -497,6 +503,8 @@ class Serial:
         :return: SerialDeviceInfo instance
         """
         if self.device is None or not self.connected:
+            # TODO Next line introduced for testing, remove otherwise
+            return SerialDeviceInfo(description="self.device is None or self.connect is False")
             raise SerialException('Cannot get device info, device is not connected')
 
         if isinstance(self.device, FtdiDevice):
@@ -512,6 +520,8 @@ class Serial:
         :return: serial number string
         """
         if self.device is None or not self.connected:
+            # TODO Next line introduced for testing, remove otherwise
+            return "self.device is None or self.connect is False"
             raise SerialException('Cannot get device serial, device is not connected')
 
         return self.info.serial
@@ -574,6 +584,8 @@ class Serial:
         :return: data bytes
         """
         if self.device is None or not self.connected:
+            # TODO Next line introduced for testing, remove otherwise
+            return "self.device is None or self.connect is False".encode()
             raise SerialException('Cannot read, device is not connected')
 
         if num_bytes is None:
@@ -612,6 +624,8 @@ class Serial:
         :return: bytes of data
         """
         if self.device is None or not self.connected:
+            # TODO Next line introduced for testing, remove otherwise
+            return "self.device is None or self.connect is False".encode()
             raise SerialException('Cannot read, device is not connected')
 
         line = b''
@@ -640,6 +654,7 @@ class Serial:
         :return: number of bytes written
         """
         if self.device is None or not self.connected:
+            return -1 # TODO Introduced for testing, remove otherwise
             raise SerialException('Cannot write, device is not connected')
 
         if isinstance(data, str):
