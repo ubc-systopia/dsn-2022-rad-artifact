@@ -708,7 +708,6 @@ from niraapad.lab_computer.middlebox_client import MiddleboxClient
 from niraapad.shared.utils import MO
 
 import inspect
-func_name = lambda: inspect.stack()[1][3]
 
 # We define three different mode of operation (MOs)..
 #
@@ -802,10 +801,10 @@ class Serial:
             return DirectSerial.list_devices()
 
         if mo == MO.DIRECT_MIDDLEBOX:
-            return Serial.middlebox_client.list_devices(None)
+            return Serial.middlebox_client.list_devices()
 
         response = DirectSerial.list_devices()
-        try: Serial.middlebox_client.list_devices(response)
+        try: Serial.middlebox_client.list_devices_trace(response)
         except: return response
 
     @staticmethod
@@ -814,7 +813,7 @@ class Serial:
         if mo == MO.DIRECT_SERIAL:
             return DirectSerial.list_device_ports()
         if mo == MO.DIRECT_MIDDLEBOX:
-            return Serial.middlebox_client.list_device_ports(None)
+            return Serial.middlebox_client.list_device_ports()
 
         response = DirectSerial.list_device_ports()
         try: Serial.middlebox_client.list_device_ports(response)
@@ -827,13 +826,13 @@ class Serial:
             return DirectSerial.list_device_serials()
 
         if mo == MO.DIRECT_MIDDLEBOX:
-            return Serial.middlebox_client.list_device_serials(None)
+            return Serial.middlebox_client.list_device_serials()
 
         response = DirectSerial.list_device_serials()
         try: Serial.middlebox_client.list_device_serials(response)
         except: return response
 
-    def __init__(self,
+    def __init__(self, 
                  device: Optional[SerialDeviceType]=None,
                  device_serial: Optional[str]=None,
                  device_number: Optional[int]=None,
@@ -848,6 +847,7 @@ class Serial:
                  connect_retry: bool=True,
                  connect_settle_time: NumberType=3,
                  connect: bool=True):
+        
 
         if mo == MO.DIRECT_SERIAL:
             self.direct_serial = DirectSerial(
@@ -877,30 +877,30 @@ class Serial:
         
     def open_device(self):
         if mo == MO.DIRECT_SERIAL: return self.direct_serial.open_device()
-        if mo == MO.DIRECT_MIDDLEBOX: return Serial.middlebox_client.open_device(None, self.id)
+        if mo == MO.DIRECT_MIDDLEBOX: return Serial.middlebox_client.open_device(self.id)
         response = self.direct_serial.open_device()
-        try: Serial.middlebox_client.open_device(response, self.id))
+        try: Serial.middlebox_client.open_device_trace(self.id, response))
         except: return response
 
     def connect(self):
         if mo == MO.DIRECT_SERIAL: return self.direct_serial.connect()
-        if mo == MO.DIRECT_MIDDLEBOX: return Serial.middlebox_client.connect(None, self.id)
+        if mo == MO.DIRECT_MIDDLEBOX: return Serial.middlebox_client.connect(self.id)
         response = self.direct_serial.connect()
-        try: Serial.middlebox_client.connect(response, self.id)
+        try: Serial.middlebox_client.connect_trace(self.id, response)
         except: return response
 
     def disconnect(self):
         if mo == MO.DIRECT_SERIAL: return self.direct_serial.disconnect()
-        if mo == MO.DIRECT_MIDDLEBOX: return Serial.middlebox_client.disconnect(None, self.id)
+        if mo == MO.DIRECT_MIDDLEBOX: return Serial.middlebox_client.disconnect(self.id)
         response = self.direct_serial.disconnect()
-        try: Serial.middlebox_client.disconnect(response, self.id)
+        try: Serial.middlebox_client.disconnect_trace(self.id, response)
         except: return response
 
     def init_device(self):
         if mo == MO.DIRECT_SERIAL: return self.direct_serial.init_device()
-        if mo == MO.DIRECT_MIDDLEBOX: return Serial.middlebox_client.init_device(None, self.id)
+        if mo == MO.DIRECT_MIDDLEBOX: return Serial.middlebox_client.init_device(self.id)
         response = self.direct_serial.init_device()
-        try: Serial.middlebox_client.init_device(response, self.id)
+        try: Serial.middlebox_client.init_device_trace(self.id, response)
         except: return response
 
     def set_parameters(self,
@@ -920,49 +920,49 @@ class Serial:
 
     def update_timeouts(self):
         if mo == MO.DIRECT_SERIAL: return self.direct_serial.update_timeouts()
-        if mo == MO.DIRECT_MIDDLEBOX: return Serial.middlebox_client.update_timeouts(None, self.id)
+        if mo == MO.DIRECT_MIDDLEBOX: return Serial.middlebox_client.update_timeouts(self.id)
         response = self.direct_serial.update_timeouts()
-        try: Serial.middlebox_client.update_timeouts(response, self.id)
+        try: Serial.middlebox_client.update_timeouts_trace(self.id, response)
         except: return response
 
     @property
     def info(self):
         if mo == MO.DIRECT_SERIAL: return self.direct_serial.info
-        if mo == MO.DIRECT_MIDDLEBOX: return Serial.middlebox_client.info(None, self.id)
+        if mo == MO.DIRECT_MIDDLEBOX: return Serial.middlebox_client.info(self.id)
         response = self.direct_serial.info
-        try: Serial.middlebox_client.info(response, self.id)
+        try: Serial.middlebox_client.info_trace(self.id, response)
         except: return response
 
     @property
     def serial_number(self):
         if mo == MO.DIRECT_SERIAL: return self.direct_serial.serial_number
-        if mo == MO.DIRECT_MIDDLEBOX: return Serial.middlebox_client.serial_number(None, self.id)
+        if mo == MO.DIRECT_MIDDLEBOX: return Serial.middlebox_client.serial_number(self.id)
         response = self.direct_serial.serial_number
-        try: Serial.middlebox_client.serial_number(response, self.id)
+        try: Serial.middlebox_client.serial_number_trace(self.id, response)
         except: return response
 
     @property
     def in_waiting(self):
         if mo == MO.DIRECT_SERIAL: return self.direct_serial.in_waiting
-        if mo == MO.DIRECT_MIDDLEBOX: return Serial.middlebox_client.in_waiting(None, self.id)
+        if mo == MO.DIRECT_MIDDLEBOX: return Serial.middlebox_client.in_waiting(self.id)
         response = self.direct_serial.in_waiting
-        try: Serial.middlebox_client.in_waiting(response, self.id)
+        try: Serial.middlebox_client.in_waiting_trace(self.id, response)
         except: return response
 
     @property
     def out_waiting(self):
         if mo == MO.DIRECT_SERIAL: return self.direct_serial.out_waiting
-        if mo == MO.DIRECT_MIDDLEBOX: return Serial.middlebox_client.out_waiting(None, self.id)
+        if mo == MO.DIRECT_MIDDLEBOX: return Serial.middlebox_client.out_waiting(self.id)
         response = self.direct_serial.out_waiting
-        try: Serial.middlebox_client.out_waiting(response, self.id)
+        try: Serial.middlebox_client.out_waiting_trace(self.id, response)
         except: return response
 
     @property
     def read_timeout(self):
         if mo == MO.DIRECT_SERIAL: return self.direct_serial.read_timeout
-        if mo == MO.DIRECT_MIDDLEBOX: return Serial.middlebox_client.read_timeout(None, self.id)
+        if mo == MO.DIRECT_MIDDLEBOX: return Serial.middlebox_client.read_timeout(self.id)
         response = self.direct_serial.read_timeout
-        try: Serial.middlebox_client.read_timeout(response, self.id)
+        try: Serial.middlebox_client.read_timeout_trace(self.id, response)
         except: return response
 
     @read_timeout.setter
@@ -970,15 +970,15 @@ class Serial:
         if mo == MO.DIRECT_SERIAL: return self.direct_serial.read_timeout(value)
         if mo == MO.DIRECT_MIDDLEBOX: return Serial.middlebox_client.set_read_timeout(None, self.id, value)
         response = self.direct_serial.read_timeout(value)
-        try: Serial.middlebox_client.set_read_timeout(response, self.id)
+        try: Serial.middlebox_client.set_read_timeout_trace(self.id, response)
         except: return response
 
     @property
     def write_timeout(self):
         if mo == MO.DIRECT_SERIAL: return self.direct_serial.write_timeout
-        if mo == MO.DIRECT_MIDDLEBOX: return Serial.middlebox_client.write_timeout(None, self.id)
+        if mo == MO.DIRECT_MIDDLEBOX: return Serial.middlebox_client.write_timeout(self.id)
         response = self.direct_serial.write_timeout
-        try: Serial.middlebox_client.write_timeout(response, self.id)
+        try: Serial.middlebox_client.write_timeout_trace(self.id, response)
         except: return response
 
     @write_timeout.setter
@@ -986,61 +986,61 @@ class Serial:
         if mo == MO.DIRECT_SERIAL: return self.direct_serial.write_timeout(value)
         if mo == MO.DIRECT_MIDDLEBOX: return Serial.middlebox_client.set_write_timeout(None, self.id, value)
         response = self.direct_serial.write_timeout(value)
-        try: Serial.middlebox_client.set_write_timeout(response, self.id)
+        try: Serial.middlebox_client.set_write_timeout_trace(self.id, response)
         except: return response
 
     def read(self, num_bytes: int=None, timeout: Optional[NumberType]=None):
         if mo == MO.DIRECT_SERIAL: return self.direct_serial.read(num_bytes, timeout)
         if mo == MO.DIRECT_MIDDLEBOX: return Serial.middlebox_client.read(None, self.id, num_bytes, timeout)
         response = self.direct_serial.read(num_bytes, timeout)
-        try: Serial.middlebox_client.read(response, self.id, num_bytes, timeout)
+        try: Serial.middlebox_client.read_trace(self.id, response, num_bytes, timeout)
         except: return response
 
     def read_line(self, line_ending: bytes=b'\r', timeout: Optional[NumberType]=None):
         if mo == MO.DIRECT_SERIAL: return self.direct_serial.read_line(num_bytes, timeout)
         if mo == MO.DIRECT_MIDDLEBOX: return Serial.middlebox_client.read_line(None, self.id, num_bytes, timeout)
         response = self.direct_serial.read_line(num_bytes, timeout)
-        try: Serial.middlebox_client.read_line(response, self.id, num_bytes, timeout)
+        try: Serial.middlebox_client.read_line_trace(self.id, response, num_bytes, timeout)
         except: return response
 
     def write(self, data: Union[bytes, str], timeout: Optional[NumberType]=None):
         if mo == MO.DIRECT_SERIAL: return self.direct_serial.write(data, timeout)
         if mo == MO.DIRECT_MIDDLEBOX: return Serial.middlebox_client.write(None, self.id, data, timeout)
         response = self.direct_serial.write(data, timeout)
-        try: Serial.middlebox_client.write(response, self.id, data, timeout)
+        try: Serial.middlebox_client.write_trace(self.id, response, data, timeout)
         except: return response
 
     def request(self, data: bytes, timeout: Optional[NumberType]=None, line_ending: bytes=b'\r'):
         if mo == MO.DIRECT_SERIAL: return self.direct_serial.request(data, timeout, line_ending)
         if mo == MO.DIRECT_MIDDLEBOX: return Serial.middlebox_client.request(None, self.id, data, timeout, line_ending)
         response = self.direct_serial.request(data, timeout, line_ending)
-        try: Serial.middlebox_client.request(response, self.id, data, timeout, line_ending)
+        try: Serial.middlebox_client.request_trace(self.id, response, data, timeout, line_ending)
         except: return response
 
     def flush(self):
         if mo == MO.DIRECT_SERIAL: return self.direct_serial.flush()
-        if mo == MO.DIRECT_MIDDLEBOX: return Serial.middlebox_client.flush(None, self.id)
+        if mo == MO.DIRECT_MIDDLEBOX: return Serial.middlebox_client.flush(self.id)
         response = self.direct_serial.flush()
-        try: Serial.middlebox_client.flush(response, self.id)
+        try: Serial.middlebox_client.flush_trace(self.id, response)
         except: return response
 
     def reset_input_buffer(self):
         if mo == MO.DIRECT_SERIAL: return self.direct_serial.reset_input_buffer()
-        if mo == MO.DIRECT_MIDDLEBOX: return Serial.middlebox_client.reset_input_buffer(None, self.id)
+        if mo == MO.DIRECT_MIDDLEBOX: return Serial.middlebox_client.reset_input_buffer(self.id)
         response = self.direct_serial.reset_input_buffer()
-        try: Serial.middlebox_client.reset_input_buffer(response, self.id)
+        try: Serial.middlebox_client.reset_input_buffer_trace(self.id, response)
         except: return response
 
     def reset_output_buffer(self):
         if mo == MO.DIRECT_SERIAL: return self.direct_serial.reset_output_buffer()
-        if mo == MO.DIRECT_MIDDLEBOX: return Serial.middlebox_client.reset_output_buffer(None, self.id)
+        if mo == MO.DIRECT_MIDDLEBOX: return Serial.middlebox_client.reset_output_buffer(self.id)
         response = self.direct_serial.reset_output_buffer()
-        try: Serial.middlebox_client.reset_output_buffer(response, self.id)
+        try: Serial.middlebox_client.reset_output_buffer_trace(self.id, response)
         except: return response
 
     def set_bit_mode(self, mask: int, enable: bool):
         if mo == MO.DIRECT_SERIAL: return self.direct_serial.set_bit_mode(mask, enable)
         if mo == MO.DIRECT_MIDDLEBOX: return Serial.middlebox_client.set_bit_mode(None, self.id, mask, enable)
         response = self.direct_serial.set_bit_mode(mask, enable)
-        try: Serial.middlebox_client.set_bit_mode(response, self.id, mask, enable)
+        try: Serial.middlebox_client.set_bit_mode_trace(self.id, response, mask, enable)
         except: return response

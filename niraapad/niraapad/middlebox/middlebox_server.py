@@ -13,132 +13,298 @@ class MiddleboxServicer(middlebox_pb2_grpc.MiddleboxServicer):
         print("MiddleboxServicer.__init__")
         self.serial_objs = {}
 
-    def ListDevices(self, request, context):
-        devices_info = Serial.list_devices()
-        devices_info_msg = []
-        for device_info in devices_info:
-            index = "" if device_info.index == None else device_info.index
-            serial = device_info.serial
-            port = "" if device_info.port == None else device_info.port
-            description = "" if device_info.description == None else device_info.description
-            devices_info_msg.append(middlebox_pb2.SerialDeviceInfo(
-                index=index, serial=serial, port=port, description=description))
-        response = middlebox_pb2.ListDevicesResponse(devices_info=devices_info_msg)
-        return response
+    def log_trace_msg(self, context, trace_msg):
+        trace_msg_str = trace_msg.SerializeToString()
+        print("%s: %s" % (context, trace_msg_str))
 
-    def ListDevicePorts(self, request, context):
-        device_ports = Serial.list_device_ports()
-        response = middlebox_pb2.ListDevicePortsResponse(ports=device_ports)
-        return response
+    def ListDevices(self, req, context):
+        unpacked = Serial.list_devices()
+        devices_info = []
+        for di in unpacked:
+            devices_info.append(middlebox_pb2.SerialDeviceInfo(
+                index=EmptyStringIfNone(di.index),
+                serial=di.serial,
+                port=EmptyStringIfNone(di.port),
+                description=EmptyStringIfNone(di.description))
+        resp = middlebox_pb2.ListDevicesResp(devices_info=devices_info)
+        trace_msg = middlebox_pb2.ListDevicesTraceMsg(resp=resp)
+        self.log_trace_msg(func_name(), trace_msg)
+        return resp
 
-    def ListDeviceSerials(self, request, context):
-        # TODO Fix parameter mismatch
-        # Serial.list_device_serials expects an argument call "cls"
-        # But we didn't provide any through gRPC!
+    def ListDevicePorts(self, req, context):
+        resp = middlebox_pb2.ListDevicePortsResp(
+            ports=Serial.list_device_ports())
+        trace_msg = middlebox_pb2.ListDevicePortsTraceMsg(resp=resp)
+        self.log_trace_msg(func_name(), trace_msg)
+        return resp
 
-        # Sending an empty response for now...
-        response = middlebox_pb2.ListDeviceSerials(d)
-        return response
+    def ListDeviceSerials(self, req, context):
+        serial_numbers = Serial.list_device_serials()
+        resp = middlebox_pb2.ListDeviceSerials(
+            serial_numbers= Serial.list_device_serials())
+        trace_msg = middlebox_pb2.ListDeviceSerialsTraceMsg(resp=resp)
+        self.log_trace_msg(func_name(), trace_msg)
+        return resp
 
-    def Initialize(self, request, context):
-        device_type = request.device_type.device_type
+    def Initialize(self, req, context):
+        device_type = req.device_type.device_type
         if device_type == "": device_type = None
-        elif request.device_type.format == request.device_type.Format.INT:
+        elif req.device_type.format == req.device_type.Format.INT:
             device_type = int(device_type)
 
-        device_serial = request.device_serial if request.device_serial != "" else None
-        device_number = int(request.device_number) if request.device_number != "" else None
-        device_port = request.device_port if request.device_port != "" else None
+        device_serial = req.device_serial if req.device_serial != "" else None
+        device_number = int(req.device_number) if req.device_number != "" else None
+        device_port = req.device_port if req.device_port != "" else None
 
         serial = Serial(device_type,
                         device_serial,
                         device_number,
                         device_port,
-                        request.baudrate,
-                        request.parity,
-                        request.stop_bits,
-                        request.data_bits,
-                        request.read_timeout,
-                        request.write_timeout,
-                        request.connect_timeout,
-                        request.connect_retry,
-                        request.connect_settle_time,
-                        request.connect)
+                        req.baudrate,
+                        req.parity,
+                        req.stop_bits,
+                        req.data_bits,
+                        req.read_timeout,
+                        req.write_timeout,
+                        req.connect_timeout,
+                        req.connect_retry,
+                        req.connect_settle_time,
+                        req.connect)
 
-        self.serial_objs[request.device_id] = serial
+        self.serial_objs[req.device_id] = serial
 
-        response = middlebox_pb2.InitializeResponse()
-        return response
+        resp = middlebox_pb2.InitializeResp()
+        return resp
 
-    def Connect(self, request, context):
-        self.serial_objs[request.device_id].connect()
-        response = middlebox_pb2.ConnectResponse()
-        return response
+    def OpenDevice(self, req, context):
+        self.serial_objs[req.device_id].open_device()
+        trace_msg = middlebox_pb2.OpenDeviceTraceMsg(req=req)
+        self.log_trace_msg(func_name(), trace_msg)
+        
+    def Connect(self, req, context):
+        self.serial_objs[req.device_id].connect()
+        trace_msg = middlebox_pb2.ConnectTraceMsg(req=req)
+        self.log_trace_msg(func_name(), trace_msg)
 
-    def Disconnect(self, request, context):
-        self.serial_objs[request.device_id].disconnect()
-        response = middlebox_pb2.DisconnectResponse()
-        return response
+    def Disconnect(self, req, context):
+        self.serial_objs[req.device_id].disconnect()
+        trace_msg = middlebox_pb2.DisconnectTraceMsg(req=req)
+        self.log_trace_msg(func_name(), trace_msg)
 
-    def SetParameters(self, request, context):
-        baudrate = request.baudrate if request.baudrate != "" else None
-        parity = request.parity if request.parity != "" else None
-        stop_bits = request.stop_bits if request.stop_bits != "" else None
-        data_bits = request.data_bits if request.data_bits != "" else None
-        self.serial_objs[request.device_id].set_parameters(baudrate, parity, stop_bits, data_bits)
-        response = middlebox_pb2.SetParametersResponse()
-        return response
+    def InitDevice(self, req, context):
+        self.serial_objs[req.device_id].init_device()
+        trace_msg = middlebox_pb2.InitDeviceTraceMsg(req=req)
+        self.log_trace_msg(func_name(), trace_msg)
+        
+    def SetParameters(self, req, context):
+        self.serial_objs[req.device_id].set_parameters(
+            baudrate=NoneIfEmptyString(req.baudrate),
+            parity=NoneIfEmptyString(req.parity),
+            stop_bits=NoneIfEmptyString(req.stop_bits),
+            data_bits=NoneIfEmptyString(req.data_bits))
+        trace_msg = middlebox_pb2.SetParametersTraceMsg(req=req)
+        self.log_trace_msg(func_name(), trace_msg)
 
-    def UpdateTimeouts(self, request, context):
-        self.serial_objs[request.device_id].update_timeouts()
-        response = middlebox_pb2.UpdateTimeoutsResponse()
-        return response
+    def UpdateTimeouts(self, req, context):
+        self.serial_objs[req.device_id].update_timeouts()
+        trace_msg = middlebox_pb2.UpdateTimeoutsTraceMsg(req=req)
+        self.log_trace_msg(func_name(), trace_msg)
 
-    def Info(self, request, context):
-        device_info = self.serial_objs[request.device_id].info
-        if device_info.index == None: device_info.index = ""
-        if device_info.port == None: device_info.port = ""
-        if device_info.description == None: device_info.description = ""
-        device_info_msg = middlebox_pb2.SerialDeviceInfo(index=str(device_info.index),
-                                                         serial=device_info.serial,
-                                                         port=device_info.port,
-                                                         description=device_info.description)
-        response = middlebox_pb2.InfoResponse(device_info=device_info_msg)
-        return response
+    def Info(self, req, context):
+        unpacked = self.serial_objs[req.device_id].info
+        device_info = middlebox_pb2.SerialDeviceInfo(
+            index=EmptyStringIfNone(unpacked.index),
+            serial=EmptyStringIfNone(unpacked.serial),
+            port=EmptyStringIfNone(unpacked.port),
+            description=EmptyStringIfNone(unpacked.description))
+        resp = middlebox_pb2.InfoResp(device_info=device_info)
+        trace_msg = middlebox_pb2.InfoTraceMsg(req=req, resp=resp)
+        self.log_trace_msg(func_name(), trace_msg)
+        return resp
 
-    def SerialNumber(self, request, context):
-        device_serial = self.serial_objs[request.device_id].serial_number
-        if device_serial == None: serial_number = ""
-        response = middlebox_pb2.SerialNumberResponse(device_serial=device_serial)
-        return response
+    def SerialNumber(self, req, context):
+        device_serial = self.serial_objs[req.device_id].serial_number
+        resp = middlebox_pb2.SerialNumberResp(
+            device_serial=EmptyStringIfNone(device_serial))
+        trace_msg = middlebox_pb2.SerialNumberTraceMsg(req=req, resp=resp)
+        self.log_trace_msg(func_name(), trace_msg)
+        return resp
 
-    def Read(self, request, context):
-        num_bytes = None if request.num_bytes == "" else int(request.num_bytes)
-        timeout = None if request.timeout == "" else float(request.timeout)
-        data = self.serial_objs[request.device_id].read(num_bytes, timeout)
-        response = middlebox_pb2.ReadResponse(data=data)
-        return response
+    def InWaiting(self, req, context):
+        resp = middlebox_pb2.InWaitingResp(
+            num_bytes=self.serial_objs[req.device_id].in_waiting())
+        trace_msg = middlebox_pb2.InWaitingTraceMsg(req=req, resp=resp)
+        self.log_trace_msg(func_name(), trace_msg)
+        return resp
 
-    def ReadLine(self, request, context):
-        timeout = None if request.timeout == "" else float(request.timeout)
-        data = self.serial_objs[request.device_id].read_line(request.line_ending, timeout)
-        response = middlebox_pb2.ReadLineResponse(data=data)
-        return response
+    def OutWaiting(self, req, context):
+        resp = middlebox_pb2.OutWaitingResp(
+            num_bytes=self.serial_objs[req.device_id].out_waiting())
+        trace_msg = middlebox_pb2.OutWaitingTraceMsg(req=req, resp=resp)
+        self.log_trace_msg(func_name(), trace_msg)
+        return resp
 
-    def Write(self, request, context):
-        timeout = None if request.timeout == "" else float(request.timeout)
-        data = request.data
-        if request.data_format == middlebox_pb2.WriteRequest.Format.BYTES:
-            data = request.data.encode()
-        num_bytes = self.serial_objs[request.device_id].write(data, timeout)
-        response = middlebox_pb2.WriteResponse(num_bytes=num_bytes)
-        return response
+    def ReadTimeout(self, req, context):
+        resp = middlebox_pb2.ReadTimeoutResp(
+            timeout=self.serial_objs[req.device_id].read_timeout)
+        trace_msg = middlebox_pb2.ReadTimeoutTraceMsg(req=req, resp=resp)
+        self.log_trace_msg(func_name(), trace_msg)
+        return resp
 
-    def Request(self, request, context):
-        timeout = None if request.timeout == "" else float(request.timeout)
-        data = self.serial_objs[request.device_id].request(request.data, timeout, request.line_ending)
-        response = middlebox_pb2.RequestResponse(data=data)
-        return response
+    def SetReadTimeout(self, req, context):
+        self.serial_objs[req.device_id].read_timeout = req.timeout
+        trace_msg = middlebox_pb2.SetReadTimeoutTraceMsg(req=req)
+        self.log_trace_msg(func_name(), trace_msg)
+
+    def WriteTimeout(self, req, context):
+        resp = middlebox_pb2.WriteTimeoutResp(
+            timeout=self.serial_objs[req.device_id].write_timeout)
+        trace_msg = middlebox_pb2.WriteTimeoutTraceMsg(req=req, resp=resp)
+        self.log_trace_msg(func_name(), trace_msg)
+        return resp
+
+    def SetWriteTimeout(self, req, context):
+        self.serial_objs[req.device_id].write_timeout = req.timeout
+        trace_msg = middlebox_pb2.SetWriteTimeoutTraceMsg(req=req)
+        self.log_trace_msg(func_name(), trace_msg)
+
+    def Read(self, req, context):
+        resp = middlebox_pb2.ReadResp(
+            data=self.serial_objs[req.device_id].read(
+                num_bytes=NoneIfEmptyString(req.num_bytes),
+                timeout=NoneIfEmptyString(req.timeout)))
+        trace_msg = middlebox_pb2.ReadTraceMsg(req=req, resp=resp)
+        self.log_trace_msg(func_name(), trace_msg)
+        return resp
+
+    def ReadLine(self, req, context):
+        resp = middlebox_pb2.ReadLineResp(
+            data=self.serial_objs[req.device_id].read_line(
+                line_ending=req.line_ending,
+                timeout=NoneIfEmptyString(req.timeout)))
+        trace_msg = middlebox_pb2.ReadLineTraceMsg(req=req, resp=resp)
+        self.log_trace_msg(func_name(), trace_msg)
+        return resp
+
+    def Write(self, req, context):
+        data = req.data
+        if req.data_format == middlebox_pb2.WriteRequest.Format.BYTES:
+            data = req.data.encode()
+        resp = middlebox_pb2.WriteResp(
+            num_bytes=self.serial_objs[req.device_id].write(
+                data=data,
+                timeout=NoneIfEmptyString(req.timeout)))
+        trace_msg = middlebox_pb2.WriteTraceMsg(req=req, resp=resp)
+        self.log_trace_msg(func_name(), trace_msg)
+        return resp
+
+    def Request(self, req, context):
+        resp = middlebox_pb2.RequestResp(
+            data=self.serial_objs[req.device_id].request(
+                data=req.data,
+                timeout=NoneIfEmptyString(req.timeout),
+                line_ending=req.line_ending))
+        trace_msg = middlebox_pb2.RequestTraceMsg(req=req, resp=resp)
+        self.log_trace_msg(func_name(), trace_msg)
+        return resp
+
+    def Flush(self, req, context):
+        self.serial_objs[req.device_id].flush()
+        trace_msg = middlebox_pb2.FlushTraceMsg(req=req)
+        self.log_trace_msg(func_name(), trace_msg)
+
+    def ResetInputBuffer(self, req, context):
+        self.serial_objs[req.device_id].reset_input_buffer()
+        trace_msg = middlebox_pb2.ResetInputBufferTraceMsg(req=req)
+        self.log_trace_msg(func_name(), trace_msg)
+
+    def ResetOutputBuffer(self, req, context):
+        self.serial_objs[req.device_id].reset_output_buffer()
+        trace_msg = middlebox_pb2.ResetOutputBufferTraceMsg(req=req)
+        self.log_trace_msg(func_name(), trace_msg)
+
+    def SetBitMode(self, req, context):
+        self.serial_objs[req.device_id].set_bit_mode(mask=mask, enable=enable)
+        trace_msg = middlebox_pb2.SetBitModeTraceMsg(req=req)
+        self.log_trace_msg(func_name(), trace_msg)
+
+    def ListDevicesTrace(self, trace_msg, context):
+        self.log_trace_msg(func_name(), trace_msg)
+
+    def ListDevicePortsTrace(self, trace_msg, context):
+        self.log_trace_msg(func_name(), trace_msg)
+
+    def ListDeviceSerials(self, trace_msg, context):
+        self.log_trace_msg(func_name(), trace_msg)
+
+    def Initialize(self, trace_msg, context):
+        self.log_trace_msg(func_name(), trace_msg)
+
+    def OpenDevice(self, trace_msg, context):
+        self.log_trace_msg(func_name(), trace_msg)
+        
+    def Connect(self, trace_msg, context):
+        self.log_trace_msg(func_name(), trace_msg)
+
+    def Disconnect(self, trace_msg, context):
+        self.log_trace_msg(func_name(), trace_msg)
+
+    def InitDevice(self, trace_msg, context):
+        self.log_trace_msg(func_name(), trace_msg)
+        
+    def SetParameters(self, trace_msg, context):
+        self.log_trace_msg(func_name(), trace_msg)
+
+    def UpdateTimeouts(self, trace_msg, context):
+        self.log_trace_msg(func_name(), trace_msg)
+
+    def Info(self, trace_msg, context):
+        self.log_trace_msg(func_name(), trace_msg)
+
+    def SerialNumber(self, trace_msg, context):
+        self.log_trace_msg(func_name(), trace_msg)
+
+    def InWaiting(self, trace_msg, context):
+        self.log_trace_msg(func_name(), trace_msg)
+
+    def OutWaiting(self, trace_msg, context):
+        self.log_trace_msg(func_name(), trace_msg)
+
+    def ReadTimeout(self, trace_msg, context):
+        self.log_trace_msg(func_name(), trace_msg)
+
+    def SetReadTimeout(self, trace_msg, context):
+        self.log_trace_msg(func_name(), trace_msg)
+
+    def WriteTimeout(self, trace_msg, context):
+        self.log_trace_msg(func_name(), trace_msg)
+
+    def SetWriteTimeout(self, trace_msg, context):
+        self.log_trace_msg(func_name(), trace_msg)
+
+    def Read(self, trace_msg, context):
+        self.log_trace_msg(func_name(), trace_msg)
+
+    def ReadLine(self, trace_msg, context):
+        self.log_trace_msg(func_name(), trace_msg)
+
+    def Write(self, trace_msg, context):
+        self.log_trace_msg(func_name(), trace_msg)
+
+    def Request(self, trace_msg, context):
+        self.log_trace_msg(func_name(), trace_msg)
+
+    def Flush(self, trace_msg, context):
+        self.log_trace_msg(func_name(), trace_msg)
+
+    def ResetInputBuffer(self, trace_msg, context):
+        self.log_trace_msg(func_name(), trace_msg)
+
+    def ResetOutputBuffer(self, trace_msg, context):
+        self.log_trace_msg(func_name(), trace_msg)
+
+    def SetBitMode(self, trace_msg, context):
+        self.log_trace_msg(func_name(), trace_msg)
 
 def serve():
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
