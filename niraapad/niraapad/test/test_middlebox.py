@@ -7,38 +7,11 @@ from concurrent import futures
 import niraapad.protos.middlebox_pb2 as middlebox_pb2
 import niraapad.protos.middlebox_pb2_grpc as middlebox_pb2_grpc
 
-from niraapad.middlebox.middlebox_server import MiddleboxServicer
+from niraapad.middlebox.middlebox_server import MiddleboxServer
 from niraapad.lab_computer.ftdi_serial import Serial
 from niraapad.shared.utils import *
 
-import os
-file_path = os.path.dirname(os.path.abspath(__file__))
-keys_path = file_path + "/../keys/"
-
-def start_server():
-    server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
-
-    # INSECURE channel
-    #server.add_insecure_port('[::]:50051')
-
-    # SECURE channel
-    with open(keys_path + 'server.key', 'rb') as f:
-        private_key = f.read()
-    with open(keys_path + 'server.crt', 'rb') as f:
-        certificate_chain = f.read()
-    server_credentials = grpc.ssl_server_credentials( ( (private_key, certificate_chain), ) )
-    server.add_secure_port('[::]:1337', server_credentials)
-
-    middlebox_pb2_grpc.add_MiddleboxServicer_to_server(MiddleboxServicer(), server)
-    server.start()
-    #time.sleep(200)
-
-    return server
-
 def call_all_static_methods():
-    # Check mode
-    print("Operation mode:", Serial.mo)
-
     # Test list_devices
     serial_devices_info = Serial.list_devices()
 
@@ -49,9 +22,6 @@ def call_all_static_methods():
     device_serials = Serial.list_device_serials()
 
 def call_all_instance_methods(serial):
-    # Check mode
-    print("Operation mode:", Serial.mo)
-
     # Test open_device
     #serial.open_device()
 
@@ -124,15 +94,14 @@ def call_all_instance_methods(serial):
 class TestMiddleboxClient(unittest.TestCase):
 
     def setUp(self):
-        self.server = start_server()
+        self.middlebox_server = MiddleboxServer()
+        self.middlebox_server.start()
 
     def tearDown(self):
-        self.server.stop(None)
+        self.middlebox_server.stop()
 
     def test_all_methods(self):
-        # Set and check mode
         Serial.mo = MO.DIRECT_MIDDLEBOX
-        print("Operation mode:", Serial.mo)
 
         # Test all serial methods
         call_all_static_methods()
@@ -143,9 +112,8 @@ class TestMiddleboxClient(unittest.TestCase):
         # Test all instance methods
         call_all_instance_methods(serial)
 
-        # Reset and check mode
+        # Reset mode
         Serial.mo = MO.DIRECT_SERIAL_WITH_MIDDLEBOX_TRACING
-        print("Operation mode:", Serial.mo)
 
         # Test all serial methods
         call_all_static_methods()

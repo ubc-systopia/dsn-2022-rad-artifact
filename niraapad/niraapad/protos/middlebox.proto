@@ -528,6 +528,7 @@ message SerialDeviceInfo {
 }
 
 message TraceMetadata {
-  string caller = 1;
+  string func_name = 1;
   string timestamp = 2;
+  int32 num_bytes = 3;
 }

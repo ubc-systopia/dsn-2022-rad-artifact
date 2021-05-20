@@ -8,22 +8,43 @@ import niraapad.protos.middlebox_pb2_grpc as middlebox_pb2_grpc
 from niraapad.middlebox.ftdi_serial import Serial
 from niraapad.shared.utils import *
 
+import os
+file_path = os.path.dirname(os.path.abspath(__file__))
+keys_path = file_path + "/../keys/"
+trace_path = file_path + "/../traces/"
+trace_file = trace_path + ("%s.log" % (datetime.now().strftime("%Y%m%d%H%M%S")))
+os.makedirs(trace_path, exist_ok=True)
+max_len_func_name = 100
+trace_metadata_length = 132 # bytes
+
 class MiddleboxServicer(middlebox_pb2_grpc.MiddleboxServicer):
     """Provides methods that implement functionality of middlebox server."""
 
     def __init__(self):
         print("MiddleboxServicer.__init__")
         self.serial_objs = {}
+        self.logf = open(trace_file, "ab+")
+
+    def __del__(self):
+        self.logf.close()
 
     def log_trace_msg(self, trace_msg):
         now = datetime.now()
-        trace_metadata = middlebox_pb2.TraceMetadata(
-            caller=caller_func_name(),
-            timestamp=now.strftime("%Y:%m:%d:%H:%M:%S.%f"))
-        trace_metadata_str = trace_metadata.SerializeToString()
+
         trace_msg_str = trace_msg.SerializeToString()
-        print(trace_metadata_str)
-        print(trace_msg_str)
+
+        func_name_padded = caller_func_name().ljust(max_len_func_name)
+        trace_metadata = middlebox_pb2.TraceMetadata(
+            func_name=func_name_padded,
+            timestamp=now.strftime("%Y:%m:%d:%H:%M:%S.%f"),
+            num_bytes=len(trace_msg_str))
+
+        trace_metadata_str = trace_metadata.SerializeToString()
+        assert(len(trace_metadata_str) == trace_metadata_length)
+        #print("Trace metadata length:", len(trace_metadata_str))
+
+        self.logf.write(trace_metadata_str)
+        self.logf.write(trace_msg_str)
 
     def ListDevices(self, req, context):
         unpacked = Serial.list_devices()
@@ -353,12 +374,31 @@ class MiddleboxServicer(middlebox_pb2_grpc.MiddleboxServicer):
         self.log_trace_msg(trace_msg)
         return middlebox_pb2.EmptyMsg()
 
-def serve():
-    server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
-    middlebox_pb2_grpc.add_MiddleboxServicer_to_server(MiddleboxServicer(), server)
-    server.add_insecure_port('[::]:50051')
-    server.start()
-    server.wait_for_termination()
+#def serve():
+#    server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
+#    middlebox_pb2_grpc.add_MiddleboxServicer_to_server(MiddleboxServicer(), server)
+#    server.add_insecure_port('[::]:50051')
+#    server.start()
+#    server.wait_for_termination()
+#
+#if __name__ == ' __main__':
+#    serve()
+ 
+class MiddleboxServer:
 
-if __name__ == ' __main__':
-    serve()
+    def __init__(self):
+        self.server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
+        with open(keys_path + 'server.key', 'rb') as f:
+            private_key = f.read()
+        with open(keys_path + 'server.crt', 'rb') as f:
+            certificate_chain = f.read()
+        server_credentials = grpc.ssl_server_credentials( ( (private_key, certificate_chain), ) )
+        self.server.add_secure_port('[::]:1337', server_credentials)
+
+        middlebox_pb2_grpc.add_MiddleboxServicer_to_server(MiddleboxServicer(), self.server)
+    
+    def start(self):
+        self.server.start()
+
+    def stop(self):
+        self.server.stop(None)
