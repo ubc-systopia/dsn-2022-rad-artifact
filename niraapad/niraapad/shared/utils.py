@@ -1,3 +1,6 @@
+from enum import Enum
+import inspect
+
 class MO(Enum):
     DIRECT_SERIAL = 1
     DIRECT_MIDDLEBOX = 2
@@ -12,3 +15,4 @@ def NoneIfEmptyString(data):
   else: return data
 
 func_name = lambda: inspect.stack()[1].function
+caller_func_name = lambda: inspect.stack()[2].function

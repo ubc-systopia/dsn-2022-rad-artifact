@@ -318,7 +318,6 @@ class Serial:
         """
 
         if FTD2XX_AVAILABLE:
-            print("FTD2XX available")
             devices = ftd2xx.listDevices()
 
             if devices is None:
@@ -327,7 +326,6 @@ class Serial:
             num_devices = len(devices)
             return [SerialDeviceInfo(**ftd2xx.getDeviceInfoDetail(i)) for i in range(0, num_devices)]
         else:
-            print("FTD2XX NOT available")
             return [SerialDeviceInfo(port=p.device, description=p.description) for p in comports()]
 
     @staticmethod
@@ -337,7 +335,6 @@ class Serial:
 
         :return: List of COM port strings
         """
-        print("Serial.list_device_ports")
         return [info.device for info in comports()]
 
     @classmethod
@@ -688,18 +685,21 @@ class Serial:
         """
         Flush data from the input and output buffers
         """
+        if self.device == None: return # TODO Introduced for testing, remove otherwise
         self.device.purge()
 
     def reset_input_buffer(self):
         """
         Flush / reset data in the input buffer
         """
+        if self.device == None: return # TODO Introduced for testing, remove otherwise
         self.device.purge(self.FT_PURGE_RX)
 
     def reset_output_buffer(self):
         """
         Flush / reset data in the output buffer
         """
+        if self.device == None: return # TODO Introduced for testing, remove otherwise
         self.device.purge(self.FT_PURGE_TX)
 
     def set_bit_mode(self, mask: int, enable: bool):
@@ -709,4 +709,5 @@ class Serial:
         :param enable: enables bit-bang mode if True, disables if False
         :return:
         """
+        if self.device == None: return # TODO Introduced for testing, remove otherwise
         self.device.set_bit_mode(mask, enable)

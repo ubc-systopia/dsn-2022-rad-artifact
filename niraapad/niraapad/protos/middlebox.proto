@@ -28,16 +28,16 @@ service Middlebox {
   rpc InitializeTrace(InitializeTraceMsg) returns (EmptyMsg) {}
 
   // Open the specified serial device
-  rpc OpenDevice(OpenDeviceReq) returns (EmptyResp) {}
+  rpc OpenDevice(OpenDeviceReq) returns (EmptyMsg) {}
 
   // Open the specified serial device
-  rpc OpenDeviceTrace(OpenDeviceTraceMsg) returns (EmptyResp) {}
+  rpc OpenDeviceTrace(OpenDeviceTraceMsg) returns (EmptyMsg) {}
 
   // Connect to the specified serial device if a connection hasn't been made
-  rpc Connect(ConnectReq) returns (EmptyResp) {}
+  rpc Connect(ConnectReq) returns (EmptyMsg) {}
 
   // Connect to the specified serial device if a connection hasn't been made
-  rpc ConnectTrace(ConnectTraceMsg) returns (EmptyResp) {}
+  rpc ConnectTrace(ConnectTraceMsg) returns (EmptyMsg) {}
 
   // Disconnect the specified serial device
   rpc Disconnect(DisconnectReq) returns (EmptyMsg) {}
@@ -46,7 +46,7 @@ service Middlebox {
   rpc DisconnectTrace(DisconnectTraceMsg) returns (EmptyMsg) {}
 
   // Initialize the specified device, if not already done so
-  rpc InitDevice(EmptyMsg) returns (EmptyMsg) {}
+  rpc InitDevice(InitDeviceReq) returns (EmptyMsg) {}
 
   // Initialize the specified device, if not already done so
   rpc InitDeviceTrace(InitDeviceTraceMsg) returns (EmptyMsg) {}
@@ -61,7 +61,7 @@ service Middlebox {
   rpc UpdateTimeouts(UpdateTimeoutsReq) returns (EmptyMsg) {}
 
   // Update timeouts for the specified serial device
-  rpc UpdateTimeoutsTraceMsg(UpdateTimeoutsTraceMsg) returns (EmptyMsg) {}
+  rpc UpdateTimeoutsTrace(UpdateTimeoutsTraceMsg) returns (EmptyMsg) {}
 
   // Get info about the specified serial device
   rpc Info(InfoReq) returns (InfoResp) {}
@@ -164,9 +164,6 @@ service Middlebox {
   rpc SetBitModeTrace(SetBitModeTraceMsg) returns (EmptyMsg) {}
 }
 
-message EmptyMsg {
-}
-
 message ListDevicesResp {
   repeated SerialDeviceInfo devices_info = 1;
 }
@@ -188,7 +185,7 @@ message ListDeviceSerialsResp {
 }
 
 message ListDeviceSerialsTraceMsg {
-  ListDeviceSerialResp resp = 1;
+  ListDeviceSerialsResp resp = 1;
 }
 
 message InitializeReq {
@@ -283,7 +280,7 @@ message UpdateTimeoutsReq {
 }
 
 message UpdateTimeoutsTraceMsg {
-  UpdateTimeoutReq req = 1;
+  UpdateTimeoutsReq req = 1;
 }
 
 message InfoReq {
@@ -380,7 +377,7 @@ message SetWriteTimeoutReq {
 }
 
 message SetWriteTimeoutTraceMsg {
-  SetWriteTimeoutReq req;
+  SetWriteTimeoutReq req = 1;
 }
 
 message ReadReq {
@@ -496,6 +493,9 @@ message SetBitModeReq {
   bool enable = 3;
 }
 
+message EmptyMsg {
+}
+
 message SetBitModeTraceMsg {
   SetBitModeReq req = 1;
 }
@@ -527,8 +527,7 @@ message SerialDeviceInfo {
   string description = 4;
 }
 
-enum MO {
-  DIRECT_SERIAL = 0;
-  DIRECT_MIDDLEBOX = 1;
-  DIRECT_SERIAL_WITH_MIDDLEBOX_TRACING = ;
+message TraceMetadata {
+  string caller = 1;
+  string timestamp = 2;
 }
