@@ -16,3 +16,4 @@ def NoneIfEmptyString(data):
 
 func_name = lambda: inspect.stack()[1].function
 caller_func_name = lambda: inspect.stack()[2].function
+max_func_name_len = 100

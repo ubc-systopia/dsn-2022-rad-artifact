@@ -10,17 +10,15 @@ from niraapad.shared.utils import *
 
 import os
 file_path = os.path.dirname(os.path.abspath(__file__))
-keys_path = file_path + "/../keys/"
-trace_path = file_path + "/../traces/"
-trace_file = trace_path + ("%s.log" % (datetime.now().strftime("%Y%m%d%H%M%S")))
-os.makedirs(trace_path, exist_ok=True)
-max_len_func_name = 100
-trace_metadata_length = 132 # bytes
+default_keys_path = file_path + "/../keys/"
+default_trace_path = file_path + "/../traces/"
 
 class MiddleboxServicer(middlebox_pb2_grpc.MiddleboxServicer):
     """Provides methods that implement functionality of middlebox server."""
 
-    def __init__(self):
+    trace_metadata_length = 132 # bytes
+
+    def __init__(self, trace_file):
         print("MiddleboxServicer.__init__")
         self.serial_objs = {}
         self.logf = open(trace_file, "ab+")
@@ -28,20 +26,23 @@ class MiddleboxServicer(middlebox_pb2_grpc.MiddleboxServicer):
     def __del__(self):
         self.logf.close()
 
+    def stop(self):
+        self.logf.close()
+
     def log_trace_msg(self, trace_msg):
         now = datetime.now()
 
         trace_msg_str = trace_msg.SerializeToString()
 
-        func_name_padded = caller_func_name().ljust(max_len_func_name)
+        func_name_padded = caller_func_name().ljust(max_func_name_len)
         trace_metadata = middlebox_pb2.TraceMetadata(
             func_name=func_name_padded,
             timestamp=now.strftime("%Y:%m:%d:%H:%M:%S.%f"),
             num_bytes=len(trace_msg_str))
 
         trace_metadata_str = trace_metadata.SerializeToString()
-        assert(len(trace_metadata_str) == trace_metadata_length)
         #print("Trace metadata length:", len(trace_metadata_str))
+        assert(len(trace_metadata_str) == MiddleboxServicer.trace_metadata_length)
 
         self.logf.write(trace_metadata_str)
         self.logf.write(trace_msg_str)
@@ -386,19 +387,32 @@ class MiddleboxServicer(middlebox_pb2_grpc.MiddleboxServicer):
  
 class MiddleboxServer:
 
-    def __init__(self):
+    def __init__(self, trace_path=None, keys_path=None):
+
+        self.trace_path = default_trace_path
+        if trace_path != None: self.trace_path  = trace_path
+
+        self.keys_path = default_keys_path
+        if keys_path != None: self.keys_path = keys_path
+
+        self.trace_file = self.trace_path + ("%s.log" % (datetime.now().strftime("%Y%m%d%H%M%S")))
+        os.makedirs(self.trace_path, exist_ok=True)
+
         self.server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
-        with open(keys_path + 'server.key', 'rb') as f:
+        with open(self.keys_path + 'server.key', 'rb') as f:
             private_key = f.read()
-        with open(keys_path + 'server.crt', 'rb') as f:
+        with open(self.keys_path + 'server.crt', 'rb') as f:
             certificate_chain = f.read()
         server_credentials = grpc.ssl_server_credentials( ( (private_key, certificate_chain), ) )
         self.server.add_secure_port('[::]:1337', server_credentials)
 
-        middlebox_pb2_grpc.add_MiddleboxServicer_to_server(MiddleboxServicer(), self.server)
+        self.middlebox_servicer = MiddleboxServicer(trace_file=self.trace_file)
+        middlebox_pb2_grpc.add_MiddleboxServicer_to_server(self.middlebox_servicer, self.server)
     
     def start(self):
         self.server.start()
 
     def stop(self):
+        self.middlebox_servicer.stop()
         self.server.stop(None)
+
