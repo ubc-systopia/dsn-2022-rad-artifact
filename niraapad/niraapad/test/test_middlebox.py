@@ -9,7 +9,7 @@ import niraapad.protos.middlebox_pb2_grpc as middlebox_pb2_grpc
 
 from niraapad.middlebox.middlebox_server import MiddleboxServer
 from niraapad.middlebox.middlebox_server import MiddleboxServicer
-from niraapad.lab_computer.ftdi_serial import Serial
+from niraapad.shared.ftdi_serial import Serial
 from niraapad.shared.utils import *
 
 import os

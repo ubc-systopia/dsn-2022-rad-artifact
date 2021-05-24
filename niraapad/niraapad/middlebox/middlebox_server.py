@@ -5,7 +5,7 @@ from datetime import datetime
 import niraapad.protos.middlebox_pb2 as middlebox_pb2
 import niraapad.protos.middlebox_pb2_grpc as middlebox_pb2_grpc
 
-from niraapad.middlebox.ftdi_serial import Serial
+from niraapad.shared.ftdi_serial import DirectSerial
 from niraapad.shared.utils import *
 
 import os
@@ -48,7 +48,7 @@ class MiddleboxServicer(middlebox_pb2_grpc.MiddleboxServicer):
         self.logf.write(trace_msg_str)
 
     def ListDevices(self, req, context):
-        unpacked = Serial.list_devices()
+        unpacked = DirectSerial.list_devices()
         devices_info = []
         for di in unpacked:
             devices_info.append(middlebox_pb2.SerialDeviceInfo(
@@ -63,15 +63,15 @@ class MiddleboxServicer(middlebox_pb2_grpc.MiddleboxServicer):
 
     def ListDevicePorts(self, req, context):
         resp = middlebox_pb2.ListDevicePortsResp(
-            ports=Serial.list_device_ports())
+            ports=DirectSerial.list_device_ports())
         trace_msg = middlebox_pb2.ListDevicePortsTraceMsg(resp=resp)
         self.log_trace_msg(trace_msg)
         return resp
 
     def ListDeviceSerials(self, req, context):
-        serial_numbers = Serial.list_device_serials()
+        serial_numbers = DirectSerial.list_device_serials()
         resp = middlebox_pb2.ListDeviceSerialsResp(
-            serial_numbers= Serial.list_device_serials())
+            serial_numbers= DirectSerial.list_device_serials())
         trace_msg = middlebox_pb2.ListDeviceSerialsTraceMsg(resp=resp)
         self.log_trace_msg(trace_msg)
         return resp
@@ -86,20 +86,20 @@ class MiddleboxServicer(middlebox_pb2_grpc.MiddleboxServicer):
         device_number = int(req.device_number) if req.device_number != "" else None
         device_port = req.device_port if req.device_port != "" else None
 
-        serial = Serial(device_type,
-                        device_serial,
-                        device_number,
-                        device_port,
-                        req.baudrate,
-                        req.parity,
-                        req.stop_bits,
-                        req.data_bits,
-                        req.read_timeout,
-                        req.write_timeout,
-                        req.connect_timeout,
-                        req.connect_retry,
-                        req.connect_settle_time,
-                        req.connect)
+        serial = DirectSerial(device_type,
+                              device_serial,
+                              device_number,
+                              device_port,
+                              req.baudrate,
+                              req.parity,
+                              req.stop_bits,
+                              req.data_bits,
+                              req.read_timeout,
+                              req.write_timeout,
+                              req.connect_timeout,
+                              req.connect_retry,
+                              req.connect_settle_time,
+                              req.connect)
 
         self.serial_objs[req.device_id] = serial
         trace_msg = middlebox_pb2.InitializeTraceMsg(req=req)

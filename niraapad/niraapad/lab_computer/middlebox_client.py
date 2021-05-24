@@ -2,7 +2,7 @@ import grpc
 import niraapad.protos.middlebox_pb2 as middlebox_pb2
 import niraapad.protos.middlebox_pb2_grpc as middlebox_pb2_grpc
 
-from niraapad.lab_computer.ftdi_serial import SerialDeviceInfo
+from niraapad.shared.ftdi_serial import SerialDeviceInfo
 from niraapad.shared.utils import *
 
 import os
