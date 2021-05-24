@@ -10,6 +10,7 @@ import niraapad.protos.middlebox_pb2_grpc as middlebox_pb2_grpc
 from niraapad.middlebox.middlebox_server import MiddleboxServer
 from niraapad.middlebox.middlebox_server import MiddleboxServicer
 from niraapad.shared.ftdi_serial import Serial
+from niraapad.shared.tracing import Tracer
 from niraapad.shared.utils import *
 
 import os
@@ -96,51 +97,9 @@ def call_all_instance_methods(serial):
     serial.set_bit_mode(0, False)
 
 def parse_traces(trace_file):
-    # If all trace files in a folder need to be parsed
-    #trace_files = []
-    #for root, dirs, files in os.walk(trace_path):
-    #    for file in files:
-    #        if(file.endswith(".log")):
-    #            trace_files.append(os.path.join(root,file))
-    #for trace_file in trace_files:
-
-    print("Parsing trace file:" , trace_file)
-
-    try:
-        f = open(trace_file, "rb")
-        # Get file size for termination
-        f.seek(0, os.SEEK_END)
-        file_size = f.tell() # bytes
-        f.seek(0)
-
-        while f.tell() < file_size and \
-            f.tell() + MiddleboxServicer.trace_metadata_length <= file_size:
-
-            trace_metadata_str = f.read(MiddleboxServicer.trace_metadata_length)
-            trace_metadata = middlebox_pb2.TraceMetadata()
-            trace_metadata.ParseFromString(trace_metadata_str)
-
-            # Read the actual trace msg
-            trace_msg_str = f.read(trace_metadata.num_bytes)
-
-            # Parse the actual trace msg based on metadata
-            #print("%s" % trace_metadata.func_name)
-            if "ListDevices" in trace_metadata.func_name:
-                msg = middlebox_pb2.ListDevicesTraceMsg()
-                msg.ParseFromString(trace_msg_str)
-                #print(msg)
-            elif "ListDevicePorts" in trace_metadata.func_name:
-                msg = middlebox_pb2.ListDevicePortsTraceMsg()
-                msg.ParseFromString(trace_msg_str)
-                #print(msg)
-            # elif ... and so on for each API
-            else:
-                pass
-
-    except Exception as e:
-        print("Eception:", e)
-
-    f.close()
+    print("Parsing file", trace_file)
+    for trace_msg in Tracer.parse_file(trace_file):
+        print(trace_msg)
 
 class TestMiddleboxClient(unittest.TestCase):
 
@@ -180,8 +139,9 @@ class TestMiddleboxClient(unittest.TestCase):
         call_all_instance_methods(serial)
     
         # Test recoring the traces from logs
-        self.middlebox_server.stop()
-        parse_traces(self.middlebox_server.trace_file)
+        #self.middlebox_server.stop()
+        self.middlebox_server.stop_tracing()
+        parse_traces(Tracer.get_trace_file(self.trace_path))
 
 if __name__ == "__main__":
     unittest.main()

@@ -528,7 +528,15 @@ message SerialDeviceInfo {
 }
 
 message TraceMetadata {
-  string func_name = 1;
-  string timestamp = 2;
-  int32 num_bytes = 3;
+  string timestamp = 1;
+  string trace_msg_type = 2;
+
+  // number of bytes in the following trace msg
+  // i.e., any message type above ending in "TraceMsg"
+  int32 trace_msg_size = 3;
+}
+
+message TraceHeader {
+    // number of bytes in the following trace metadata
+    int32 metadata_size = 1;
 }
