@@ -8,12 +8,12 @@ Currently working with the following versions: Python 3.7.3 and libprotoc (grpc_
 From my past experience, protocol buffers can be very sensitive to version changes!
 
 Testing steps:
+Add the `niraapad` folder in the top-level directory to your PYTHONPATH environment variable.
 
 #### Linux:
-* Add the `niraapad` folder in the top-level directory to your PYTHONPATH environment variable.
 * Compile the protocol buffer IDL files by running the  `compile_proto_files.sh` bash script, which is located in `niraapad/script`
 * Run tests using `python3 niraapad/test/test_middlebox.py`
 
 #### Windows:
 * Compile the protocol buffer IDL files by running the  `compile_proto_files_w.sh` bash script, which is located in `niraapad/script`
-* Run tests using `python niraapad/test/test_middlebox_w.py`
+* Run tests using `python niraapad/test/test_middlebox.py`
