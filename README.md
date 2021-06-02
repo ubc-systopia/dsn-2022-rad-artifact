@@ -8,6 +8,7 @@ Currently working with the following versions: Python 3.7.3 and libprotoc (grpc_
 From my past experience, protocol buffers can be very sensitive to version changes!
 
 Testing steps:
+
 Add the `niraapad` folder in the top-level directory to your PYTHONPATH environment variable.
 
 #### Linux:
