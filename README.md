@@ -18,3 +18,8 @@ Add the `niraapad` folder in the top-level directory to your PYTHONPATH environm
 #### Windows:
 * Compile the protocol buffer IDL files by running the  `compile_proto_files_w.sh` bash script, which is located in `niraapad/script`
 * Run tests using `python niraapad/test/test_middlebox.py`
+
+#### Visual Studio Code on Windows (tested on `ispy`):
+* The `.vscode` folder contains the necessary configuration files
+* Run the `build` task to compile  the protocol buffer IDL files
+* Run the `test` task to run `test_middlebox.py`
