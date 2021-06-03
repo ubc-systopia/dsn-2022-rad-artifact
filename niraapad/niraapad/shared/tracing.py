@@ -84,10 +84,8 @@ class Tracer:
 
                 # Return msg type and msg for this iteration
                 yield trace_metadata.trace_msg_type, trace_msg
+            
+            f.close()
 
         except Exception as e:
             print("Exception:", e)
-
-        f.close()
-
-
