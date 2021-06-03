@@ -1,0 +1,27 @@
+{
+    // See https://go.microsoft.com/fwlink/?LinkId=733558
+    // for the documentation about the tasks.json format
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "protogen",
+            "type": "shell",
+            "command": "cd niraapad; python -m grpc_tools.protoc -I. --python_out=. --grpc_python_out=. ./niraapad/protos/middlebox.proto"
+        },
+        {
+            "label": "build",
+            "dependsOrder": "sequence",
+            "dependsOn": ["protogen"],
+            "problemMatcher": [],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        },
+        {
+            "label": "test",
+            "type": "shell",
+            "command": "python ./niraapad/niraapad/test/test_middlebox.py"
+        }
+    ]
+}

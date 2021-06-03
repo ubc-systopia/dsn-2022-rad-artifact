@@ -4,6 +4,11 @@ import time
 
 from concurrent import futures
 
+import os
+import sys
+file_path = os.path.dirname(os.path.abspath(__file__))
+sys.path.append(os.path.dirname(os.path.dirname(file_path)))
+
 import niraapad.protos.middlebox_pb2 as middlebox_pb2
 import niraapad.protos.middlebox_pb2_grpc as middlebox_pb2_grpc
 
@@ -12,9 +17,6 @@ from niraapad.middlebox.middlebox_server import MiddleboxServicer
 from niraapad.shared.ftdi_serial import Serial
 from niraapad.shared.tracing import Tracer
 from niraapad.shared.utils import *
-
-import os
-file_path = os.path.dirname(os.path.abspath(__file__))
 
 def call_all_static_methods():
     # Test list_devices
