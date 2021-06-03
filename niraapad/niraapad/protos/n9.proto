@@ -1,8 +1,6 @@
 syntax = "proto3";
 
-// package middlebox;
-
-service Middlebox {
+service N9 {
   // Get info about all serial devices connected to the computer
   rpc ListDevices(EmptyMsg) returns (ListDevicesResp) {}
 
@@ -192,7 +190,7 @@ message InitializeReq {
   // On the server and client side, we expect to have only one class instance
   // per device connection, and therefore multiple instances of the
   // VirtualSerial class, but all these instances communicate using a single
-  // gRPC service, the Middlebox; thus, in addition all the existing
+  // gRPC service, the N9; thus, in addition all the existing
   // method parameters, I am adding an extra device_id parameter, which
   // identifies the class instances on both sides;
   // we do this for all device-specific methods

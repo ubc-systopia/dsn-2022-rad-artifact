@@ -718,28 +718,8 @@ class DirectSerial:
 ################################################################################
 ################################################################################
 
-from niraapad.lab_computer.middlebox_client import MiddleboxClient
+from niraapad.lab_computer.n9_client import N9Client
 from niraapad.shared.utils import MO
-
-# We define three different mode of operation (MOs)..
-#
-# Mode 1, DIRECT_SERIAL: This is the coventional mode, where requests are
-# sent directly to the C9 and to other robot modules via serial communication
-# (nothing really changes in this case).
-#
-# Mode 2, DIRECT_MIDDLEBOX: This is the mode that we eventually want, where
-# requests are sent directly to the Middlebox over Ethernet, which in turn
-# forwards them to the C9 and to other robot modules via serial communication
-# (note that in this case, all modules are physically connected to the Middlebox
-# and not to the Lab Computer).
-#
-# MOde 3, DIRECT_SERIAL_WITH_MIDDLEBOX_TRACING: This is a temporary mode,
-# where are sent directly to the C9 and to other robot modules via serial
-# communication and the response is also fetched likewise, but at the same time
-# all the requests and all the responses are also forwarded to the Middlebox
-# for tracing purposes. This design also demonstrates that the version of
-# "class Serial", which we define below, works seamlessely with the rest of the
-# experiment scripts from Hein Lab and NOrth Robotics.
 
 class Serial:
     """
@@ -751,60 +731,11 @@ class Serial:
     each function call to the respective function call in the respective
     DirectSerial class object (class objects are not involved in the case of
     static functions), or to the respective function call in the global object
-    of type "class MiddleboxClient" (which in turn invokes an RPC to the
+    of type "class N9Client" (which in turn invokes an RPC to the
     middlebox), or both.
     """
     mo = MO.DIRECT_MIDDLEBOX
-    middlebox_client = MiddleboxClient(mo)
-
-    #@staticmethod
-    #def invoke_static_method(func_name, *args, **kwargs):
-    #    if Serial.mo == MO.DIRECT_SERIAL:
-    #        return getattr(DirectSerial, func_name)(args, kwargs)
-
-    #    if Serial.mo == MO.DIRECT_MIDDLEBOX:
-    #        return getattr(Serial.middlebox_client, func_name)(args, kwargs)
-
-    #    assert Serial.mo == MO.DIRECT_SERIAL_WITH_MIDDLEBOX_TRACING
-    #    response = getattr(DirectSerial, func_name)(args, kwargs)
-    #    try:
-    #        getattr(Serial.middlebox_client, func_name)(response, args, kwargs)
-    #    except Exception as e:
-    #        return response
-
-    #def invoke_init_method(self, *args, **kwargs):
-    #    if Serial.mo == MO.DIRECT_SERIAL:
-    #        self.device_serial = getattr(DirectSerial, func_name)(args, kwargs)
-    #        return
-
-    #    if Serial.mo == MO.DIRECT_MIDDLEBOX:
-    #        self.id = getattr(Serial.middlebox_client, "initialize")(
-    #            None, args, kwargs)
-    #        return
-
-    #    assert Serial.mo == MO.DIRECT_SERIAL_WITH_MIDDLEBOX_TRACING
-    #    self.device_serial = getattr(DirectSerial, func_name)(args, kwargs)
-    #    try:
-    #        self.id = getattr(Serial.middlebox_client, "initialize")(
-    #            response, args, kwargs)
-    #    except Exception as e:
-    #        return
-
-    #def invoke_method(self, func_name, *args, **kwargs):
-    #    if Serial.mo == MO.DIRECT_SERIAL:
-    #        return getattr(self.direct_serial, func_name)(args, kwargs)
-
-    #    if Serial.mo == MO.DIRECT_MIDDLEBOX:
-    #        return getattr(Serial.middlebox_client, func_name)(
-    #            None, self.id, args, kwargs)
-
-    #    assert Serial.mo == MO.DIRECT_SERIAL_WITH_MIDDLEBOX_TRACING
-    #    response = getattr(self.direct_serial, func_name)(args, kwargs)
-    #    try:
-    #        getattr(Serial.middlebox_client, func_name)(
-    #            response, self.id, args, kwargs)
-    #    except Exception as e:
-    #        return response
+    n9_client = N9Client(mo)
 
     @staticmethod
     def list_devices():
@@ -813,11 +744,11 @@ class Serial:
             return DirectSerial.list_devices()
 
         if Serial.mo == MO.DIRECT_MIDDLEBOX:
-            return Serial.middlebox_client.list_devices()
+            return Serial.n9_client.list_devices()
 
         resp = DirectSerial.list_devices()
         #try:
-        Serial.middlebox_client.list_devices_trace(resp)
+        Serial.n9_client.list_devices_trace(resp)
         #except Exception as e: return resp
         return resp
 
@@ -827,10 +758,10 @@ class Serial:
         if Serial.mo == MO.DIRECT_SERIAL:
             return DirectSerial.list_device_ports()
         if Serial.mo == MO.DIRECT_MIDDLEBOX:
-            return Serial.middlebox_client.list_device_ports()
+            return Serial.n9_client.list_device_ports()
 
         resp = DirectSerial.list_device_ports()
-        try: Serial.middlebox_client.list_device_ports_trace(resp)
+        try: Serial.n9_client.list_device_ports_trace(resp)
         except Exception as e: return resp
 
     @classmethod
@@ -840,10 +771,10 @@ class Serial:
             return DirectSerial.list_device_serials()
 
         if Serial.mo == MO.DIRECT_MIDDLEBOX:
-            return Serial.middlebox_client.list_device_serials()
+            return Serial.n9_client.list_device_serials()
 
         resp = DirectSerial.list_device_serials()
-        try: Serial.middlebox_client.list_device_serials_trace(resp)
+        try: Serial.n9_client.list_device_serials_trace(resp)
         except Exception as e: return resp
 
     def __init__(self, 
@@ -879,65 +810,65 @@ class Serial:
                                               connect_settle_time,
                                               connect)
         if Serial.mo == MO.DIRECT_MIDDLEBOX:
-            self.id = Serial.middlebox_client.initialize(device,
-                                                         device_serial,
-                                                         device_number,
-                                                         device_port,
-                                                         baudrate,
-                                                         parity,
-                                                         stop_bits,
-                                                         data_bits,
-                                                         read_timeout,
-                                                         write_timeout,
-                                                         connect_timeout,
-                                                         connect_retry,
-                                                         connect_settle_time,
-                                                         connect)
+            self.id = Serial.n9_client.initialize(device,
+                                                  device_serial,
+                                                  device_number,
+                                                  device_port,
+                                                  baudrate,
+                                                  parity,
+                                                  stop_bits,
+                                                  data_bits,
+                                                  read_timeout,
+                                                  write_timeout,
+                                                  connect_timeout,
+                                                  connect_retry,
+                                                  connect_settle_time,
+                                                  connect)
 
         if Serial.mo == MO.DIRECT_SERIAL_WITH_MIDDLEBOX_TRACING:
             try:
-                self.id = Serial.middlebox_client.initialize_trace(device,
-                                                                   device_serial,
-                                                                   device_number,
-                                                                   device_port,
-                                                                   baudrate,
-                                                                   parity,
-                                                                   stop_bits,
-                                                                   data_bits,
-                                                                   read_timeout,
-                                                                   write_timeout,
-                                                                   connect_timeout,
-                                                                   connect_retry,
-                                                                   connect_settle_time,
-                                                                   connect)
+                self.id = Serial.n9_client.initialize_trace(device,
+                                                            device_serial,
+                                                            device_number,
+                                                            device_port,
+                                                            baudrate,
+                                                            parity,
+                                                            stop_bits,
+                                                            data_bits,
+                                                            read_timeout,
+                                                            write_timeout,
+                                                            connect_timeout,
+                                                            connect_retry,
+                                                            connect_settle_time,
+                                                            connect)
             except Exception as e: return
         
     def open_device(self):
         if Serial.mo == MO.DIRECT_SERIAL: return self.direct_serial.open_device()
-        if Serial.mo == MO.DIRECT_MIDDLEBOX: return Serial.middlebox_client.open_device(self.id)
+        if Serial.mo == MO.DIRECT_MIDDLEBOX: return Serial.n9_client.open_device(self.id)
         self.direct_serial.open_device()
-        try: Serial.middlebox_client.open_device_trace(self.id)
+        try: Serial.n9_client.open_device_trace(self.id)
         except Exception as e: return
 
     def connect(self):
         if Serial.mo == MO.DIRECT_SERIAL: return self.direct_serial.connect()
-        if Serial.mo == MO.DIRECT_MIDDLEBOX: return Serial.middlebox_client.connect(self.id)
+        if Serial.mo == MO.DIRECT_MIDDLEBOX: return Serial.n9_client.connect(self.id)
         self.direct_serial.connect()
-        try: Serial.middlebox_client.connect_trace(self.id)
+        try: Serial.n9_client.connect_trace(self.id)
         except Exception as e: return
 
     def disconnect(self):
         if Serial.mo == MO.DIRECT_SERIAL: return self.direct_serial.disconnect()
-        if Serial.mo == MO.DIRECT_MIDDLEBOX: return Serial.middlebox_client.disconnect(self.id)
+        if Serial.mo == MO.DIRECT_MIDDLEBOX: return Serial.n9_client.disconnect(self.id)
         self.direct_serial.disconnect()
-        try: Serial.middlebox_client.disconnect_trace(self.id)
+        try: Serial.n9_client.disconnect_trace(self.id)
         except Exception as e: return
 
     def init_device(self):
         if Serial.mo == MO.DIRECT_SERIAL: return self.direct_serial.init_device()
-        if Serial.mo == MO.DIRECT_MIDDLEBOX: return Serial.middlebox_client.init_device(self.id)
+        if Serial.mo == MO.DIRECT_MIDDLEBOX: return Serial.n9_client.init_device(self.id)
         self.direct_serial.init_device()
-        try: Serial.middlebox_client.init_device_trace(self.id)
+        try: Serial.n9_client.init_device_trace(self.id)
         except Exception as e: return
 
     def set_parameters(self,
@@ -949,58 +880,58 @@ class Serial:
             return self.direct_serial.set_parameters(
                 baudrate, parity, stop_bits, data_bits)
         if Serial.mo == MO.DIRECT_MIDDLEBOX:
-            return Serial.middlebox_client.set_parameters(
+            return Serial.n9_client.set_parameters(
                 self.id, baudrate, parity, stop_bits, data_bits)
         self.direct_serial.set_parameters(baudrate, parity, stop_bits, data_bits)
-        try: Serial.middlebox_client.set_parameters_trace(
+        try: Serial.n9_client.set_parameters_trace(
             self.id, baudrate, parity, stop_bits, data_bits)
         except Exception as e: return
 
     def update_timeouts(self):
         if Serial.mo == MO.DIRECT_SERIAL: return self.direct_serial.update_timeouts()
-        if Serial.mo == MO.DIRECT_MIDDLEBOX: return Serial.middlebox_client.update_timeouts(self.id)
+        if Serial.mo == MO.DIRECT_MIDDLEBOX: return Serial.n9_client.update_timeouts(self.id)
         self.direct_serial.update_timeouts()
-        try: Serial.middlebox_client.update_timeouts_trace(self.id)
+        try: Serial.n9_client.update_timeouts_trace(self.id)
         except Exception as e: return
 
     @property
     def info(self):
         if Serial.mo == MO.DIRECT_SERIAL: return self.direct_serial.info
-        if Serial.mo == MO.DIRECT_MIDDLEBOX: return Serial.middlebox_client.info(self.id)
+        if Serial.mo == MO.DIRECT_MIDDLEBOX: return Serial.n9_client.info(self.id)
         resp = self.direct_serial.info
-        try: Serial.middlebox_client.info_trace(self.id, resp)
+        try: Serial.n9_client.info_trace(self.id, resp)
         except Exception as e: return resp
 
     @property
     def serial_number(self):
         if Serial.mo == MO.DIRECT_SERIAL: return self.direct_serial.serial_number
-        if Serial.mo == MO.DIRECT_MIDDLEBOX: return Serial.middlebox_client.serial_number(self.id)
+        if Serial.mo == MO.DIRECT_MIDDLEBOX: return Serial.n9_client.serial_number(self.id)
         resp = self.direct_serial.serial_number
-        try: Serial.middlebox_client.serial_number_trace(self.id, resp)
+        try: Serial.n9_client.serial_number_trace(self.id, resp)
         except Exception as e: return resp
 
     @property
     def in_waiting(self):
         if Serial.mo == MO.DIRECT_SERIAL: return self.direct_serial.in_waiting
-        if Serial.mo == MO.DIRECT_MIDDLEBOX: return Serial.middlebox_client.in_waiting(self.id)
+        if Serial.mo == MO.DIRECT_MIDDLEBOX: return Serial.n9_client.in_waiting(self.id)
         resp = self.direct_serial.in_waiting
-        try: Serial.middlebox_client.in_waiting_trace(self.id, resp)
+        try: Serial.n9_client.in_waiting_trace(self.id, resp)
         except Exception as e: return resp
 
     @property
     def out_waiting(self):
         if Serial.mo == MO.DIRECT_SERIAL: return self.direct_serial.out_waiting
-        if Serial.mo == MO.DIRECT_MIDDLEBOX: return Serial.middlebox_client.out_waiting(self.id)
+        if Serial.mo == MO.DIRECT_MIDDLEBOX: return Serial.n9_client.out_waiting(self.id)
         resp = self.direct_serial.out_waiting
-        try: Serial.middlebox_client.out_waiting_trace(self.id, resp)
+        try: Serial.n9_client.out_waiting_trace(self.id, resp)
         except Exception as e: return resp
 
     @property
     def read_timeout(self):
         if Serial.mo == MO.DIRECT_SERIAL: return self.direct_serial.read_timeout
-        if Serial.mo == MO.DIRECT_MIDDLEBOX: return Serial.middlebox_client.read_timeout(self.id)
+        if Serial.mo == MO.DIRECT_MIDDLEBOX: return Serial.n9_client.read_timeout(self.id)
         resp = self.direct_serial.read_timeout
-        try: Serial.middlebox_client.read_timeout_trace(self.id, resp)
+        try: Serial.n9_client.read_timeout_trace(self.id, resp)
         except Exception as e: return resp
 
     @read_timeout.setter
@@ -1010,18 +941,18 @@ class Serial:
             return
 
         if Serial.mo == MO.DIRECT_MIDDLEBOX:
-            return Serial.middlebox_client.set_read_timeout(self.id, value)
+            return Serial.n9_client.set_read_timeout(self.id, value)
         
         self.direct_serial.read_timeout = value
-        try: Serial.middlebox_client.set_read_timeout_trace(self.id, value)
+        try: Serial.n9_client.set_read_timeout_trace(self.id, value)
         except Exception as e: return
 
     @property
     def write_timeout(self):
         if Serial.mo == MO.DIRECT_SERIAL: return self.direct_serial.write_timeout
-        if Serial.mo == MO.DIRECT_MIDDLEBOX: return Serial.middlebox_client.write_timeout(self.id)
+        if Serial.mo == MO.DIRECT_MIDDLEBOX: return Serial.n9_client.write_timeout(self.id)
         resp = self.direct_serial.write_timeout
-        try: Serial.middlebox_client.write_timeout_trace(self.id, resp)
+        try: Serial.n9_client.write_timeout_trace(self.id, resp)
         except Exception as e: return resp
 
     @write_timeout.setter
@@ -1031,64 +962,64 @@ class Serial:
             return
 
         if Serial.mo == MO.DIRECT_MIDDLEBOX:
-            return Serial.middlebox_client.set_write_timeout(self.id, value)
+            return Serial.n9_client.set_write_timeout(self.id, value)
 
         self.direct_serial.write_timeout = value
-        try: Serial.middlebox_client.set_write_timeout_trace(self.id, value)
+        try: Serial.n9_client.set_write_timeout_trace(self.id, value)
         except Exception as e: return
 
     def read(self, num_bytes: int=None, timeout: Optional[NumberType]=None):
         if Serial.mo == MO.DIRECT_SERIAL: return self.direct_serial.read(num_bytes, timeout)
-        if Serial.mo == MO.DIRECT_MIDDLEBOX: return Serial.middlebox_client.read(self.id, num_bytes, timeout)
+        if Serial.mo == MO.DIRECT_MIDDLEBOX: return Serial.n9_client.read(self.id, num_bytes, timeout)
         resp = self.direct_serial.read(num_bytes, timeout)
-        try: Serial.middlebox_client.read_trace(self.id, resp, num_bytes, timeout)
+        try: Serial.n9_client.read_trace(self.id, resp, num_bytes, timeout)
         except Exception as e: return resp
 
     def read_line(self, line_ending: bytes=b'\r', timeout: Optional[NumberType]=None):
         if Serial.mo == MO.DIRECT_SERIAL: return self.direct_serial.read_line(line_ending, timeout)
-        if Serial.mo == MO.DIRECT_MIDDLEBOX: return Serial.middlebox_client.read_line(self.id, line_ending, timeout)
+        if Serial.mo == MO.DIRECT_MIDDLEBOX: return Serial.n9_client.read_line(self.id, line_ending, timeout)
         resp = self.direct_serial.read_line(line_ending, timeout)
-        try: Serial.middlebox_client.read_line_trace(self.id, resp, line_ending, timeout)
+        try: Serial.n9_client.read_line_trace(self.id, resp, line_ending, timeout)
         except Exception as e: return resp
 
     def write(self, data: Union[bytes, str], timeout: Optional[NumberType]=None):
         if Serial.mo == MO.DIRECT_SERIAL: return self.direct_serial.write(data, timeout)
-        if Serial.mo == MO.DIRECT_MIDDLEBOX: return Serial.middlebox_client.write(self.id, data, timeout)
+        if Serial.mo == MO.DIRECT_MIDDLEBOX: return Serial.n9_client.write(self.id, data, timeout)
         resp = self.direct_serial.write(data, timeout)
-        try: Serial.middlebox_client.write_trace(self.id, resp, data, timeout)
+        try: Serial.n9_client.write_trace(self.id, resp, data, timeout)
         except Exception as e: return resp
 
     def request(self, data: bytes, timeout: Optional[NumberType]=None, line_ending: bytes=b'\r'):
         if Serial.mo == MO.DIRECT_SERIAL: return self.direct_serial.request(data, timeout, line_ending)
-        if Serial.mo == MO.DIRECT_MIDDLEBOX: return Serial.middlebox_client.request(self.id, data, timeout, line_ending)
+        if Serial.mo == MO.DIRECT_MIDDLEBOX: return Serial.n9_client.request(self.id, data, timeout, line_ending)
         resp = self.direct_serial.request(data, timeout, line_ending)
-        try: Serial.middlebox_client.request_trace(self.id, resp, data, timeout, line_ending)
+        try: Serial.n9_client.request_trace(self.id, resp, data, timeout, line_ending)
         except Exception as e: return resp
 
     def flush(self):
         if Serial.mo == MO.DIRECT_SERIAL: return self.direct_serial.flush()
-        if Serial.mo == MO.DIRECT_MIDDLEBOX: return Serial.middlebox_client.flush(self.id)
+        if Serial.mo == MO.DIRECT_MIDDLEBOX: return Serial.n9_client.flush(self.id)
         self.direct_serial.flush()
-        try: Serial.middlebox_client.flush_trace(self.id)
+        try: Serial.n9_client.flush_trace(self.id)
         except Exception as e: return
 
     def reset_input_buffer(self):
         if Serial.mo == MO.DIRECT_SERIAL: return self.direct_serial.reset_input_buffer()
-        if Serial.mo == MO.DIRECT_MIDDLEBOX: return Serial.middlebox_client.reset_input_buffer(self.id)
+        if Serial.mo == MO.DIRECT_MIDDLEBOX: return Serial.n9_client.reset_input_buffer(self.id)
         resp = self.direct_serial.reset_input_buffer()
-        try: Serial.middlebox_client.reset_input_buffer_trace(self.id)
+        try: Serial.n9_client.reset_input_buffer_trace(self.id)
         except Exception as e: return
 
     def reset_output_buffer(self):
         if Serial.mo == MO.DIRECT_SERIAL: return self.direct_serial.reset_output_buffer()
-        if Serial.mo == MO.DIRECT_MIDDLEBOX: return Serial.middlebox_client.reset_output_buffer(self.id)
+        if Serial.mo == MO.DIRECT_MIDDLEBOX: return Serial.n9_client.reset_output_buffer(self.id)
         resp = self.direct_serial.reset_output_buffer()
-        try: Serial.middlebox_client.reset_output_buffer_trace(self.id)
+        try: Serial.n9_client.reset_output_buffer_trace(self.id)
         except Exception as e: return
 
     def set_bit_mode(self, mask: int, enable: bool):
         if Serial.mo == MO.DIRECT_SERIAL: return self.direct_serial.set_bit_mode(mask, enable)
-        if Serial.mo == MO.DIRECT_MIDDLEBOX: return Serial.middlebox_client.set_bit_mode(self.id, mask, enable)
+        if Serial.mo == MO.DIRECT_MIDDLEBOX: return Serial.n9_client.set_bit_mode(self.id, mask, enable)
         resp = self.direct_serial.set_bit_mode(mask, enable)
-        try: Serial.middlebox_client.set_bit_mode_trace(self.id, mask, enable)
+        try: Serial.n9_client.set_bit_mode_trace(self.id, mask, enable)
         except Exception as e: return

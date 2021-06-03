@@ -2,8 +2,8 @@ from datetime import datetime
 
 import os
 
-import niraapad.protos.middlebox_pb2 as middlebox_pb2
-import niraapad.protos.middlebox_pb2_grpc as middlebox_pb2_grpc
+import niraapad.protos.n9_pb2 as n9_pb2
+import niraapad.protos.n9_pb2_grpc as n9_pb2_grpc
 
 class Tracer:
 
@@ -19,13 +19,13 @@ class Tracer:
         trace_msg_str = trace_msg.SerializeToString()
         trace_msg_type = (str(type(trace_msg))).split("'")[1].split(".")[-1]
 
-        trace_metadata = middlebox_pb2.TraceMetadata(
+        trace_metadata = n9_pb2.TraceMetadata(
             timestamp=now.strftime("%Y:%m:%d:%H:%M:%S.%f"),
             trace_msg_type=trace_msg_type,
             trace_msg_size=len(trace_msg_str))
         trace_metadata_str = trace_metadata.SerializeToString()
 
-        trace_header = middlebox_pb2.TraceHeader(
+        trace_header = n9_pb2.TraceHeader(
             metadata_size=len(trace_metadata_str))
         trace_header_str = trace_header.SerializeToString()
 
@@ -49,7 +49,7 @@ class Tracer:
 
     @staticmethod
     def get_trace_header_str_length():
-        trace_header = middlebox_pb2.TraceHeader(metadata_size=100)
+        trace_header = n9_pb2.TraceHeader(metadata_size=100)
         trace_header_str = trace_header.SerializeToString()
         return len(trace_header_str)
 
@@ -67,19 +67,19 @@ class Tracer:
                 # Read the constant-sized trace header first
                 trace_header_str_length = Tracer.get_trace_header_str_length()
                 if f.tell() + trace_header_str_length > file_size: break
-                trace_header = middlebox_pb2.TraceHeader()
+                trace_header = n9_pb2.TraceHeader()
                 trace_header.ParseFromString(f.read(trace_header_str_length))
 
                 # Read the trace metadata next
                 trace_metadata_str_length = trace_header.metadata_size
                 if f.tell() + trace_metadata_str_length > file_size: break
-                trace_metadata = middlebox_pb2.TraceMetadata()
+                trace_metadata = n9_pb2.TraceMetadata()
                 trace_metadata.ParseFromString(f.read(trace_metadata_str_length))
 
                 # Read the trace message next
                 trace_msg_str_length = trace_metadata.trace_msg_size
                 if f.tell() + trace_msg_str_length > file_size: break
-                trace_msg = getattr(middlebox_pb2, trace_metadata.trace_msg_type)()
+                trace_msg = getattr(n9_pb2, trace_metadata.trace_msg_type)()
                 trace_msg.ParseFromString(f.read(trace_msg_str_length))
 
                 # Return msg type and msg for this iteration

@@ -9,11 +9,10 @@ import sys
 file_path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(os.path.dirname(os.path.dirname(file_path)))
 
-import niraapad.protos.middlebox_pb2 as middlebox_pb2
-import niraapad.protos.middlebox_pb2_grpc as middlebox_pb2_grpc
+import niraapad.protos.n9_pb2 as n9_pb2
+import niraapad.protos.n9_pb2_grpc as n9_pb2_grpc
 
-from niraapad.middlebox.middlebox_server import MiddleboxServer
-from niraapad.middlebox.middlebox_server import MiddleboxServicer
+from niraapad.middlebox.n9_server import N9Server
 from niraapad.shared.ftdi_serial import Serial
 from niraapad.shared.tracing import Tracer
 from niraapad.shared.utils import *
@@ -81,10 +80,10 @@ def call_all_instance_methods(serial):
     output = serial.read_line()
 
     # test write
-    num_bytes = serial.write("From TestMiddleboxClient")
+    num_bytes = serial.write("From TestN9Client")
 
     # Test request
-    output = serial.request("From TestMiddleboxClient".encode())
+    output = serial.request("From TestN9Client".encode())
 
     # Test flush
     serial.flush()
@@ -103,17 +102,17 @@ def parse_traces(trace_file):
     for trace_msg in Tracer.parse_file(trace_file):
         print(trace_msg)
 
-class TestMiddleboxClient(unittest.TestCase):
+class TestN9Client(unittest.TestCase):
 
     def setUp(self):
         self.trace_path = file_path + "/../traces/"
         self.keys_path = file_path + "/../keys/"
-        self.middlebox_server = MiddleboxServer(trace_path=self.trace_path,
-                                                keys_path=self.keys_path)
-        self.middlebox_server.start()
+        self.n9_server = N9Server(trace_path=self.trace_path,
+                                  keys_path=self.keys_path)
+        self.n9_server.start()
 
     def tearDown(self):
-        self.middlebox_server.stop()
+        self.n9_server.stop()
         pass
 
     def test_all_methods(self):
@@ -141,8 +140,8 @@ class TestMiddleboxClient(unittest.TestCase):
         call_all_instance_methods(serial)
     
         # Test recoring the traces from logs
-        #self.middlebox_server.stop()
-        self.middlebox_server.stop_tracing()
+        #self.n9_server.stop()
+        self.n9_server.stop_tracing()
         parse_traces(Tracer.get_trace_file(self.trace_path))
 
 if __name__ == "__main__":
