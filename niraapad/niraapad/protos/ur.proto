@@ -1,0 +1,580 @@
+syntax = "proto3";
+
+service UR {
+  // Initialize class Robot
+  rpc Initialize(InitializeReq) returns (EmptyMsg) {}
+
+  // Initialize class Robot
+  rpc InitializeTrace(InitializeTraceMsg) returns (EmptyMsg) {}
+
+  // Get linear distribution?
+  rpc GetLinDist(GetLinDistReq) returns (GetLinDistResp) {}
+
+  // Get linear distribution?
+  rpc GetLinDistTrace(GetLinDistTraceMsg) returns (EmptyMsg) {}
+
+  // Set robot flange to tool tip transformation
+  rpc SetTcp(SetTcpReq) returns (EmptyMsg) {}
+
+  // Set robot flange to tool tip transformation
+  rpc SetTcpTrace(SetTcpTraceMsg) returns (EmptyMsg) {}
+
+  // Set reference coordinate system to use
+  rpc SetCsys(SetCsysReq) returns (EmptyMsg) {}
+
+  // Set reference coordinate system to use
+  rpc SetCsysTrace(SetCsysTraceMsg) returns (EmptyMsg) {}
+
+  // Set tool orientation using a orientation matric from math3d or a orientation vector
+  rpc SetOrientation(SetOrientationReq) returns (EmptyMsg) {}
+
+  // Set tool orientation using a orientation matric from math3d or a orientation vector
+  rpc SetOrientationTrace(SetOrientationTraceMsg) returns (EmptyMsg) {}
+
+  // Move tool in tool coordinate, keeping orientation
+  rpc TranslateTool(TranslateToolReq) returns (TranslateToolResp) {}
+
+  // Move tool in tool coordinate, keeping orientation
+  rpc TranslateToolTrace(TranslateToolTraceMsg) returns (EmptyMsg) {}
+
+  // Move in z tool
+  rpc Back(BackReq) returns (EmptyMsg) {}
+
+  // Move in z tool
+  rpc BackTrace(BackTraceMsg) returns (EmptyMsg) {}
+
+  // Set tool to given pos, keeping constant orientation
+  rpc SetPos(SetPosReq) returns (SetPosResp) {}
+
+  // Set tool to given pos, keeping constant orientation
+  rpc SetPosTrace(SetPosTraceMsg) returns (EmptyMsg) {}
+
+  // Move Circular: Move to position (circular in tool-space)
+  rpc Movec(MovecReq) returns (MovecResp) {}
+
+  // Move Circular: Move to position (circular in tool-space)
+  rpc MovecTrace(MovecTraceMsg) returns (EmptyMsg) {}
+
+  // Move tcp to point and orientation defined by a transformation
+  rpc SetPose(SetPoseReq) returns (SetPoseResp) {}
+
+  // Move tcp to point and orientation defined by a transformation
+  rpc SetPoseTrace(SetPoseTraceMsg) returns (EmptyMsg) {}
+
+  // Add transform expressed in base coordinate
+  rpc AddPoseBase(AddPoseBaseReq) returns (AddPoseResp) {}
+
+  // Add transform expressed in base coordinate
+  rpc AddPoseBaseTrace(AddPoseBaseTraceMsg) returns (EmptyMsg) {}
+
+  // Add transform expressed in tool coordinate
+  rpc AddPoseTool(AddPoseToolReq) returns (EmptyMsg) {}
+
+  // Add transform expressed in tool coordinate
+  rpc AddPoseToolTrace(AddPoseToolTraceMsg) returns (EmptyMsg) {}
+
+  // Get current transform from base to to tcp
+  rpc GetPose(GetPoseReq) returns (GetPoseResp) {}
+
+  // Get current transform from base to to tcp
+  rpc GetPoseTrace(GetPoseTraceMsg) returns (EmptyMsg) {}
+
+  // Get tool orientation in base coordinate system
+  rpc GetOrientation(GetOrientationReq) returns (GetOrientationResp) {}
+
+  // Get tool orientation in base coordinate system
+  rpc GetOrientationTrace(GetOrientationTraceMsg) returns (EmptyMsg) {}
+
+  // Get tool tip pos(x, y, z) in base coordinate system
+  rpc GetPos(GetPosReq) returns (GetPosResp) {}
+
+  // Get tool tip pos(x, y, z) in base coordinate system
+  rpc GetPosTrace(GetPosTraceMsg) returns (EmptyMsg) {}
+
+  // Move at given velocities until minimum min_time seconds
+  rpc Speedl(SpeedlReq) returns (SpeedlResp) {}
+
+  // Move at given velocities until minimum min_time seconds
+  rpc SpeedlTrace(SpeedlTraceMsg) returns (EmptyMsg) {}
+
+  // Move at given joint velocities until minimum min_time seconds
+  rpc Speedj(SpeedlReq) returns (SpeedjResp) {}
+
+  // Move at given joint velocities until minimum min_time seconds
+  rpc SpeedjTrace(SpeedjTraceMsg) returns (EmptyMsg) {}
+
+  // Move at given velocities in tool csys until minimum min_time seconds
+  rpc SpeedlTool(SpeedlToolReq) returns (EmptyMsg) {}
+
+  // Move at given velocities in tool csys until minimum min_time seconds
+  rpc SpeedlToolTrace(SpeedlToolTraceMsg) returns (EmptyMsg) {}
+
+  // Send a move command to the robot
+  rpc Movex(MovexReq) returns (MovexResp) {}
+
+  // Send a move command to the robot
+  rpc MovexTrace(MovexTraceMsg) returns (EmptyMsg) {}
+
+  // Concatenate several movex commands and applies a blending radius
+  rpc Movexs(MovexsReq) returns (MovexsResp) {}
+
+  // Concatenate several movex commands and applies a blending radius
+  rpc MovexsTrace(MovexsTraceMsg) returns (EmptyMsg) {}
+
+  // Move linear to given pose in tool coordinate
+  rpc MovelTool(MovelToolReq) returns (MovelToolResp) {}
+
+  // Move linear to given pose in tool coordinate
+  rpc MovelToolTrace(MovelToolTraceMsg) returns (EmptyMsg) {}
+
+  // Move linear to given pose in tool coordinate
+  rpc MovexTool(MovexToolReq) returns (EmptyMsg) {}
+
+  // Move linear to given pose in tool coordinate
+  rpc MovexToolTrace(MovexToolTraceMsg) returns (EmptyMsg) {}
+
+  // Return current transformation from tcp to current csys
+  rpc Getl(GetlReq) returns (GetlResp) {}
+
+  // Return current transformation from tcp to current csys
+  rpc GetlTrace(GetlTraceMsg) returns (EmptyMsg) {}
+
+  // Set direction of gravity
+  rpc SetGravity(SetGravityReq) returns (SetGravityResp) {}
+
+  // Set direction of gravity
+  rpc SetGravityTrace(SetGravityTraceMsg) returns (EmptyMsg) {}
+
+  // Restores and returns new coordinate system calculated from three points: X, Origin, Y
+  rpc NewCsysFromXpy(NewCsysFromXpyReq) returns (NewCsysFromXpyResp) {}
+
+  // Restores and returns new coordinate system calculated from three points: X, Origin, Y
+  rpc NewCsysFromXpyTrace(NewCsysFromXpyTraceMsg) returns (EmptyMsg) {}
+
+  // @property methods for properties x, y, z, rx, ry, rz, x_t, y_t, z_t, rx_t, ry_t, rz_t
+  rpc GetProperty(GetPropertyReq) returns (GetPropertyResp) {}
+
+  // @property methods for properties x, y, z, rx, ry, rz, x_t, y_t, z_t, rx_t, ry_t, rz_t
+  rpc GetPropertyTrace(GetPropertyTraceMsg) returns (EmptyMsg) {}
+
+  // @<property>.setter methods for properties x, y, z, rx, ry, rz, x_t, y_t, z_t, rx_t, ry_t, rz_t
+  rpc SetProperty(SetPropertyReq) returns (EmptyMsg) {}
+
+  // @<property>.setter methods for properties x, y, z, rx, ry, rz, x_t, y_t, z_t, rx_t, ry_t, rz_t
+  rpc SetPropertyTrace(SetPropertyTraceMsg) returns (EmptyMsg) {}
+}
+
+message InitializeReq {
+  string host = 1;
+  bool use_rt = 2;
+  bool ur_firm = 3;
+}
+
+message InitializeTraceMsg {
+  InitializeReq req = 1;
+}
+
+message GetLinDistReq {
+  bytes target = 1;
+}
+
+message GetLinDistResp {
+  bytes dist = 1;
+}
+
+message GetLinDistTraceMsg {
+  GetLinDistReq req = 1;
+  GetLinDistResp resp = 2;
+}
+
+message SetTcpReq {
+  bytes tcp = 1;
+}
+
+message SetTcpTraceMsg {
+  SetTcpReq req = 1;
+}
+
+message SetCsysReq {
+  bytes transform = 1;
+}
+
+message SetCsysTraceMsg {
+  SetCsysReq req = 1;
+}
+
+message SetOrientationReq {
+  bytes orient = 1;
+  float acc = 2;
+  float vel = 3;
+  bool wait = 4;
+  string threshold = 5;
+}
+
+message SetOrientationTraceMsg {
+  SetOrientationReq req = 1;
+}
+
+message TranslateToolReq {
+  bytes vect = 1;
+  float acc = 2;
+  float vel = 3;
+  bool wait = 4;
+  string threshold = 5;
+}
+
+message TranslateToolResp {
+  // TODO
+}
+
+message TranslateToolTraceMsg {
+  TranslateToolReq req = 1;
+  TranslateToolResp resp = 2;
+}
+
+message BackReq {
+  float z = 1;
+  float acc = 1;
+  float vel = 1;
+}
+
+message BackTraceMsg {
+  BackReq req = 1;
+}
+
+message SetPosReq {
+  bytes vect = 1;
+  float acc = 2;
+  float vel = 3;
+  bool wait = 4;
+  string threshold = 4;
+}
+
+message SetPosResp {
+}
+
+message SetPosTraceMsg {
+}
+
+message SetPosReq {
+  bytes vect = 1;
+  float acc = 2;
+  float vel = 3;
+  bool wait = 4;
+  string threshold = 5;
+}
+
+
+message OpenDeviceReq {
+  i
+}
+
+message OpenDeviceTraceMsg {
+  OpenDeviceReq req = 1;
+}
+
+message ConnectReq {
+  int32 device_id = 1;
+}
+
+message ConnectTraceMsg {
+  ConnectReq req = 1;
+}
+
+message DisconnectReq {
+  int32 device_id = 1;
+}
+
+message DisconnectTraceMsg {
+  DisconnectReq req = 1;
+}
+
+message InitDeviceReq {
+  int32 device_id = 1;
+}
+
+message InitDeviceTraceMsg {
+  InitDeviceReq req = 1;
+}
+
+message SetParametersReq {
+  int32 device_id = 1;
+
+  // If any of these strings is empty, replace it with None in Python,
+  // and for each string that is not empty, cast it into a Python integer;
+  // only set those parameters that are not None
+  string baudrate = 2;
+  string parity = 3;
+  string stop_bits = 4;
+  string data_bits = 5;
+}
+
+message SetParametersTraceMsg {
+  SetParametersReq req = 1;
+}
+
+message UpdateTimeoutsReq {
+  int32 device_id = 1;
+}
+
+message UpdateTimeoutsTraceMsg {
+  UpdateTimeoutsReq req = 1;
+}
+
+message InfoReq {
+  int32 device_id = 1;
+}
+
+message InfoResp {
+  SerialDeviceInfo device_info = 1;
+}
+
+message InfoTraceMsg {
+  InfoReq req = 1;
+  InfoResp resp = 2;
+}
+
+message SerialNumberReq {
+  int32 device_id = 1;
+}
+
+message SerialNumberResp {
+  // If the string is empty, replace with None in Python
+  string device_serial = 1;
+}
+
+message SerialNumberTraceMsg {
+  SerialNumberReq req = 1;
+  SerialNumberResp resp = 2;
+}
+
+message InWaitingReq {
+  int32 device_id = 1;
+}
+
+message InWaitingResp {
+  int32 num_bytes = 1;
+}
+
+message InWaitingTraceMsg {
+  InWaitingReq req = 1;
+  InWaitingResp resp = 2;
+}
+
+message OutWaitingReq {
+  int32 device_id = 1;
+}
+
+message OutWaitingResp {
+  int32 num_bytes = 1;
+}
+
+message OutWaitingTraceMsg {
+  OutWaitingReq req = 1;
+  OutWaitingResp resp = 2;
+}
+
+message ReadTimeoutReq {
+  int32 device_id = 1;
+}
+
+message ReadTimeoutResp {
+  float timeout = 1;
+}
+
+message ReadTimeoutTraceMsg {
+  ReadTimeoutReq req = 1;
+  ReadTimeoutResp resp = 2;
+}
+
+message SetReadTimeoutReq {
+  int32 device_id = 1;
+  float timeout = 2;
+}
+
+message SetReadTimeoutTraceMsg {
+  SetReadTimeoutReq req = 1;
+}
+
+message WriteTimeoutReq {
+  int32 device_id = 1;
+}
+
+message WriteTimeoutResp {
+  float timeout = 1;
+}
+
+message WriteTimeoutTraceMsg {
+  WriteTimeoutReq req = 1;
+  WriteTimeoutResp resp = 2;
+}
+
+message SetWriteTimeoutReq {
+  int32 device_id = 1;
+  float timeout = 2;
+}
+
+message SetWriteTimeoutTraceMsg {
+  SetWriteTimeoutReq req = 1;
+}
+
+message ReadReq {
+  int32 device_id = 1;
+
+  // If the string is empty, replace with None in Python,
+  // otherwise, cast into a Python integer
+  string num_bytes = 2;
+
+  // If the string is empty, replace with None in Python,
+  // otherwise, cast into a Python float
+  string timeout = 3;
+}
+
+message ReadResp {
+  bytes data = 1;
+}
+
+message ReadTraceMsg {
+  ReadReq req = 1;
+  ReadResp resp = 2;
+}
+
+message ReadLineReq {
+  int32 device_id = 1;
+  bytes line_ending = 2;
+
+  // If the string is empty, replace with None in Python,
+  // otherwise, cast into a Python float
+  string timeout = 3;
+}
+
+message ReadLineResp {
+  bytes data = 1;
+}
+
+message ReadLineTraceMsg {
+  ReadLineReq req = 1;
+  ReadLineResp resp = 2;
+}
+
+message WriteReq {
+  int32 device_id = 1;
+
+  enum Format {
+    STRING = 0;
+    BYTES = 1;
+  }
+  Format data_format = 2;
+  string data = 3;
+
+  // If the string is empty, replace with None in Python,
+  // otherwise, cast into a Python float
+  string timeout = 4;
+}
+
+message WriteResp {
+  int32 num_bytes = 1;
+}
+
+message WriteTraceMsg {
+  WriteReq req = 1;
+  WriteResp resp = 2;
+}
+
+message RequestReq {
+  int32 device_id = 1;
+  bytes data = 2;
+
+  // If the string is empty, replace with None in Python,
+  // otherwise, cast into a Python float
+  string timeout = 3;
+
+  bytes line_ending = 4;
+}
+
+message RequestResp {
+  bytes data = 1;
+}
+
+message RequestTraceMsg {
+  RequestReq req = 1;
+  RequestResp resp = 2;
+}
+
+message FlushReq {
+  int32 device_id = 1;
+}
+
+message FlushTraceMsg {
+  FlushReq req = 1;
+}
+
+message ResetInputBufferReq {
+  int32 device_id = 1;
+}
+
+message ResetInputBufferTraceMsg {
+  ResetInputBufferReq req = 1;
+}
+
+message ResetOutputBufferReq {
+  int32 device_id = 1;
+}
+
+message ResetOutputBufferTraceMsg {
+  ResetOutputBufferReq req = 1;
+}
+
+message SetBitModeReq {
+  int32 device_id = 1;
+  int32 mask = 2;
+  bool enable = 3;
+}
+
+message EmptyMsg {
+}
+
+message SetBitModeTraceMsg {
+  SetBitModeReq req = 1;
+}
+
+message SerialDeviceType {
+  enum Format {
+    INT = 0;
+    STRING = 1;
+  }
+  Format device_type_format = 1;
+
+  // If the string is empty, replace with None in Python,
+  // otherwise, parse it as per the format field
+  string device_type = 2;
+}
+
+message SerialDeviceInfo {
+  // If the string is empty, replace with None in Python,
+  // otherwise, cast into a Python integer
+  string index = 1;
+
+  // If the string is empty, leave it as it is
+  string serial = 2;
+
+  // If the string is empty, replace with None in Python
+  string port = 3;
+
+  // If the string is empty, replace with None in Python
+  string description = 4;
+}
+
+message TraceMetadata {
+  string timestamp = 1;
+  string trace_msg_type = 2;
+
+  // number of bytes in the following trace msg
+  // i.e., any message type above ending in "TraceMsg"
+  int32 trace_msg_size = 3;
+}
+
+message TraceHeader {
+    // number of bytes in the following trace metadata
+    int32 metadata_size = 1;
+}

@@ -1,11 +1,12 @@
-import unittest
+import os
+import sys
 import grpc
 import time
+import pickle
+import unittest
 
 from concurrent import futures
 
-import os
-import sys
 file_path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(os.path.dirname(os.path.dirname(file_path)))
 
@@ -16,16 +17,6 @@ from niraapad.middlebox.n9_server import N9Server
 from niraapad.shared.ftdi_serial import Serial
 from niraapad.shared.tracing import Tracer
 from niraapad.shared.utils import *
-
-def call_all_static_methods():
-    # Test list_devices
-    serial_devices_info = Serial.list_devices()
-
-    # Test list_device_ports
-    device_ports = Serial.list_device_ports()
-
-    # Test list_device_serials
-    device_serials = Serial.list_device_serials()
 
 def call_all_instance_methods(serial):
     # Test open_device
@@ -44,7 +35,10 @@ def call_all_instance_methods(serial):
 
     # Test set_parameters
     serial.set_parameters()
-    serial.set_parameters(baudrate=115200, parity=0, stop_bits=1, data_bits=8)
+    serial.set_parameters(stop_bits=3)
+    serial.set_parameters(stop_bits=4, data_bits=4)
+    serial.set_parameters(parity=5, stop_bits=5, data_bits=5)
+    serial.set_parameters(baudrate=6, parity=6, stop_bits=6, data_bits=6)
 
     # Test update_timeouts
     serial.update_timeouts()
@@ -103,46 +97,232 @@ def parse_traces(trace_file):
         print(trace_msg)
 
 class TestN9Client(unittest.TestCase):
-
+    
     def setUp(self):
-        self.trace_path = file_path + "/../traces/"
-        self.keys_path = file_path + "/../keys/"
-        self.n9_server = N9Server(trace_path=self.trace_path,
-                                  keys_path=self.keys_path)
+
+        trace_path = file_path + "/../traces/"
+        keys_path = file_path + "/../keys/"
+
+        host = 'localhost'
+        port = '1337'
+
+        self.n9_server = N9Server(port, trace_path, keys_path)
         self.n9_server.start()
+        Serial.start_n9_client(host, port, keys_path)
 
     def tearDown(self):
         self.n9_server.stop()
-        pass
+        del self.n9_server
 
-    def test_all_methods(self):
-        Serial.mo = MO.DIRECT_MIDDLEBOX
+    def test_static_methods(self):
+        for mo in MO:
+            Serial.mo = mo
+            serial_devices_info = Serial.list_devices()
+            device_ports = Serial.list_device_ports()
+            device_serials = Serial.list_device_serials()
 
-        # Test all serial methods
-        call_all_static_methods()
+    def test_init(self):
+        """
+        I have not implemented individual getter methods over RPC for each
+        attribute. So for now I will test each invocation manually by checking
+        the output of a print statement on the server side. I will put in some
+        assertions for the read_timeout and write_timeout properties, since
+        getters for these are part of the API.
+        By default, the print statement in DirectSerial.__init__ may be disabled
+        or even missing (if we are using a pristine copy).
+        """
+        for mo in MO:
+            Serial.mo = mo
+            serial = Serial(connect=False)
+            sys.stdout.flush()
+            self.assertEqual(5, serial.read_timeout)
+            self.assertEqual(5, serial.write_timeout)
 
-        # Test initialize
-        serial = Serial(connect=False)
+            serial = Serial(baudrate=1, connect=False)
+            self.assertEqual(5, serial.read_timeout)
+            self.assertEqual(5, serial.write_timeout)
 
-        # Test all instance methods
-        call_all_instance_methods(serial)
+            serial = Serial(parity=2, connect=False)
+            self.assertEqual(5, serial.read_timeout)
+            self.assertEqual(5, serial.write_timeout)
 
-        # Reset mode
-        Serial.mo = MO.DIRECT_SERIAL_WITH_MIDDLEBOX_TRACING
+            serial = Serial(stop_bits=3, connect=False)
+            self.assertEqual(5, serial.read_timeout)
+            self.assertEqual(5, serial.write_timeout)
 
-        # Test all serial methods
-        call_all_static_methods()
+            serial = Serial(data_bits=4, connect=False)
+            self.assertEqual(5, serial.read_timeout)
+            self.assertEqual(5, serial.write_timeout)
 
-        # Test initialize
-        serial = Serial(connect=False)
+            serial = Serial(read_timeout=55, connect=False)
+            self.assertEqual(55, serial.read_timeout)
+            self.assertEqual(5, serial.write_timeout)
 
-        # Test all instance methods
-        call_all_instance_methods(serial)
-    
-        # Test recoring the traces from logs
-        #self.n9_server.stop()
+            serial = Serial(write_timeout=66, connect=False)
+            self.assertEqual(5, serial.read_timeout)
+            self.assertEqual(66, serial.write_timeout)
+
+            serial = Serial(connect_timeout=7, connect=False)
+            self.assertEqual(5, serial.read_timeout)
+            self.assertEqual(5, serial.write_timeout)
+
+            serial = Serial(connect_retry=False, connect=False)
+            self.assertEqual(5, serial.read_timeout)
+            self.assertEqual(5, serial.write_timeout)
+
+            serial = Serial(connect_settle_time=9, connect=False)
+            self.assertEqual(5, serial.read_timeout)
+            self.assertEqual(5, serial.write_timeout)
+
+            serial = Serial(baudrate=11, parity=12, stop_bits=13, data_bits=14,
+                            read_timeout=15, write_timeout=16, connect_timeout=17,
+                            connect_retry=False, connect_settle_time=19,
+                            connect=False)
+            self.assertEqual(15, serial.read_timeout)
+            self.assertEqual(16, serial.write_timeout)
+
+            serial = Serial(baudrate=19, parity=18, stop_bits=17, data_bits=16,
+                            read_timeout=15, write_timeout=14, connect_timeout=13,
+                            connect_retry=False, connect_settle_time=11,
+                            connect=False)
+            self.assertEqual(15, serial.read_timeout)
+            self.assertEqual(14, serial.write_timeout)
+
+    def test_setters_and_getters(self):
+        for mo in MO:
+            Serial.mo = mo
+            serial = Serial(connect=False)
+            self.assertEqual(5, serial.read_timeout)
+            self.assertEqual(5, serial.write_timeout)
+            serial.read_timeout = 55
+            self.assertEqual(55, serial.read_timeout)
+            self.assertEqual(5, serial.write_timeout)
+            serial.write_timeout = 55
+            self.assertEqual(55, serial.read_timeout)
+            self.assertEqual(55, serial.write_timeout)
+            serial.read_timeout = 99
+            self.assertEqual(99, serial.read_timeout)
+            self.assertEqual(55, serial.write_timeout)
+            serial.write_timeout = 33
+            self.assertEqual(99, serial.read_timeout)
+            self.assertEqual(33, serial.write_timeout)
+
+
+    def test_set_parameters(self):
+        """
+        Like test_init above, I will verify these call manually using print
+        statements on the server side.
+        """
+        for mo in MO:
+            Serial.mo = mo
+            serial = Serial(connect=False)
+            serial.set_parameters(baudrate=10)
+            serial.set_parameters(parity=11)
+            serial.set_parameters(stop_bits=12)
+            serial.set_parameters(data_bits=13)
+            serial.set_parameters(baudrate=10, parity=11, stop_bits=12, data_bits=13)
+            serial.set_parameters(baudrate=14, parity=15, stop_bits=16, data_bits=17)
+            serial.set_parameters(baudrate=18, stop_bits=19)
+            serial.set_parameters(parity=20, data_bits=21)
+
+    def test_tracing_1(self):
+        for mo in MO:
+            if mo == MO.DIRECT_SERIAL: continue
+            Serial.mo = mo
+            serial = Serial(connect=False)
         self.n9_server.stop_tracing()
-        parse_traces(Tracer.get_trace_file(self.trace_path))
+        trace_file = self.n9_server.get_trace_file()
+        device_id = 0
+        for trace_msg_type, trace_msg in Tracer.parse_file(trace_file):
+            device_id += 1
+            self.assertEqual(trace_msg.req.device_id, device_id)
+            self.assertEqual(pickle.loads(trace_msg.req.args), ())
+            self.assertEqual(pickle.loads(trace_msg.req.kwargs), {'connect': False})
+            self.assertEqual(trace_msg.resp, n9_pb2.InitializeResp())
+
+    def test_tracing_2(self):
+        Serial.mo = MO.DIRECT_MIDDLEBOX
+        devices = Serial.list_devices() # 0
+        device_ports = Serial.list_device_ports() # 1
+        device_serials = Serial.list_device_serials() # 2
+        serial = Serial(connect=False) # 3
+        serial.set_parameters() # 4
+        serial.set_parameters(stop_bits=3) # 5
+        serial.set_parameters(stop_bits=4, data_bits=4) # 6
+        serial.set_parameters(parity=5, stop_bits=5, data_bits=5) #7
+        serial.set_parameters(baudrate=6, parity=6, stop_bits=6, data_bits=6) # 8
+        self.n9_server.stop_tracing()
+        trace_file = self.n9_server.get_trace_file()
+        counter = 0
+        for trace_msg_type, trace_msg in Tracer.parse_file(trace_file):
+            if counter == 0:
+                self.assertEqual(trace_msg_type, "StaticMethodTraceMsg")
+                self.assertEqual(trace_msg.req.method_name, "list_devices")
+                self.assertEqual(pickle.loads(trace_msg.req.args), ())
+                self.assertEqual(pickle.loads(trace_msg.req.kwargs), {})
+                self.assertEqual(len(pickle.loads(trace_msg.resp.resp)), len(devices))
+            elif counter == 1:
+                self.assertEqual(trace_msg_type, "StaticMethodTraceMsg")
+                self.assertEqual(trace_msg.req.method_name, "list_device_ports")
+                self.assertEqual(pickle.loads(trace_msg.req.args), ())
+                self.assertEqual(pickle.loads(trace_msg.req.kwargs), {})
+                self.assertEqual(pickle.loads(trace_msg.resp.resp).sort(), device_ports.sort())
+            elif counter == 2:
+                self.assertEqual(trace_msg_type, "StaticMethodTraceMsg")
+                self.assertEqual(trace_msg.req.method_name, "list_device_serials")
+                self.assertEqual(pickle.loads(trace_msg.req.args), ())
+                self.assertEqual(pickle.loads(trace_msg.req.kwargs), {})
+                self.assertEqual(pickle.loads(trace_msg.resp.resp).sort(), device_serials.sort())
+            elif counter == 3:
+                self.assertEqual(trace_msg_type, "InitializeTraceMsg")
+                self.assertEqual(trace_msg.req.device_id, 1)
+                self.assertEqual(pickle.loads(trace_msg.req.args), ())
+                self.assertEqual(pickle.loads(trace_msg.req.kwargs), {'connect': False})
+                self.assertEqual(trace_msg.resp, n9_pb2.InitializeResp())
+            elif counter == 4:
+                self.assertEqual(trace_msg_type, "DeviceSpecificMethodTraceMsg")
+                self.assertEqual(trace_msg.req.device_id, 1)
+                self.assertEqual(trace_msg.req.method_name, "set_parameters")
+                self.assertEqual(pickle.loads(trace_msg.req.kwargs), {})
+            elif counter == 5:
+                self.assertEqual(trace_msg_type, "DeviceSpecificMethodTraceMsg")
+                self.assertEqual(trace_msg.req.device_id, 1)
+                self.assertEqual(trace_msg.req.method_name, "set_parameters")
+                self.assertEqual(pickle.loads(trace_msg.req.kwargs), {'stop_bits': 3})
+            elif counter == 6:
+                self.assertEqual(trace_msg_type, "DeviceSpecificMethodTraceMsg")
+                self.assertEqual(trace_msg.req.device_id, 1)
+                self.assertEqual(trace_msg.req.method_name, "set_parameters")
+                self.assertEqual(pickle.loads(trace_msg.req.kwargs),
+                                 {'stop_bits': 4, 'data_bits': 4})
+            elif counter == 7:
+                self.assertEqual(trace_msg_type, "DeviceSpecificMethodTraceMsg")
+                self.assertEqual(trace_msg.req.device_id, 1)
+                self.assertEqual(trace_msg.req.method_name, "set_parameters")
+                self.assertEqual(
+                    pickle.loads(trace_msg.req.kwargs),
+                    {'parity': 5, 'stop_bits': 5, 'data_bits': 5})
+            elif counter == 8:
+                self.assertEqual(trace_msg_type, "DeviceSpecificMethodTraceMsg")
+                self.assertEqual(trace_msg.req.device_id, 1)
+                self.assertEqual(trace_msg.req.method_name, "set_parameters")
+                self.assertEqual(
+                    pickle.loads(trace_msg.req.kwargs),
+                    {'baudrate': 6, 'parity': 6, 'stop_bits': 6, 'data_bits': 6})
+            else:
+                self.fail("Shoudn't happen!")
+            counter += 1
+
+def suite():
+    suite = unittest.TestSuite()
+    suite.addTest(TestN9Client('test_static_methods'))
+    suite.addTest(TestN9Client('test_init'))
+    suite.addTest(TestN9Client('test_setters_and_getters'))
+    suite.addTest(TestN9Client('test_set_parameters'))
+    suite.addTest(TestN9Client('test_tracing_1'))
+    suite.addTest(TestN9Client('test_tracing_2'))
+    return suite
 
 if __name__ == "__main__":
-    unittest.main()
+    runner = unittest.TextTestRunner()
+    runner.run(suite())

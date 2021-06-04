@@ -5,13 +5,49 @@ func_name = lambda: inspect.stack()[1].function
 caller_func_name = lambda: inspect.stack()[2].function
 max_func_name_len = 100
 
-def EmptyStringIfNone(data):
-  if data == None: return ""
-  else: return data
+def generate_init_call_string(class_name, arg_names, positional_args,
+                              keyword_args):
+    init_call_string = class_name + "("
 
-def NoneIfEmptyString(data):
-  if data == "": return None
-  else: return data
+    for i in range(0, len(positional_args)):
+        method_call_string += "args[" + str(i) + "], "
+
+    for arg_name in arg_names:
+        if arg_name == "self": continue
+        if arg_name in keyword_args:
+            init_call_string += arg_name + "=kwargs['" + arg_name + "'], " 
+
+    init_call_string += ")"
+    return init_call_string
+
+def generate_method_call_string(class_obj_name, class_func_name, func_arg_names,
+                                positional_args, keyword_args):
+    method_call_string = ""
+    if class_obj_name != None: method_call_string += class_obj_name + "."
+    method_call_string += class_func_name + "("
+
+    for i in range(0, len(positional_args)):
+        method_call_string += "args[" + str(i) + "], "
+
+    for arg_name in func_arg_names:
+        if arg_name == "self": continue
+        if arg_name in keyword_args:
+            method_call_string += arg_name + "=kwargs['" + arg_name + "'], " 
+
+    method_call_string += ")"
+    return method_call_string
+
+def generate_getter_call_string(class_obj_name, class_prop_name):
+    getter_call_string = ""
+    if class_obj_name != None: getter_call_string += class_obj_name + "."
+    getter_call_string += class_prop_name
+    return getter_call_string
+
+def generate_setter_call_string(class_obj_name, class_prop_name):
+    setter_call_string = ""
+    if class_obj_name != None: setter_call_string += class_obj_name + "."
+    setter_call_string += class_prop_name + " = value"
+    return setter_call_string
 
 # We define three different mode of operation (MOs)..
 #

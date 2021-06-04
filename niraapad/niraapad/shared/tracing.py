@@ -7,10 +7,12 @@ import niraapad.protos.n9_pb2_grpc as n9_pb2_grpc
 
 class Tracer:
 
+    trace_file_counter = 1
+
     def __init__(self, trace_path=None):
-        self.tracing = True
         self.trace_file = Tracer.get_trace_file(trace_path)
         self.logf = open(self.trace_file, "ab+")
+        self.tracing = True
 
     def write_to_file(self, trace_msg):
         if self.tracing == False: return
@@ -34,8 +36,9 @@ class Tracer:
         self.logf.write(trace_msg_str)
 
     def stop_tracing(self):
-        self.tracing = False
-        self.logf.close()
+        if self.tracing:
+            self.tracing = False
+            self.logf.close()
 
     @staticmethod
     def get_trace_file(trace_path=None):
@@ -43,9 +46,11 @@ class Tracer:
             file_path = os.path.dirname(os.path.abspath(__file__))
             trace_path = file_path + "/../traces/"
         os.makedirs(trace_path, exist_ok=True)
-        return trace_path + ("%s.log" % (datetime.now().strftime("%Y%m%d%H%M%S")))
-
-
+        trace_file = trace_path
+        trace_file += "%s-%s.log" % \
+            (datetime.now().strftime("%Y%m%d%H%M%S"), Tracer.trace_file_counter)
+        Tracer.trace_file_counter += 1
+        return trace_file
 
     @staticmethod
     def get_trace_header_str_length():

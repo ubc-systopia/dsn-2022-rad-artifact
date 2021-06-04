@@ -1,530 +1,118 @@
 syntax = "proto3";
 
 service N9 {
-  // Get info about all serial devices connected to the computer
-  rpc ListDevices(EmptyMsg) returns (ListDevicesResp) {}
 
-  // Get info about all serial devices connected to the computer
-  rpc ListDevicesTrace(ListDevicesTraceMsg) returns (EmptyMsg) {}
+  // Used for all static and class methods in class Serial
+  rpc StaticMethod(StaticMethodReq) returns (StaticMethodResp) {}
 
-  // Get a list of COM port strings for connected serial devices
-  rpc ListDevicePorts(EmptyMsg) returns (ListDevicePortsResp) {}
+  // Used for all static and class methods in class Serial
+  rpc StaticMethodTrace(StaticMethodTraceMsg) returns (EmptyMsg) {}
 
-  // Get a list of COM port strings for connected serial devices
-  rpc ListDevicePortsTrace(ListDevicePortsTraceMsg) returns (EmptyMsg) {}
+  // Used for the __init__ method of class Serial
+  rpc Initialize(InitializeReq) returns (InitializeResp) {}
 
-  // Get a list of device serial numbers for connected FTDI devices
-  rpc ListDeviceSerials(EmptyMsg) returns (ListDeviceSerialsResp) {}
-
-  // Get a list of device serial numbers for connected FTDI devices
-  rpc ListDeviceSerialsTrace(ListDeviceSerialsTraceMsg) returns (EmptyMsg) {}
-
-  // Initialize a connection to the specified serial device
-  rpc Initialize(InitializeReq) returns (EmptyMsg) {}
-
-  // Initialize a connection to the specified serial device
+  // Used for the __init__ method of class Serial
   rpc InitializeTrace(InitializeTraceMsg) returns (EmptyMsg) {}
 
-  // Open the specified serial device
-  rpc OpenDevice(OpenDeviceReq) returns (EmptyMsg) {}
+  // Used for property getters in class Serial
+  rpc DeviceSpecificGetter(DeviceSpecificGetterReq) returns (DeviceSpecificGetterResp) {}
 
-  // Open the specified serial device
-  rpc OpenDeviceTrace(OpenDeviceTraceMsg) returns (EmptyMsg) {}
+  // Used for property getters in class Serial
+  rpc DeviceSpecificGetterTrace(DeviceSpecificGetterTraceMsg) returns (EmptyMsg) {}
 
-  // Connect to the specified serial device if a connection hasn't been made
-  rpc Connect(ConnectReq) returns (EmptyMsg) {}
+  // Used for property setters in class Serial
+  rpc DeviceSpecificSetter(DeviceSpecificSetterReq) returns (DeviceSpecificSetterResp) {}
 
-  // Connect to the specified serial device if a connection hasn't been made
-  rpc ConnectTrace(ConnectTraceMsg) returns (EmptyMsg) {}
+  // Used for property setters in class Serial
+  rpc DeviceSpecificSetterTrace(DeviceSpecificSetterTraceMsg) returns (EmptyMsg) {}
 
-  // Disconnect the specified serial device
-  rpc Disconnect(DisconnectReq) returns (EmptyMsg) {}
+  // Used for the remaining methods in class Serial
+  rpc DeviceSpecificMethod(DeviceSpecificMethodReq) returns (DeviceSpecificMethodResp) {}
 
-  // Disconnect the specified serial device
-  rpc DisconnectTrace(DisconnectTraceMsg) returns (EmptyMsg) {}
-
-  // Initialize the specified device, if not already done so
-  rpc InitDevice(InitDeviceReq) returns (EmptyMsg) {}
-
-  // Initialize the specified device, if not already done so
-  rpc InitDeviceTrace(InitDeviceTraceMsg) returns (EmptyMsg) {}
-
-  // Change the serial connection parameters for the specified serial device
-  rpc SetParameters(SetParametersReq) returns (EmptyMsg) {}
-
-  // Change the serial connection parameters for the specified serial device
-  rpc SetParametersTrace(SetParametersTraceMsg) returns (EmptyMsg) {}
-
-  // Update timeouts for the specified serial device
-  rpc UpdateTimeouts(UpdateTimeoutsReq) returns (EmptyMsg) {}
-
-  // Update timeouts for the specified serial device
-  rpc UpdateTimeoutsTrace(UpdateTimeoutsTraceMsg) returns (EmptyMsg) {}
-
-  // Get info about the specified serial device
-  rpc Info(InfoReq) returns (InfoResp) {}
-
-  // Get info about the specified serial device
-  rpc InfoTrace(InfoTraceMsg) returns (EmptyMsg) {}
-
-  // Get the serial number of the specified serial device
-  rpc SerialNumber(SerialNumberReq) returns (SerialNumberResp) {}
-
-  // Get the serial number of the specified serial device
-  rpc SerialNumberTrace(SerialNumberTraceMsg) returns (EmptyMsg) {}
-
-  // Get the number of bytes waiting in the input buffer
-  rpc InWaiting(InWaitingReq) returns (InWaitingResp) {}
-
-  // Get the number of bytes waiting in the input buffer
-  rpc InWaitingTrace(InWaitingTraceMsg) returns (EmptyMsg) {}
-
-  // Get the number of bytes waiting in the output buffer
-  rpc OutWaiting(OutWaitingReq) returns (OutWaitingResp) {}
-  
-  // Get the number of bytes waiting in the output buffer
-  rpc OutWaitingTrace(OutWaitingTraceMsg) returns (EmptyMsg) {}
-  
-  // Get the read timeout
-  rpc ReadTimeout(ReadTimeoutReq) returns (ReadTimeoutResp) {}
-
-  // Get the read timeout
-  rpc ReadTimeoutTrace(ReadTimeoutTraceMsg) returns (EmptyMsg) {}
-
-  // Set the read timeout
-  rpc SetReadTimeout(SetReadTimeoutReq) returns (EmptyMsg) {}
-
-  // Set the read timeout
-  rpc SetReadTimeoutTrace(SetReadTimeoutTraceMsg) returns (EmptyMsg) {}
-
-  // Get the write timeout
-  rpc WriteTimeout(WriteTimeoutReq) returns (WriteTimeoutResp) {}
-
-  // Get the write timeout
-  rpc WriteTimeoutTrace(WriteTimeoutTraceMsg) returns (EmptyMsg) {}
-
-  // Set the write timeout
-  rpc SetWriteTimeout(SetWriteTimeoutReq) returns (EmptyMsg) {}
-
-  // Set the write timeout
-  rpc SetWriteTimeoutTrace(SetWriteTimeoutTraceMsg) returns (EmptyMsg) {}
-
-  // Read bytes from the specified serial device
-  rpc Read(ReadReq) returns (ReadResp) {}
-
-  // Read bytes from the specified serial device
-  rpc ReadTrace(ReadTraceMsg) returns (EmptyMsg) {}
-
-  // Read a "line" of data from the specifiedserial device until the given line
-  // ending is found
-  rpc ReadLine(ReadLineReq) returns (ReadLineResp) {}
-
-  // Read a "line" of data from the specifiedserial device until the given line
-  // ending is found
-  rpc ReadLineTrace(ReadLineTraceMsg) returns (EmptyMsg) {}
-
-  // Write the given data to the specified serial device
-  rpc Write(WriteReq) returns (WriteResp) {}
-
-  // Write the given data to the specified serial device
-  rpc WriteTrace(WriteTraceMsg) returns (EmptyMsg) {}
-
-  // Perform a "request", which writes the given data and then reads the
-  // "response" from the serial device until the given line ending is found
-  rpc Request(RequestReq) returns (RequestResp) {}
-
-  // Perform a "request", which writes the given data and then reads the
-  // "response" from the serial device until the given line ending is found
-  rpc RequestTrace(RequestTraceMsg) returns (EmptyMsg) {}
-
-  // Flush data from the input and output buffers
-  rpc Flush(FlushReq) returns (EmptyMsg) {}
-
-  // Flush data from the input and output buffers
-  rpc FlushTrace(FlushTraceMsg) returns (EmptyMsg) {}
-
-  // Flush / reset data in the input buffer
-  rpc ResetInputBuffer(ResetInputBufferReq) returns (EmptyMsg) {}
-  
-  // Flush / reset data in the input buffer
-  rpc ResetInputBufferTrace(ResetInputBufferTraceMsg) returns (EmptyMsg) {}
-  
-  // Flush / reset data in the output buffer
-  rpc ResetOutputBuffer(ResetOutputBufferReq) returns (EmptyMsg) {}
-  
-  // Flush / reset data in the output buffer
-  rpc ResetOutputBufferTrace(ResetOutputBufferTraceMsg) returns (EmptyMsg) {}
-  
-  // Enable or disable bit-bang mode on FTDI devices
-  rpc SetBitMode(SetBitModeReq) returns (EmptyMsg) {}
-
-  // Enable or disable bit-bang mode on FTDI devices
-  rpc SetBitModeTrace(SetBitModeTraceMsg) returns (EmptyMsg) {}
+  // Used for the remaining methods in class Serial
+  rpc DeviceSpecificMethodTrace(DeviceSpecificMethodTraceMsg) returns (EmptyMsg) {}
 }
 
-message ListDevicesResp {
-  repeated SerialDeviceInfo devices_info = 1;
+message StaticMethodReq {
+  string method_name = 1;
+  bytes args = 2;
+  bytes kwargs = 3;
 }
 
-message ListDevicesTraceMsg {
-  ListDevicesResp resp = 1;
+message StaticMethodResp {
+  bytes resp = 1;
 }
 
-message ListDevicePortsResp {
-  repeated string ports = 1;
-}
-
-message ListDevicePortsTraceMsg {
-  ListDevicePortsResp resp = 1;
-}
-
-message ListDeviceSerialsResp {
-  repeated string serial_numbers = 1;
-}
-
-message ListDeviceSerialsTraceMsg {
-  ListDeviceSerialsResp resp = 1;
+message StaticMethodTraceMsg {
+  StaticMethodReq req = 1;
+  StaticMethodResp resp = 2;
 }
 
 message InitializeReq {
-  // On the server and client side, we expect to have only one class instance
-  // per device connection, and therefore multiple instances of the
-  // VirtualSerial class, but all these instances communicate using a single
-  // gRPC service, the N9; thus, in addition all the existing
-  // method parameters, I am adding an extra device_id parameter, which
-  // identifies the class instances on both sides;
-  // we do this for all device-specific methods
   int32 device_id = 1;
+  bytes args = 2;
+  bytes kwargs = 3;
+}
 
-  SerialDeviceType device_type = 2;
-
-  // If the string is empty, replace with None in Python
-  string device_serial = 3;
-
-  // If the string is empty, replace with None in Python,
-  // otherwise, cast into a Python integer
-  // (and vice versa when encoding)
-  string device_number = 4;
-
-  // If the string is empty, replace with None in Python
-  string device_port = 5;
-
-  int32 baudrate = 6;
-  int32 parity = 7;
-  int32 stop_bits = 8;
-  int32 data_bits = 9;
-  float read_timeout = 10;
-  float write_timeout = 11;
-  float connect_timeout = 12;
-  bool connect_retry = 13;
-  float connect_settle_time = 14;
-  bool connect = 15;
+message InitializeResp {
 }
 
 message InitializeTraceMsg {
   InitializeReq req = 1;
+  InitializeResp resp = 2;
 }
 
-message OpenDeviceReq {
+message DeviceSpecificGetterReq {
   int32 device_id = 1;
+  string property_name = 2;
 }
 
-message OpenDeviceTraceMsg {
-  OpenDeviceReq req = 1;
+message DeviceSpecificGetterResp {
+  bytes resp = 1;
 }
 
-message ConnectReq {
+message DeviceSpecificGetterTraceMsg {
+  DeviceSpecificGetterReq req = 1;
+  DeviceSpecificGetterResp resp = 2;
+}
+
+message DeviceSpecificSetterReq {
   int32 device_id = 1;
+  string property_name = 2;
+  bytes value = 3;
 }
 
-message ConnectTraceMsg {
-  ConnectReq req = 1;
+message DeviceSpecificSetterResp {
 }
 
-message DisconnectReq {
+message DeviceSpecificSetterTraceMsg {
+  DeviceSpecificSetterReq req = 1;
+  DeviceSpecificSetterResp resp = 2;
+}
+
+message DeviceSpecificMethodReq {
   int32 device_id = 1;
+  string method_name = 2;
+  bytes args = 3;
+  bytes kwargs = 4;
 }
 
-message DisconnectTraceMsg {
-  DisconnectReq req = 1;
+message DeviceSpecificMethodResp {
+  bytes resp = 1;
 }
 
-message InitDeviceReq {
-  int32 device_id = 1;
+message DeviceSpecificMethodTraceMsg {
+  DeviceSpecificMethodReq req = 1;
+  DeviceSpecificMethodResp resp = 2;
 }
 
-message InitDeviceTraceMsg {
-  InitDeviceReq req = 1;
+// Trace header helps identify the trace length
+message TraceHeader {
+    // number of bytes in the following trace metadata
+    int32 metadata_size = 1;
 }
 
-message SetParametersReq {
-  int32 device_id = 1;
-
-  // If any of these strings is empty, replace it with None in Python,
-  // and for each string that is not empty, cast it into a Python integer;
-  // only set those parameters that are not None
-  string baudrate = 2;
-  string parity = 3;
-  string stop_bits = 4;
-  string data_bits = 5;
-}
-
-message SetParametersTraceMsg {
-  SetParametersReq req = 1;
-}
-
-message UpdateTimeoutsReq {
-  int32 device_id = 1;
-}
-
-message UpdateTimeoutsTraceMsg {
-  UpdateTimeoutsReq req = 1;
-}
-
-message InfoReq {
-  int32 device_id = 1;
-}
-
-message InfoResp {
-  SerialDeviceInfo device_info = 1;
-}
-
-message InfoTraceMsg {
-  InfoReq req = 1;
-  InfoResp resp = 2;
-}
-
-message SerialNumberReq {
-  int32 device_id = 1;
-}
-
-message SerialNumberResp {
-  // If the string is empty, replace with None in Python
-  string device_serial = 1;
-}
-
-message SerialNumberTraceMsg {
-  SerialNumberReq req = 1;
-  SerialNumberResp resp = 2;
-}
-
-message InWaitingReq {
-  int32 device_id = 1;
-}
-
-message InWaitingResp {
-  int32 num_bytes = 1;
-}
-
-message InWaitingTraceMsg {
-  InWaitingReq req = 1;
-  InWaitingResp resp = 2;
-}
-
-message OutWaitingReq {
-  int32 device_id = 1;
-}
-
-message OutWaitingResp {
-  int32 num_bytes = 1;
-}
-
-message OutWaitingTraceMsg {
-  OutWaitingReq req = 1;
-  OutWaitingResp resp = 2;
-}
-
-message ReadTimeoutReq {
-  int32 device_id = 1;
-}
-
-message ReadTimeoutResp {
-  float timeout = 1;
-}
-
-message ReadTimeoutTraceMsg {
-  ReadTimeoutReq req = 1;
-  ReadTimeoutResp resp = 2;
-}
-
-message SetReadTimeoutReq {
-  int32 device_id = 1;
-  float timeout = 2;
-}
-
-message SetReadTimeoutTraceMsg {
-  SetReadTimeoutReq req = 1;
-}
-
-message WriteTimeoutReq {
-  int32 device_id = 1;
-}
-
-message WriteTimeoutResp {
-  float timeout = 1;
-}
-
-message WriteTimeoutTraceMsg {
-  WriteTimeoutReq req = 1;
-  WriteTimeoutResp resp = 2;
-}
-
-message SetWriteTimeoutReq {
-  int32 device_id = 1;
-  float timeout = 2;
-}
-
-message SetWriteTimeoutTraceMsg {
-  SetWriteTimeoutReq req = 1;
-}
-
-message ReadReq {
-  int32 device_id = 1;
-
-  // If the string is empty, replace with None in Python,
-  // otherwise, cast into a Python integer
-  string num_bytes = 2;
-
-  // If the string is empty, replace with None in Python,
-  // otherwise, cast into a Python float
-  string timeout = 3;
-}
-
-message ReadResp {
-  bytes data = 1;
-}
-
-message ReadTraceMsg {
-  ReadReq req = 1;
-  ReadResp resp = 2;
-}
-
-message ReadLineReq {
-  int32 device_id = 1;
-  bytes line_ending = 2;
-
-  // If the string is empty, replace with None in Python,
-  // otherwise, cast into a Python float
-  string timeout = 3;
-}
-
-message ReadLineResp {
-  bytes data = 1;
-}
-
-message ReadLineTraceMsg {
-  ReadLineReq req = 1;
-  ReadLineResp resp = 2;
-}
-
-message WriteReq {
-  int32 device_id = 1;
-
-  enum Format {
-    STRING = 0;
-    BYTES = 1;
-  }
-  Format data_format = 2;
-  string data = 3;
-
-  // If the string is empty, replace with None in Python,
-  // otherwise, cast into a Python float
-  string timeout = 4;
-}
-
-message WriteResp {
-  int32 num_bytes = 1;
-}
-
-message WriteTraceMsg {
-  WriteReq req = 1;
-  WriteResp resp = 2;
-}
-
-message RequestReq {
-  int32 device_id = 1;
-  bytes data = 2;
-
-  // If the string is empty, replace with None in Python,
-  // otherwise, cast into a Python float
-  string timeout = 3;
-
-  bytes line_ending = 4;
-}
-
-message RequestResp {
-  bytes data = 1;
-}
-
-message RequestTraceMsg {
-  RequestReq req = 1;
-  RequestResp resp = 2;
-}
-
-message FlushReq {
-  int32 device_id = 1;
-}
-
-message FlushTraceMsg {
-  FlushReq req = 1;
-}
-
-message ResetInputBufferReq {
-  int32 device_id = 1;
-}
-
-message ResetInputBufferTraceMsg {
-  ResetInputBufferReq req = 1;
-}
-
-message ResetOutputBufferReq {
-  int32 device_id = 1;
-}
-
-message ResetOutputBufferTraceMsg {
-  ResetOutputBufferReq req = 1;
-}
-
-message SetBitModeReq {
-  int32 device_id = 1;
-  int32 mask = 2;
-  bool enable = 3;
-}
-
-message EmptyMsg {
-}
-
-message SetBitModeTraceMsg {
-  SetBitModeReq req = 1;
-}
-
-message SerialDeviceType {
-  enum Format {
-    INT = 0;
-    STRING = 1;
-  }
-  Format device_type_format = 1;
-
-  // If the string is empty, replace with None in Python,
-  // otherwise, parse it as per the format field
-  string device_type = 2;
-}
-
-message SerialDeviceInfo {
-  // If the string is empty, replace with None in Python,
-  // otherwise, cast into a Python integer
-  string index = 1;
-
-  // If the string is empty, leave it as it is
-  string serial = 2;
-
-  // If the string is empty, replace with None in Python
-  string port = 3;
-
-  // If the string is empty, replace with None in Python
-  string description = 4;
-}
-
+// Trace metadata helps identify the trace message type and its size
 message TraceMetadata {
   string timestamp = 1;
   string trace_msg_type = 2;
@@ -534,7 +122,6 @@ message TraceMetadata {
   int32 trace_msg_size = 3;
 }
 
-message TraceHeader {
-    // number of bytes in the following trace metadata
-    int32 metadata_size = 1;
+// Since gRPC does not allow defining RPC with void params / return values
+message EmptyMsg {
 }
