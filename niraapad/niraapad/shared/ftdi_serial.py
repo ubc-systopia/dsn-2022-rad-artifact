@@ -723,17 +723,16 @@ class DirectSerial:
 
 ################################################################################
 ################################################################################
-########################## MODIFIED CODE STARTS HERE ###########################
+########################## MAIN MODIFICATIONS START HERE #######################
 ################################################################################
 ################################################################################
 
-import sys
-import pickle
+import inspect
 
-from niraapad.lab_computer.n9_client import N9Client
-from niraapad.shared.utils import *
+import niraapad.shared.utils as utils
+from niraapad.lab_computer.niraapad_client import NiraapadClient
 
-class Serial:
+class Serial(NiraapadClient):
     """
     This class is just a facade. It's objective is to provide the same
     interface to all Hein Lab experiment scripts as the erstwhile "class
@@ -743,237 +742,108 @@ class Serial:
     each function call to the respective function call in the respective
     DirectSerial class object (class objects are not involved in the case of
     static functions), or to the respective function call in the global object
-    of type "class N9Client" (which in turn invokes an RPC to the
+    of type "class NiraapadClientHelper" (which in turn invokes an RPC to the
     middlebox), or both.
     """
-    mo = MO.DIRECT_MIDDLEBOX
-    n9_client = None
+    
+    backend_type = utils.BACKEND_SERIAL
 
     @staticmethod
-    def start_n9_client(host, port, keys_path=None):
-        if Serial.n9_client != None:
-            del Serial.n9_client
-        Serial.n9_client = N9Client(host, port, keys_path)
+    def get_func_arg_names(method_name):
+        return eval("inspect.getfullargspec(%s.%s).args" % \
+            (Serial.backend_type, method_name))
 
     @staticmethod
     def list_devices(*args, **kwargs):
-        return Serial.static_method(*args, **kwargs)
+        return NiraapadClient.static_method(
+            Serial.get_func_arg_names(utils.FUNC_NAME()), Serial.backend_type,
+            *args, **kwargs)
 
     @staticmethod
     def list_device_ports(*args, **kwargs):
-        return Serial.static_method(*args, **kwargs)
+        return NiraapadClient.static_method(
+            Serial.get_func_arg_names(utils.FUNC_NAME()), Serial.backend_type,
+            *args, **kwargs)
 
     @classmethod
     def list_device_serials(cls, *args, **kwargs):
-        return Serial.static_method(*args, **kwargs)
+        return NiraapadClient.static_method(
+            Serial.get_func_arg_names(utils.FUNC_NAME()), Serial.backend_type,
+            *args, **kwargs)
 
     def __init__(self, *args, **kwargs):
         return self.initialize(*args, **kwargs)
 
     def open_device(self, *args, **kwargs):
-        return self.device_specific_method(*args, **kwargs)
+        return self.generic_method(*args, **kwargs)
 
     def connect(self, *args, **kwargs):
-        return self.device_specific_method(*args, **kwargs)
+        return self.generic_method(*args, **kwargs)
 
     def disconnect(self, *args, **kwargs):
-        return self.device_specific_method(*args, **kwargs)
+        return self.generic_method(*args, **kwargs)
 
     def init_device(self, *args, **kwargs):
-        return self.device_specific_method(*args, **kwargs)
+        return self.generic_method(*args, **kwargs)
 
     def set_parameters(self, *args, **kwargs):
-        return self.device_specific_method(*args, **kwargs)
+        return self.generic_method(*args, **kwargs)
 
     def update_timeouts(self, *args, **kwargs):
-        return self.device_specific_method(*args, **kwargs)
+        return self.generic_method(*args, **kwargs)
 
     @property
     def info(self):
-        return self.device_specific_getter()
+        return self.generic_getter()
 
     @property
     def serial_number(self):
-        return self.device_specific_getter()
+        return self.generic_getter()
 
     @property
     def in_waiting(self):
-        return self.device_specific_getter()
+        return self.generic_getter()
 
     @property
     def out_waiting(self):
-        return self.device_specific_getter()
+        return self.generic_getter()
 
     @property
     def read_timeout(self):
-        return self.device_specific_getter()
+        return self.generic_getter()
 
     @read_timeout.setter
     def read_timeout(self, value):
-        self.device_specific_setter(value)
+        self.generic_setter(value)
 
     @property
     def write_timeout(self):
-        return self.device_specific_getter()
+        return self.generic_getter()
 
     @write_timeout.setter
     def write_timeout(self, value):
-        self.device_specific_setter(value)
+        self.generic_setter(value)
 
     def read(self, *args, **kwargs):
-        return self.device_specific_method(*args, **kwargs)
+        return self.generic_method(*args, **kwargs)
 
     def read_line(self, *args, **kwargs):
-        return self.device_specific_method(*args, **kwargs)
+        return self.generic_method(*args, **kwargs)
 
     def write(self, *args, **kwargs):
-        return self.device_specific_method(*args, **kwargs)
+        return self.generic_method(*args, **kwargs)
 
     def request(self, *args, **kwargs):
-        return self.device_specific_method(*args, **kwargs)
+        return self.generic_method(*args, **kwargs)
 
     def flush(self, *args, **kwargs):
-        return self.device_specific_method(*args, **kwargs)
+        return self.generic_method(*args, **kwargs)
 
     def reset_input_buffer(self, *args, **kwargs):
-        return self.device_specific_method(*args, **kwargs)
+        return self.generic_method(*args, **kwargs)
 
     def reset_output_buffer(self, *args, **kwargs):
-        return self.device_specific_method(*args, **kwargs)
+        return self.generic_method(*args, **kwargs)
 
     def set_bit_mode(self, *args, **kwargs):
-        return self.device_specific_method(*args, **kwargs)
-
-    @staticmethod
-    def static_method(*args, **kwargs):
-        method_name = caller_func_name()
-        func_arg_names = eval("inspect.getfullargspec(DirectSerial."
-            + method_name + ").args")
-        method_call_string = generate_method_call_string(
-            "DirectSerial",
-            method_name,
-            func_arg_names,
-            args,
-            kwargs)
-
-        if Serial.mo == MO.DIRECT_SERIAL:
-            return eval(method_call_string)
-
-        if Serial.mo == MO.DIRECT_MIDDLEBOX:
-            return Serial.n9_client.static_method(
-                method_name,
-                pickle.dumps(args),
-                pickle.dumps(kwargs))
-
-        resp = eval(method_call_string)
-        try:
-            Serial.n9_client.static_method_trace(
-                method_name,
-                pickle.dumps(args),
-                pickle.dumps(kwargs),
-                pickle.dumps(resp))
-            return resp
-        except Exception as e:
-            print("Exception", e)
-            assert(False)
-
-    def initialize(self, *args, **kwargs):
-        arg_names = inspect.getfullargspec(DirectSerial.__init__).args
-        init_call_string = generate_init_call_string(
-            "DirectSerial",
-            arg_names,
-            args,
-            kwargs)
-
-        if Serial.mo == MO.DIRECT_SERIAL or \
-            Serial.mo == MO.DIRECT_SERIAL_WITH_MIDDLEBOX_TRACING:
-            self.direct_serial = eval(init_call_string)
-
-        if Serial.mo == MO.DIRECT_MIDDLEBOX:
-            self.id = Serial.n9_client.initialize(pickle.dumps(args),
-                                                  pickle.dumps(kwargs))
-
-        if Serial.mo == MO.DIRECT_SERIAL_WITH_MIDDLEBOX_TRACING:
-            try:
-                self.id = Serial.n9_client.initialize_trace(
-                    pickle.dumps(args), pickle.dumps(kwargs))
-            except Exception as e:
-                print("Exception", e)
-                assert(False)
-
-    def device_specific_method(self, *args, **kwargs):
-        method_name = caller_func_name()
-        func_arg_names = eval("inspect.getfullargspec(DirectSerial."
-            + method_name + ").args")
-        method_call_string = generate_method_call_string(
-            "self.direct_serial",
-            method_name,
-            func_arg_names,
-            args,
-            kwargs)
-
-        if Serial.mo == MO.DIRECT_SERIAL:
-            return eval(method_call_string)
-
-        if Serial.mo == MO.DIRECT_MIDDLEBOX:
-            return Serial.n9_client.device_specific_method(
-                self.id,
-                method_name,
-                pickle.dumps(args),
-                pickle.dumps(kwargs))
-
-        resp = eval(method_call_string)
-        try:
-            Serial.n9_client.device_specific_method_trace(
-                self.id,
-                method_name,
-                pickle.dumps(args),
-                pickle.dumps(kwargs),
-                pickle.dumps(resp))
-            return resp
-        except Exception as e:
-            print("Exception", e)
-            assert(False)
-
-    def device_specific_getter(self):
-        property_name = caller_func_name()
-        getter_call_string = generate_getter_call_string(
-            "self.direct_serial", property_name)
-
-        if Serial.mo == MO.DIRECT_SERIAL:
-            return eval(getter_call_string)
-
-        if Serial.mo == MO.DIRECT_MIDDLEBOX:
-            return Serial.n9_client.device_specific_getter(
-                self.id, property_name)
-
-        resp = eval(getter_call_string)
-        try:
-            Serial.n9_client.device_specific_getter_trace(
-                self.id, property_name, pickle.dumps(resp))
-            return resp
-        except Exception as e:
-            assert(False)
-            
-    def device_specific_setter(self, value):
-        property_name = caller_func_name()
-        setter_call_string = generate_setter_call_string(
-            "self.direct_serial", property_name)
-        sys.stdout.flush()
-
-        if Serial.mo == MO.DIRECT_SERIAL:
-            exec(setter_call_string)
-            return 
-
-        if Serial.mo == MO.DIRECT_MIDDLEBOX:
-            Serial.n9_client.device_specific_setter(
-                self.id, property_name, pickle.dumps(value))
-            return
-
-        exec(setter_call_string)
-        try:
-            Serial.n9_client.device_specific_setter_trace(
-                self.id, property_name, pickle.dumps(value))
-        except Exception as e:
-            print("Exception", e)
-            assert(False)
+        return self.generic_method(*args, **kwargs)

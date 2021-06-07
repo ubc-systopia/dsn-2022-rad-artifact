@@ -23,3 +23,8 @@ Add the `niraapad` folder in the top-level directory to your PYTHONPATH environm
 * The `.vscode` folder contains the necessary configuration files
 * Run the `build` task to compile  the protocol buffer IDL files
 * Run the `test` task to run `test_middlebox.py`
+
+### UPDATED Dependencies
+* Updating protocol buffer, grpcio, and grpcio-tools versions to 3.5.1, 1.9.0, and 1.9.0, respectively
+* https://gitlab.com/heingroup/hein_robots
+* https://github.com/SintefManufacturing/python-urx
