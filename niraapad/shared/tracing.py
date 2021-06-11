@@ -41,14 +41,14 @@ class Tracer:
             self.logf.close()
 
     @staticmethod
-    def get_trace_file(trace_path=None):
-        if trace_path == None:
-            file_path = os.path.dirname(os.path.abspath(__file__))
-            trace_path = file_path + "/../traces/"
+    def get_trace_file(trace_path):
+        # if trace_path == None:
+        #     file_path = os.path.dirname(os.path.abspath(__file__))
+        #     trace_path = os.path.join(os.path.dirname(file_path), "traces")
         os.makedirs(trace_path, exist_ok=True)
-        trace_file = trace_path
-        trace_file += "%s-%s.log" % \
+        trace_file_name = "%s-%s.log" % \
             (datetime.now().strftime("%Y%m%d%H%M%S"), Tracer.trace_file_counter)
+        trace_file = os.path.join(trace_path, trace_file_name)
         Tracer.trace_file_counter += 1
         return trace_file
 

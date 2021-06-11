@@ -17,17 +17,17 @@ from niraapad.shared.utils import *
 from niraapad.shared.tracing import Tracer
 
 file_path = os.path.dirname(os.path.abspath(__file__))
-default_keys_path = file_path + "/../keys/"
-default_trace_path = file_path + "/../traces/"
+default_keysdir = file_path + "/../keys/"
+default_tracedir = file_path + "/../traces/"
 
 class NiraapadServicer(niraapad_pb2_grpc.NiraapadServicer):
     """Provides methods that implement functionality of n9 server."""
 
     trace_metadata_length = 132 # bytes
 
-    def __init__(self, trace_path):
+    def __init__(self, tracedir):
         self.backend_instances = {}
-        self.tracer = Tracer(trace_path)
+        self.tracer = Tracer(tracedir)
 
     def stop_tracing(self):
         self.tracer.stop_tracing()
@@ -79,6 +79,7 @@ class NiraapadServicer(niraapad_pb2_grpc.NiraapadServicer):
         # analogous to the static_method function above, except that we do not
         # need a variable for the method name, which is known to be "__init__"
         # in this case.
+        print("NiraapadServicer::Initialize", context)
 
         args = pickle.loads(req.args)
         kwargs = pickle.loads(req.kwargs)
@@ -211,26 +212,37 @@ class NiraapadServicer(niraapad_pb2_grpc.NiraapadServicer):
  
 class NiraapadServer:
 
-    def __init__(self, port, trace_path=None, keys_path=None):
+    def __init__(self, port, tracedir=None, keysdir=None):
 
-        self.keys_path = default_keys_path
-        if keys_path != None: self.keys_path = keys_path
+        self.keysdir = default_keysdir
+        if keysdir != None: self.keysdir = keysdir
+        server_key_path = os.path.join(self.keysdir, "server.key")
+        server_crt_path = os.path.join(self.keysdir, "server.crt")
 
         self.server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
-        with open(self.keys_path + 'server.key', 'rb') as f:
+
+        print("NiraapadServer::__init__", port)
+        with open(server_key_path, 'rb') as f:
             private_key = f.read()
-        with open(self.keys_path + 'server.crt', 'rb') as f:
+        with open(server_crt_path, 'rb') as f:
             certificate_chain = f.read()
         server_credentials = grpc.ssl_server_credentials( ( (private_key, certificate_chain), ) )
         self.server.add_secure_port('[::]:' + str(port), server_credentials)
 
-        self.niraapad_servicer = NiraapadServicer(trace_path=trace_path)
+        self.niraapad_servicer = NiraapadServicer(tracedir=tracedir)
         niraapad_pb2_grpc.add_NiraapadServicer_to_server(self.niraapad_servicer, self.server)
 
-    def start(self):
+    def start(self, wait=False):
+        print("NiraapadServer::start")
         self.server.start()
+        
+        # cleanly blocks the calling thread until the server terminates
+        if wait:
+            print("NiraapadServer::start waiting for termination")
+            self.server.wait_for_termination()
 
     def stop(self):
+        print("NiraapadServer::stop")
         sys.stdout.flush()
         self.niraapad_servicer.stop_tracing()
         event = self.server.stop(None)

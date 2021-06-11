@@ -39,86 +39,11 @@ from niraapad.lab_computer.ur3 import UR3Arm
 from niraapad.lab_computer.ftdi_serial import Serial
 from niraapad.lab_computer.niraapad_client import NiraapadClient
 
-def call_all_instance_methods(serial):
-    # Test open_device
-    #serial.open_device()
-
-    # Test connect
-    # TODO Try with a serial cable
-    # Currently, server throws an exception: FTD2XX package not installed
-    #serial.connect()
-
-    # Test disconnect
-    serial.disconnect()
-
-    # Test init_device
-    serial.init_device()
-
-    # Test set_parameters
-    serial.set_parameters()
-    serial.set_parameters(stop_bits=3)
-    serial.set_parameters(stop_bits=4, data_bits=4)
-    serial.set_parameters(parity=5, stop_bits=5, data_bits=5)
-    serial.set_parameters(baudrate=6, parity=6, stop_bits=6, data_bits=6)
-
-    # Test update_timeouts
-    # TODO Try with a serial cable
-    # Currently, self.device in ftdi_serial.py is None
-    # serial.update_timeouts()
-
-    # Test info
-    serial_device_info = serial.info
-
-    # Test serial_number
-    serial_number = serial.serial_number
-
-    # Test in_waiting
-    num_bytes = serial.in_waiting
-
-    # Test out_waiting
-    num_bytes = serial.out_waiting
-    
-    # Test read_timeout (getter)
-    read_timeout = serial.read_timeout
-
-    # Test read_timeout (setter)
-    serial.read_timeout = 13
-
-    # Test write_timeout (getter)
-    write_timeout = serial.write_timeout
-
-    # Test write_timeout (setter)
-    serial.write_timeout = 17
-
-    # Test read
-    output = serial.read()
-
-    # Test read_line
-    output = serial.read_line()
-
-    # test write
-    num_bytes = serial.write("From TestN9Backend")
-
-    # Test request
-    output = serial.request("From TestN9Backend".encode())
-
-    # Test flush
-    serial.flush()
-
-    # Test reset_input_buffer
-    serial.reset_input_buffer()
-
-    # Test reset_output_buffer
-    serial.reset_output_buffer()
-
-    # Test set_bit_mode
-    serial.set_bit_mode(0, False)
-
 class TestN9Backend(unittest.TestCase):
     
     def setUp(self):
 
-        trace_path = file_path + "/../traces/"
+        trace_path = file_path + "/.{}./traces/"
         keys_path = file_path + "/../keys/"
 
         host = 'localhost'

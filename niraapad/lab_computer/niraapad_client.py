@@ -7,7 +7,7 @@ import niraapad.protos.niraapad_pb2_grpc as niraapad_pb2_grpc
 import niraapad.shared.utils as utils
 
 file_path = os.path.dirname(os.path.abspath(__file__))
-default_keys_path = file_path + "/../keys/"
+default_keysdir = file_path + "/../keys/"
 
 class NiraapadClientHelper:
     """
@@ -17,12 +17,14 @@ class NiraapadClientHelper:
     Serial, there is only one global instance of class NiraapadClientHelper.
     """
 
-    def __init__(self, host, port, keys_path=None):
+    def __init__(self, host, port, keysdir=None):
 
-        self.keys_path = default_keys_path
-        if keys_path != None: self.keys_path = keys_path
+        self.keysdir = default_keysdir
+        if keysdir != None: self.keysdir = keysdir
+        server_crt_path = os.path.join(self.keysdir, "server.crt")
 
-        with open(keys_path + 'server.crt', 'rb') as f:
+        print("NiraapadClientHelper::__init__", host, port)
+        with open(server_crt_path, 'rb') as f:
             trusted_certs = f.read()
         client_credentials = grpc.ssl_channel_credentials(
             root_certificates=trusted_certs)
@@ -51,11 +53,13 @@ class NiraapadClientHelper:
 
     def initialize(self, backend_type, args_pickled, kwargs_pickled):
         self.backend_instance_count += 1
+        print("NiraapadClientHelper::initialize", backend_type)
         resp = self.stub.Initialize(niraapad_pb2.InitializeReq(
             backend_type=backend_type,
             backend_instance_id=self.backend_instance_count,
             args=args_pickled,
             kwargs=kwargs_pickled))
+        print("NiraapadClientHelper::initialized", backend_type)
         exception = pickle.loads(resp.exception)
         if exception != None: raise exception
         return self.backend_instance_count
@@ -144,10 +148,10 @@ class NiraapadClient:
     #    return object.__new__(cls, *args, **kwargs)
 
     @staticmethod
-    def start_niraapad_client_helper(host, port, keys_path=None):
+    def start_niraapad_client_helper(host, port, keysdir=None):
         if NiraapadClient.niraapad_client_helper != None:
             del NiraapadClient.niraapad_client_helper
-        NiraapadClient.niraapad_client_helper = NiraapadClientHelper(host, port, keys_path)
+        NiraapadClient.niraapad_client_helper = NiraapadClientHelper(host, port, keysdir)
 
     @staticmethod
     def static_method(func_arg_names, backend_type, *args, **kwargs):
