@@ -21,7 +21,7 @@ class NiraapadClientHelper:
 
         self.keysdir = default_keysdir
         if keysdir != None: self.keysdir = keysdir
-        server_crt_path = os.path.join(self.keysdir, "server.crt")
+        server_crt_path = os.path.join(self.keysdir, "ubc.crt")
 
         print("NiraapadClientHelper::__init__", host, port)
         with open(server_crt_path, 'rb') as f:

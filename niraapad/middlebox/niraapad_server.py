@@ -216,8 +216,8 @@ class NiraapadServer:
 
         self.keysdir = default_keysdir
         if keysdir != None: self.keysdir = keysdir
-        server_key_path = os.path.join(self.keysdir, "server.key")
-        server_crt_path = os.path.join(self.keysdir, "server.crt")
+        server_key_path = os.path.join(self.keysdir, "ubc.key")
+        server_crt_path = os.path.join(self.keysdir, "ubc.crt")
 
         self.server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
 
