@@ -4,14 +4,14 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "protogen",
+            "label": "stubs",
             "type": "shell",
-            "command": "cd niraapad; python -m grpc_tools.protoc -I. --python_out=. --grpc_python_out=. ./niraapad/protos/niraapad.proto"
+            "command": "py -m grpc_tools.protoc -I. --python_out=. --grpc_python_out=. ./niraapad/protos/niraapad.proto"
         },
         {
             "label": "build",
             "dependsOrder": "sequence",
-            "dependsOn": ["protogen"],
+            "dependsOn": ["stubs"],
             "problemMatcher": [],
             "group": {
                 "kind": "build",
@@ -21,7 +21,7 @@
         {
             "label": "test",
             "type": "shell",
-            "command": "python ./niraapad/niraapad/test/test_niraapad.py"
+            "command": "py ./niraapad/test/test_niraapad.py"
         }
     ]
 }

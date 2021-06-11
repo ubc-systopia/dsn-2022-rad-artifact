@@ -7,13 +7,14 @@ import pickle
 from concurrent import futures
 from datetime import datetime
 
+from ftdi_serial import Serial as DirectSerial
+from hein_robots.universal_robots.ur3 import UR3Arm as DirectUR3Arm
+
 import niraapad.protos.niraapad_pb2 as niraapad_pb2
 import niraapad.protos.niraapad_pb2_grpc as niraapad_pb2_grpc
 
-from niraapad.shared.ur3 import DirectUR3Arm
-from niraapad.shared.ftdi_serial import DirectSerial
-from niraapad.shared.tracing import Tracer
 from niraapad.shared.utils import *
+from niraapad.shared.tracing import Tracer
 
 file_path = os.path.dirname(os.path.abspath(__file__))
 default_keys_path = file_path + "/../keys/"

@@ -4,10 +4,7 @@ import pickle
 
 import niraapad.protos.niraapad_pb2 as niraapad_pb2
 import niraapad.protos.niraapad_pb2_grpc as niraapad_pb2_grpc
-
 import niraapad.shared.utils as utils
-#from niraapad.shared.ftdi_serial import DirectSerial
-#from niraapad.shared.ur3 import DirectUR3Arm
 
 file_path = os.path.dirname(os.path.abspath(__file__))
 default_keys_path = file_path + "/../keys/"
@@ -157,9 +154,9 @@ class NiraapadClient:
         method_name = utils.CALLER_METHOD_NAME()
 
         if backend_type is utils.BACKEND_SERIAL:
-            from niraapad.shared.ftdi_serial import DirectSerial
+            from ftdi_serial import Serial as DirectSerial
         elif backend_type is utils.BACKEND_UR3_ARM:
-            from niraapad.shared.ur3 import DirectUR3Arm
+            from hein_robots.universal_robots.ur3 import UR3Arm as DirectUR3Arm
         else:
             assert(False)
 
@@ -201,9 +198,9 @@ class NiraapadClient:
         # in this case.
 
         if self.backend_type is utils.BACKEND_SERIAL:
-            from niraapad.shared.ftdi_serial import DirectSerial
+            from ftdi_serial import Serial as DirectSerial
         elif self.backend_type is utils.BACKEND_UR3_ARM:
-            from niraapad.shared.ur3 import DirectUR3Arm
+            from hein_robots.universal_robots.ur3 import UR3Arm as DirectUR3Arm
         else:
             assert(False)
 
