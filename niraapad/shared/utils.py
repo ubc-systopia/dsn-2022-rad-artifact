@@ -11,7 +11,7 @@ def generate_init_call_string(class_name, arg_names, positional_args,
     init_call_string = class_name + "("
 
     for i in range(0, len(positional_args)):
-        method_call_string += "args[" + str(i) + "], "
+        init_call_string += "args[" + str(i) + "], "
 
     for arg_name in arg_names:
         if arg_name == "self": continue

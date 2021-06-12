@@ -286,6 +286,25 @@ class TestUR3ArmBackend(unittest.TestCase):
     def tearDown(self):
         self.niraapad_server.stop()
         del self.niraapad_server
+    
+    def test_init_vm(self):
+        for mo in MO:    
+            NiraapadClient.mo = mo
+            ur3_arm = UR3Arm("192.168.236.128")
+            
+            jointpositions = [-54.36, -60.60, -85.60, -52.12, 121.92, 50.02]
+            ur3_arm.move_joints(jointpositions)
+            self.assertEqual([round(elem,2) for elem in ur3_arm.joint_positions], [round(elem,2) for elem in jointpositions])
+
+            location = Location(x=50, y=-160, z=550, rx=-118.9, ry=56.53, rz=-135.8)
+            ur3_arm.move_to_location(location)
+            self.assertEqual(ur3_arm.location, location)
+
+            self.assertEqual(ur3_arm.joint_count, 6)
+          
+
+            time.sleep(2)
+    
 
     def test_init(self):
         for mo in MO:
@@ -431,6 +450,7 @@ def suite_n9():
 
 def suite_ur3arm():
     suite = unittest.TestSuite()
+    suite.addTest(TestUR3ArmBackend('test_init_vm'))
     suite.addTest(TestUR3ArmBackend('test_init'))
     suite.addTest(TestUR3ArmBackend('test_exception_handling'))
     return suite

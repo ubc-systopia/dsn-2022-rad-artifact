@@ -24,7 +24,14 @@ Add the `niraapad` folder in the top-level directory to your PYTHONPATH environm
 * Run the `build` task to compile  the protocol buffer IDL files
 * Run the `test` task to run `test_middlebox.py`
 
+#### Running UR simulator
+* Turn on the Vmware Player and run the UR simulator virtual machine.
+* Run the UR3 robot simulator and turn on the robot from the button on the bottom left.
+* Run test_init_vm using `python niraapad/test/test_middlebox.py` to run UR simulator.
+
 ### UPDATED Dependencies
 * Updating protocol buffer, grpcio, and grpcio-tools versions to 3.5.1, 1.9.0, and 1.9.0, respectively
 * https://gitlab.com/heingroup/hein_robots
 * https://github.com/SintefManufacturing/python-urx
+
+
