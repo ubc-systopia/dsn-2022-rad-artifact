@@ -4,6 +4,7 @@ import grpc
 import time
 import pickle
 import unittest
+import argparse
 
 from concurrent import futures
 
@@ -39,23 +40,42 @@ from niraapad.lab_computer.ur3 import UR3Arm
 from niraapad.lab_computer.ftdi_serial import Serial
 from niraapad.lab_computer.niraapad_client import NiraapadClient
 
+parser = argparse.ArgumentParser()
+parser.add_argument('-D', '--distributed',
+                    help='Distributed testing. Do not start server. Assume it is started on the provided host and port.',
+                    action="store_true")
+parser.add_argument('-H', '--host',
+                    default='localhost',
+                    help='Provide server hostname or IP address. Defaults to "ispy".',
+                    type=str)
+parser.add_argument('-P', '--port',
+                    default='1337',
+                    help='Provide the server port. Defaults to 1337.',
+                    type=str)
+parser.add_argument('-K', '--keysdir',
+                    default= os.path.join(niraapad_path, "niraapad", "keys"),
+                    help='Provide path to the directory containing the "server.crt" file. Defaults to <project-dir>/niraapad/keys/.',
+                    type=str)
+parser.add_argument('-T', '--tracedir',
+                    default= os.path.join(niraapad_path, "niraapad", "traces"),
+                    help='Provide path to the trace directory. Defaults to <project-dir>/niraapad/traces/.',
+                    type=str)
+                    
+args=parser.parse_args()
+
 class TestN9Backend(unittest.TestCase):
     
     def setUp(self):
-
-        trace_path = file_path + "/.{}./traces/"
-        keys_path = file_path + "/../keys/"
-
-        host = 'localhost'
-        port = '1337'
-
-        self.niraapad_server = NiraapadServer(port, trace_path, keys_path)
-        self.niraapad_server.start()
-        NiraapadClient.start_niraapad_client_helper(host, port, keys_path)
+        if args.distributed == False:
+            self.niraapad_server = NiraapadServer(args.port, args.tracedir, args.keysdir)
+            self.niraapad_server.start()
+        
+        NiraapadClient.start_niraapad_client_helper(args.host, args.port, args.keysdir)
 
     def tearDown(self):
-        self.niraapad_server.stop()
-        del self.niraapad_server
+        if args.distributed == False:
+            self.niraapad_server.stop()
+            del self.niraapad_server
 
     def test_static_methods(self):
         for mo in MO:
@@ -272,20 +292,16 @@ class TestN9Backend(unittest.TestCase):
 class TestUR3ArmBackend(unittest.TestCase):
 
     def setUp(self):
-
-        trace_path = file_path + "/../traces/"
-        keys_path = file_path + "/../keys/"
-
-        host = 'localhost'
-        port = '1337'
-
-        self.niraapad_server = NiraapadServer(port, trace_path, keys_path)
-        self.niraapad_server.start()
-        NiraapadClient.start_niraapad_client_helper(host, port, keys_path)
+        if args.distributed == False:
+            self.niraapad_server = NiraapadServer(args.port, args.tracedir, args.keysdir)
+            self.niraapad_server.start()
+        
+        NiraapadClient.start_niraapad_client_helper(args.host, args.port, args.keysdir)
 
     def tearDown(self):
-        self.niraapad_server.stop()
-        del self.niraapad_server
+        if args.distributed == False:
+            self.niraapad_server.stop()
+            del self.niraapad_server
     
     def test_init_vm(self):
         for mo in MO:    
@@ -301,10 +317,8 @@ class TestUR3ArmBackend(unittest.TestCase):
             self.assertEqual(ur3_arm.location, location)
 
             self.assertEqual(ur3_arm.joint_count, 6)
-          
 
             time.sleep(2)
-    
 
     def test_init(self):
         for mo in MO:
@@ -450,7 +464,7 @@ def suite_n9():
 
 def suite_ur3arm():
     suite = unittest.TestSuite()
-    suite.addTest(TestUR3ArmBackend('test_init_vm'))
+    #suite.addTest(TestUR3ArmBackend('test_init_vm'))
     suite.addTest(TestUR3ArmBackend('test_init'))
     suite.addTest(TestUR3ArmBackend('test_exception_handling'))
     return suite

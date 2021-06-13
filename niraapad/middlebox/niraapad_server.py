@@ -79,7 +79,6 @@ class NiraapadServicer(niraapad_pb2_grpc.NiraapadServicer):
         # analogous to the static_method function above, except that we do not
         # need a variable for the method name, which is known to be "__init__"
         # in this case.
-        print("NiraapadServicer::Initialize", context)
 
         args = pickle.loads(req.args)
         kwargs = pickle.loads(req.kwargs)

@@ -23,7 +23,6 @@ class NiraapadClientHelper:
         if keysdir != None: self.keysdir = keysdir
         server_crt_path = os.path.join(self.keysdir, "ubc.crt")
 
-        print("NiraapadClientHelper::__init__", host, port)
         with open(server_crt_path, 'rb') as f:
             trusted_certs = f.read()
         client_credentials = grpc.ssl_channel_credentials(
@@ -53,13 +52,11 @@ class NiraapadClientHelper:
 
     def initialize(self, backend_type, args_pickled, kwargs_pickled):
         self.backend_instance_count += 1
-        print("NiraapadClientHelper::initialize", backend_type)
         resp = self.stub.Initialize(niraapad_pb2.InitializeReq(
             backend_type=backend_type,
             backend_instance_id=self.backend_instance_count,
             args=args_pickled,
             kwargs=kwargs_pickled))
-        print("NiraapadClientHelper::initialized", backend_type)
         exception = pickle.loads(resp.exception)
         if exception != None: raise exception
         return self.backend_instance_count
