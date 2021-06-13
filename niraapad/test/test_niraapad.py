@@ -195,6 +195,12 @@ class TestN9Backend(unittest.TestCase):
             # serial.set_parameters(parity=20, data_bits=21)
 
     def test_tracing_1(self):
+        # TODO Ideally, in the distributed case,
+        # copy files from remote node to local node and then test
+        # However, copying remote files on windows machines without SCP is nontrivial
+        if args.distributed:
+            return
+        
         for mo in MO:
             if mo == MO.DIRECT: continue
             NiraapadClient.mo = mo
@@ -211,6 +217,12 @@ class TestN9Backend(unittest.TestCase):
                 exception=pickle.dumps(None)))
 
     def test_tracing_2(self):
+        # TODO Ideally, in the distributed case,
+        # copy files from remote node to local node and then test
+        # However, copying remote files on windows machines without SCP is nontrivial 
+        if args.distributed:
+            return
+        
         NiraapadClient.mo = MO.VIA_MIDDLEBOX
         devices = Serial.list_devices() # 0
         device_ports = Serial.list_device_ports() # 1
