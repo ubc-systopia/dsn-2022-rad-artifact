@@ -207,12 +207,12 @@ class NiraapadServicer(niraapad_pb2_grpc.NiraapadServicer):
  
 class NiraapadServer:
 
-    def __init__(self, port, tracedir=None, keysdir=None):
-
-        self.keysdir = default_keysdir
-        if keysdir != None: self.keysdir = keysdir
+    def __init__(self, port, tracedir, keysdir):
+        self.keysdir = keysdir
         server_key_path = os.path.join(self.keysdir, "server.key")
         server_crt_path = os.path.join(self.keysdir, "server.crt")
+        print("server.key:", server_key_path)
+        print("server.crt:", server_crt_path)
 
         self.server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
 

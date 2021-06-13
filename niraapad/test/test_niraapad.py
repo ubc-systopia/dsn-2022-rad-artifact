@@ -320,6 +320,11 @@ class TestUR3ArmBackend(unittest.TestCase):
 
             time.sleep(2)
 
+    def test_simple_init(self):
+        for mo in MO:
+            NiraapadClient.mo = mo
+            ur3_arm = UR3Arm(connect=False)
+
     def test_init(self):
         for mo in MO:
             NiraapadClient.mo = mo
@@ -466,6 +471,7 @@ def suite_ur3arm():
     suite = unittest.TestSuite()
     #suite.addTest(TestUR3ArmBackend('test_init_vm'))
     suite.addTest(TestUR3ArmBackend('test_init'))
+    suite.addTest(TestUR3ArmBackend('test_simple_init'))
     suite.addTest(TestUR3ArmBackend('test_exception_handling'))
     return suite
 

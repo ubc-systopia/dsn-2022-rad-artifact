@@ -14,11 +14,10 @@ class NiraapadClientHelper:
     Serial, there is only one global instance of class NiraapadClientHelper.
     """
 
-    def __init__(self, host, port, keysdir=None):
-
-        self.keysdir = default_keysdir
-        if keysdir != None: self.keysdir = keysdir
+    def __init__(self, host, port, keysdir):
+        self.keysdir = keysdir
         server_crt_path = os.path.join(self.keysdir, "server.crt")
+        print("server.crt:", server_crt_path)
 
         with open(server_crt_path, 'rb') as f:
             trusted_certs = f.read()

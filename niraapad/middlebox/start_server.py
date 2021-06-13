@@ -30,7 +30,7 @@ if __name__ == "__main__":
                         help='Provide an unused port. Defaults to 1337.',
                         type=str)
     parser.add_argument('-K', '--keysdir',
-                        default= os.path.join(niraapad_path, "niraapad", "keys"),
+                        default= os.path.join(niraapad_path, "niraapad", "keys", "ispy_cs_ubc_ca"),
                         help='Provide path to the directory containing the "server.key" and "server.crt" files. Defaults to <project-dir>/niraapad/keys/.',
                         type=str)
     parser.add_argument('-T', '--tracedir',
