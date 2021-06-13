@@ -6,9 +6,6 @@ import niraapad.protos.niraapad_pb2 as niraapad_pb2
 import niraapad.protos.niraapad_pb2_grpc as niraapad_pb2_grpc
 import niraapad.shared.utils as utils
 
-file_path = os.path.dirname(os.path.abspath(__file__))
-default_keysdir = file_path + "/../keys/"
-
 class NiraapadClientHelper:
     """
     The NiraapadClientHelper class encapsulates a gRPC client, which forwards all
@@ -21,7 +18,7 @@ class NiraapadClientHelper:
 
         self.keysdir = default_keysdir
         if keysdir != None: self.keysdir = keysdir
-        server_crt_path = os.path.join(self.keysdir, "ubc.crt")
+        server_crt_path = os.path.join(self.keysdir, "server.crt")
 
         with open(server_crt_path, 'rb') as f:
             trusted_certs = f.read()

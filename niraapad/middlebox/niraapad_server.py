@@ -16,10 +16,6 @@ import niraapad.protos.niraapad_pb2_grpc as niraapad_pb2_grpc
 from niraapad.shared.utils import *
 from niraapad.shared.tracing import Tracer
 
-file_path = os.path.dirname(os.path.abspath(__file__))
-default_keysdir = file_path + "/../keys/"
-default_tracedir = file_path + "/../traces/"
-
 class NiraapadServicer(niraapad_pb2_grpc.NiraapadServicer):
     """Provides methods that implement functionality of n9 server."""
 
@@ -215,8 +211,8 @@ class NiraapadServer:
 
         self.keysdir = default_keysdir
         if keysdir != None: self.keysdir = keysdir
-        server_key_path = os.path.join(self.keysdir, "ubc.key")
-        server_crt_path = os.path.join(self.keysdir, "ubc.crt")
+        server_key_path = os.path.join(self.keysdir, "server.key")
+        server_crt_path = os.path.join(self.keysdir, "server.crt")
 
         self.server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
 

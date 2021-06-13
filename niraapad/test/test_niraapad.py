@@ -53,7 +53,7 @@ parser.add_argument('-P', '--port',
                     help='Provide the server port. Defaults to 1337.',
                     type=str)
 parser.add_argument('-K', '--keysdir',
-                    default= os.path.join(niraapad_path, "niraapad", "keys"),
+                    default= os.path.join(niraapad_path, "niraapad", "keys", "localhost"),
                     help='Provide path to the directory containing the "server.crt" file. Defaults to <project-dir>/niraapad/keys/.',
                     type=str)
 parser.add_argument('-T', '--tracedir',
