@@ -20,30 +20,19 @@ class Serial(NiraapadClient):
     middlebox), or both.
     """
     
-    backend_type = utils.BACKEND_SERIAL
-
-    @staticmethod
-    def get_func_arg_names(method_name):
-        return eval("inspect.getfullargspec(%s.%s).args" % \
-            (Serial.backend_type, method_name))
+    backend_type = utils.BACKENDS.SERIAL
 
     @staticmethod
     def list_devices(*args, **kwargs):
-        return NiraapadClient.static_method(
-            Serial.get_func_arg_names(utils.FUNC_NAME()), Serial.backend_type,
-            *args, **kwargs)
+        return NiraapadClient.static_method(Serial.backend_type, *args, **kwargs)
 
     @staticmethod
     def list_device_ports(*args, **kwargs):
-        return NiraapadClient.static_method(
-            Serial.get_func_arg_names(utils.FUNC_NAME()), Serial.backend_type,
-            *args, **kwargs)
+        return NiraapadClient.static_method(Serial.backend_type, *args, **kwargs)
 
     @classmethod
     def list_device_serials(cls, *args, **kwargs):
-        return NiraapadClient.static_method(
-            Serial.get_func_arg_names(utils.FUNC_NAME()), Serial.backend_type,
-            *args, **kwargs)
+        return NiraapadClient.static_method(Serial.backend_type, *args, **kwargs)
 
     def __init__(self, *args, **kwargs):
         return self.initialize(*args, **kwargs)

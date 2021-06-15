@@ -3,18 +3,21 @@ import sys
 import time
 import grpc
 import pickle
+import inspect
+import importlib
 
 from concurrent import futures
 from datetime import datetime
 
 from ftdi_serial import Serial as DirectSerial
+from hein_robots.base.robot_arms import RobotArm as DirectRobotArm
 from hein_robots.universal_robots.ur3 import UR3Arm as DirectUR3Arm
 
 import niraapad.protos.niraapad_pb2 as niraapad_pb2
 import niraapad.protos.niraapad_pb2_grpc as niraapad_pb2_grpc
 
-from niraapad.shared.utils import *
 from niraapad.shared.tracing import Tracer
+import niraapad.shared.utils as utils
 
 class NiraapadServicer(niraapad_pb2_grpc.NiraapadServicer):
     """Provides methods that implement functionality of n9 server."""
@@ -32,29 +35,18 @@ class NiraapadServicer(niraapad_pb2_grpc.NiraapadServicer):
         self.tracer.write_to_file(trace_msg)
 
     def StaticMethod(self, req, context):
+
         args = pickle.loads(req.args)
         kwargs = pickle.loads(req.kwargs)
-
-        # For example, if the method invoked is DirectSerial.list_devices(...),
-        # then we want to find the list of arguments (in string form) that the
-        # method takes, which we can compute using Python's getfullargspec
-        # method, i.e., using
-        # "inspect.getfullargsepc(DirectSerial.list_devices).args". We generate
-        # and evaluate this command automatically, as follows.
-        func_arg_names = eval("inspect.getfullargspec(%s.%s).args" % \
-                              (req.backend_type, req.method_name))
-
-        # We want to invoke the respective static method in the original class,
-        # say DirectSerial.list_devices(...). In order to do so automatically,
-        # we generate and evaluate the method call string
-        # "DirectSerial.list_devices(...)" automatically.
-        method_call_string = generate_method_call_string(
-            req.backend_type, req.method_name, func_arg_names, args, kwargs)
 
         resp = None
         exception = None
 
-        try: resp = eval(method_call_string)
+        try:
+            module_name = importlib.import_module(
+                utils.BACKENDS.modules[req.backend_type])
+            class_name = getattr(module_name, req.backend_type)
+            resp = getattr(class_name, req.method_name)(*args, **kwargs)
         except Exception as e: exception = e
             
         resp = niraapad_pb2.StaticMethodResp(exception=pickle.dumps(exception),
@@ -79,20 +71,17 @@ class NiraapadServicer(niraapad_pb2_grpc.NiraapadServicer):
         args = pickle.loads(req.args)
         kwargs = pickle.loads(req.kwargs)
 
-        arg_names = eval("inspect.getfullargspec(%s.__init__).args" % \
-                         req.backend_type)
-
-        init_call_string = generate_init_call_string(
-            req.backend_type, arg_names, args, kwargs)
-
         if req.backend_type not in self.backend_instances:
             self.backend_instances[req.backend_type] = {}
 
         exception = None
 
         try:
+            module_name = importlib.import_module(
+                utils.BACKENDS.modules[req.backend_type])
+            class_name = getattr(module_name, req.backend_type)
             self.backend_instances[req.backend_type][req.backend_instance_id] = \
-                eval(init_call_string)
+                class_name(*args, **kwargs)
         except Exception as e:
             exception = e
 
@@ -120,18 +109,13 @@ class NiraapadServicer(niraapad_pb2_grpc.NiraapadServicer):
         args = pickle.loads(req.args)
         kwargs = pickle.loads(req.kwargs)
 
-        func_arg_names = eval("inspect.getfullargspec(%s.%s).args" % \
-                              (req.backend_type, req.method_name))
-
-        backend_instance_str = \
-            "self.backend_instances[req.backend_type][req.backend_instance_id]"
-        method_call_string = generate_method_call_string(
-            backend_instance_str, req.method_name, func_arg_names, args, kwargs)
-
         resp = None
         exception = None
 
-        try: resp = eval(method_call_string)
+        try:
+            resp = getattr(
+                self.backend_instances[req.backend_type][req.backend_instance_id],
+                    req.method_name)(*args, **kwargs)
         except Exception as e: exception = e
             
         resp = niraapad_pb2.GenericMethodResp(exception=pickle.dumps(exception),
@@ -152,15 +136,13 @@ class NiraapadServicer(niraapad_pb2_grpc.NiraapadServicer):
         # may be used in an expression; in this case, we simply return the
         # variable value.
 
-        backend_instance_str = \
-            "self.backend_instances[req.backend_type][req.backend_instance_id]"
-        getter_call_string = generate_getter_call_string(backend_instance_str,
-                                                         req.property_name)
-
         resp = None
         exception = None
 
-        try: resp = eval(getter_call_string)
+        try:
+            resp = getattr(
+                self.backend_instances[req.backend_type][req.backend_instance_id],
+                req.property_name)
         except Exception as e: exception = e
 
         resp = niraapad_pb2.GenericGetterResp(exception=pickle.dumps(exception),
@@ -181,17 +163,13 @@ class NiraapadServicer(niraapad_pb2_grpc.NiraapadServicer):
 
         value = pickle.loads(req.value)
 
-        backend_instance_str = \
-            "self.backend_instances[req.backend_type][req.backend_instance_id]"
-        setter_call_string = generate_setter_call_string(backend_instance_str,
-                                                         req.property_name)
-
         resp = None
         exception = None
 
-        # We use an exec here instead of eval because assignment is a statement
-        # and not an expression that can be evaluated.
-        try: exec(setter_call_string)
+        try:
+            setattr(
+                self.backend_instances[req.backend_type][req.backend_instance_id],
+                req.property_name, value)
         except Exception as e: exception = e
 
         resp = niraapad_pb2.GenericSetterResp(exception=pickle.dumps(exception))
@@ -211,12 +189,10 @@ class NiraapadServer:
         self.keysdir = keysdir
         server_key_path = os.path.join(self.keysdir, "server.key")
         server_crt_path = os.path.join(self.keysdir, "server.crt")
-        print("server.key:", server_key_path)
-        print("server.crt:", server_crt_path)
 
         self.server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
 
-        print("NiraapadServer::__init__", port)
+        #print("NiraapadServer::__init__", port)
         with open(server_key_path, 'rb') as f:
             private_key = f.read()
         with open(server_crt_path, 'rb') as f:
@@ -228,7 +204,7 @@ class NiraapadServer:
         niraapad_pb2_grpc.add_NiraapadServicer_to_server(self.niraapad_servicer, self.server)
 
     def start(self, wait=False):
-        print("NiraapadServer::start")
+        #print("NiraapadServer::start")
         self.server.start()
         
         # cleanly blocks the calling thread until the server terminates
@@ -237,7 +213,7 @@ class NiraapadServer:
             self.server.wait_for_termination()
 
     def stop(self):
-        print("NiraapadServer::stop")
+        #print("NiraapadServer::stop")
         sys.stdout.flush()
         self.niraapad_servicer.stop_tracing()
         event = self.server.stop(None)

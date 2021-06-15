@@ -1,6 +1,7 @@
 import os
 import grpc
 import pickle
+import importlib
 
 import niraapad.protos.niraapad_pb2 as niraapad_pb2
 import niraapad.protos.niraapad_pb2_grpc as niraapad_pb2_grpc
@@ -17,7 +18,6 @@ class NiraapadClientHelper:
     def __init__(self, host, port, keysdir):
         self.keysdir = keysdir
         server_crt_path = os.path.join(self.keysdir, "server.crt")
-        print("server.crt:", server_crt_path)
 
         with open(server_crt_path, 'rb') as f:
             trusted_certs = f.read()
@@ -136,7 +136,7 @@ class NiraapadClient:
             raise Exception("NiraapadClient must be subclassed.")
 
     #def __new__(cls, *args, **kwargs):
-    #    if cls is NiraapadClient:
+    #    if cls == NiraapadClient:
     #        raise TypeError("class NiraapadClient must be subclassed.")
     #    return object.__new__(cls, *args, **kwargs)
 
@@ -147,41 +147,22 @@ class NiraapadClient:
         NiraapadClient.niraapad_client_helper = NiraapadClientHelper(host, port, keysdir)
 
     @staticmethod
-    def static_method(func_arg_names, backend_type, *args, **kwargs):
+    def static_method(backend_type, *args, **kwargs):
         method_name = utils.CALLER_METHOD_NAME()
 
-        if backend_type is utils.BACKEND_SERIAL:
-            from ftdi_serial import Serial as DirectSerial
-        elif backend_type is utils.BACKEND_UR3_ARM:
-            from hein_robots.universal_robots.ur3 import UR3Arm as DirectUR3Arm
-        else:
-            assert(False)
-
-        # For example, if the caller is Serial.list_devices(...),
-        # then we want to find the list of arguments (in string form) that the
-        # same function in the original class DirectSerial takes, which we can
-        # compute using Python's getfullargspec method, i.e., using
-        # "inspect.getfullargsepc(DirectSerial.list_devices).args".
-        # We generate and evaluate this command automatically, as follows:
-        # (see how the func_arg_names term is derived)
-
-        # Next, if we want to invoke the respective method in the original
-        # class, say DirectSerial.list_devices(...) locally itself,
-        # without going through the RPC, as is the case for modes MO.DIRECT
-        # and MO.DIRECT_PLUS_MIDDLEBOX, we generate and evaluate the method
-        # call string "DirectSerial.list_devices(...)" automatically.
-        method_call_string = utils.generate_method_call_string(
-            backend_type, method_name, func_arg_names, args, kwargs)
+        module_name = importlib.import_module(
+            utils.BACKENDS.modules[backend_type])
+        class_name = getattr(module_name, backend_type)
 
         if NiraapadClient.mo == utils.MO.DIRECT:
-            return eval(method_call_string)
+            return getattr(class_name, method_name)(*args, **kwargs)
 
         if NiraapadClient.mo == utils.MO.VIA_MIDDLEBOX:
             return NiraapadClient.niraapad_client_helper.static_method(
                 backend_type, method_name, pickle.dumps(args),
                 pickle.dumps(kwargs))
 
-        resp = eval(method_call_string)
+        resp = getattr(class_name, method_name)(*args, **kwargs)
         NiraapadClient.niraapad_client_helper.static_method_trace(
             backend_type, method_name, pickle.dumps(args),
             pickle.dumps(kwargs), pickle.dumps(resp))
@@ -194,20 +175,13 @@ class NiraapadClient:
         # need a variable for the method name, which is known to be "__init__"
         # in this case.
 
-        if self.backend_type is utils.BACKEND_SERIAL:
-            from ftdi_serial import Serial as DirectSerial
-        elif self.backend_type is utils.BACKEND_UR3_ARM:
-            from hein_robots.universal_robots.ur3 import UR3Arm as DirectUR3Arm
-        else:
-            assert(False)
-
-        func_arg_names = self.get_func_arg_names("__init__")
-        init_call_string = utils.generate_init_call_string(
-            self.backend_type, func_arg_names, args, kwargs)
+        module_name = importlib.import_module(
+            utils.BACKENDS.modules[self.backend_type])
+        class_name = getattr(module_name, self.backend_type)
 
         if NiraapadClient.mo == utils.MO.DIRECT or \
            NiraapadClient.mo == utils.MO.DIRECT_PLUS_MIDDLEBOX:
-            self.backend_instance = eval(init_call_string)
+            self.backend_instance = class_name(*args, **kwargs)
 
         if NiraapadClient.mo == utils.MO.VIA_MIDDLEBOX:
             self.backend_instance_id = \
@@ -231,19 +205,15 @@ class NiraapadClient:
 
         method_name = utils.CALLER_METHOD_NAME()
 
-        func_arg_names = self.get_func_arg_names(method_name)
-        method_call_string = utils.generate_method_call_string(
-            "self.backend_instance", method_name, func_arg_names, args, kwargs)
-
         if NiraapadClient.mo == utils.MO.DIRECT:
-            return eval(method_call_string)
+            getattr(self.backend_instance, method_name)(*args, **kwargs)
 
         if NiraapadClient.mo == utils.MO.VIA_MIDDLEBOX:
             return NiraapadClient.niraapad_client_helper.generic_method(
                 self.backend_type, self.backend_instance_id, method_name,
                 pickle.dumps(args), pickle.dumps(kwargs))
 
-        resp = eval(method_call_string)
+        resp = getattr(self.backend_instance, method_name)(*args, **kwargs)
         NiraapadClient.niraapad_client_helper.generic_method_trace(
             self.backend_type, self.backend_instance_id, method_name,
             pickle.dumps(args), pickle.dumps(kwargs), pickle.dumps(resp))
@@ -257,17 +227,15 @@ class NiraapadClient:
         # variable value.
 
         property_name = utils.CALLER_METHOD_NAME()
-        getter_call_string = utils.generate_getter_call_string(
-            "self.backend_instance", property_name)
 
         if NiraapadClient.mo == utils.MO.DIRECT:
-            return eval(getter_call_string)
+            return getattr(self.backend_instance, property_name)
 
         if NiraapadClient.mo == utils.MO.VIA_MIDDLEBOX:
             return NiraapadClient.niraapad_client_helper.generic_getter(
                 self.backend_type, self.backend_instance_id, property_name)
 
-        resp = eval(getter_call_string)
+        resp = getattr(self.backend_instance, property_name)
         NiraapadClient.niraapad_client_helper.generic_getter_trace(
             self.backend_type, self.backend_instance_id, property_name,
             pickle.dumps(resp))
@@ -279,11 +247,9 @@ class NiraapadClient:
         # assign the provided value to the specified property.
 
         property_name = utils.CALLER_METHOD_NAME()
-        setter_call_string = utils.generate_setter_call_string(
-            "self.backend_instance", property_name)
 
         if NiraapadClient.mo == utils.MO.DIRECT:
-            exec(setter_call_string)
+            setattr(self.backend_instance, property_name, value)
             return 
 
         if NiraapadClient.mo == utils.MO.VIA_MIDDLEBOX:
@@ -292,7 +258,7 @@ class NiraapadClient:
                 pickle.dumps(value))
             return
 
-        exec(setter_call_string)
+        setattr(self.backend_instance, property_name, value)
         NiraapadClient.niraapad_client_helper.generic_setter_trace(
             self.backend_type, self.backend_instance_id, property_name,
             pickle.dumps(value))

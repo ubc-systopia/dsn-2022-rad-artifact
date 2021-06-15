@@ -20,12 +20,7 @@ class RobotArm(NiraapadClient):
     middlebox), or both.
     """
 
-    backend_type = utils.BACKEND_ROBOT_ARM
-
-    @staticmethod
-    def get_func_arg_names(method_name):
-        return eval("inspect.getfullargspec(%s.%s).args" % \
-            (RobotArm.backend_type, method_name))
+    backend_type = utils.BACKENDS.ROBOT_ARM
 
     def __init__(self, *args, **kwargs):
         return self.initialize(*args, **kwargs)
@@ -198,12 +193,7 @@ class UR3Arm(RobotArm):
     middlebox), or both.
     """
 
-    backend_type = utils.BACKEND_UR3_ARM
-
-    @staticmethod
-    def get_func_arg_names(method_name):
-        return eval("inspect.getfullargspec(%s.%s).args" % \
-            (UR3Arm.backend_type, method_name))
+    backend_type = utils.BACKENDS.UR3_ARM
 
     def __init__(self, *args, **kwargs):
         return self.initialize(*args, **kwargs)
