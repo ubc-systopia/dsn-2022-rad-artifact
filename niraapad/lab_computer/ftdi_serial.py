@@ -1,7 +1,5 @@
 import inspect
 
-from ftdi_serial import Serial as DirectSerial
-
 import niraapad.shared.utils as utils
 
 from niraapad.lab_computer.niraapad_client import NiraapadClient
@@ -10,14 +8,13 @@ class Serial(NiraapadClient):
     """
     This class is just a facade. It's objective is to provide the same
     interface to all Hein Lab experiment scripts as the erstwhile "class
-    Serial", which is renamed to "class DirectSerial" (see above). In addition,
-    the class maintains three operation modes as summarized above along in
-    "class MO". In order to do so, this class simply forwards
-    each function call to the respective function call in the respective
-    DirectSerial class object (class objects are not involved in the case of
-    static functions), or to the respective function call in the global object
-    of type "class NiraapadClientHelper" (which in turn invokes an RPC to the
-    middlebox), or both.
+    Serial". In addition, the class maintains three operation modes as
+    summarized above along in "class MO". In order to do so, this class simply
+    forwards each function call to the respective function call in the
+    respective origianl Serial class object (class objects are not involved in
+    the case of static functions), or to the respective function call in the
+    global object of type "class NiraapadClientHelper" (which in turn invokes
+    an RPC to the middlebox), or both.
     """
     
     backend_type = utils.BACKENDS.SERIAL

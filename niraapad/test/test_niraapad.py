@@ -90,9 +90,9 @@ class TestN9Backend(unittest.TestCase):
         ttribute. So for now I will test each invocation manually by checking
         the output of a print statement on the server side. I will put in some
         assertions for the read_timeout and write_timeout properties, since
-        getters for these are part of the API.
-        By default, the print statement in DirectSerial.__init__ may be disabled
-        or even missing (if we are using a pristine copy).
+        getters for these are part of the API. By default, the print statement
+        in original Serial.__init__ may be disabled or even missing (if we are
+        using a pristine copy).
         """
         for mo in MO:
             NiraapadClient.mo = mo

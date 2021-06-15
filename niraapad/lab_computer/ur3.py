@@ -1,7 +1,5 @@
 import inspect
 
-from hein_robots.universal_robots.ur3 import UR3Arm as DirectUR3Arm
-
 import niraapad.shared.utils as utils
 
 from niraapad.lab_computer.niraapad_client import NiraapadClient
@@ -10,14 +8,13 @@ class RobotArm(NiraapadClient):
     """
     This class is just a facade. It's objective is to provide the same
     interface to all Hein Lab experiment scripts as the erstwhile "class
-    RobotArm", which is renamed to "class DirectRobotArm" (see above). In addition,
-    the class maintains three operation modes as summarized above along in
-    "class MO". In order to do so, this class simply forwards
-    each function call to the respective function call in the respective
-    DirectRobotArm class object (class objects are not involved in the case of
-    static functions), or to the respective function call in the global object
-    of type "class NiraapadClientHelper" (which in turn invokes an RPC to the
-    middlebox), or both.
+    RobotArm". In addition, the class maintains three operation modes as
+    summarized above along in "class MO". In order to do so, this class simply
+    forwards each function call to the respective function call in the
+    respective original RobotArm class object (class objects are not involved
+    in the case of static functions), or to the respective function call in the
+    global object of type "class NiraapadClientHelper" (which in turn invokes
+    an RPC to the middlebox), or both.
     """
 
     backend_type = utils.BACKENDS.ROBOT_ARM
@@ -183,14 +180,13 @@ class UR3Arm(RobotArm):
     """
     This class is just a facade. It's objective is to provide the same
     interface to all Hein Lab experiment scripts as the erstwhile "class
-    UR3Arm", which is renamed to "class DirectUR3Arm" (see above). In addition,
-    the class maintains three operation modes as summarized above along in
-    "class MO". In order to do so, this class simply forwards
-    each function call to the respective function call in the respective
-    DirectUR3Arm class object (class objects are not involved in the case of
-    static functions), or to the respective function call in the global object
-    of type "class NiraapadClientHelper" (which in turn invokes an RPC to the
-    middlebox), or both.
+    UR3Arm". In addition, the class maintains three operation modes as
+    summarized above along in "class MO". In order to do so, this class simply
+    forwards each function call to the respective function call in the
+    respective original UR3Arm class object (class objects are not involved in
+    the case of static functions), or to the respective function call in the
+    global object of type "class NiraapadClientHelper" (which in turn invokes
+    an RPC to the middlebox), or both.
     """
 
     backend_type = utils.BACKENDS.UR3_ARM

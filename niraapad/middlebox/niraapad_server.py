@@ -9,10 +9,6 @@ import importlib
 from concurrent import futures
 from datetime import datetime
 
-from ftdi_serial import Serial as DirectSerial
-from hein_robots.base.robot_arms import RobotArm as DirectRobotArm
-from hein_robots.universal_robots.ur3 import UR3Arm as DirectUR3Arm
-
 import niraapad.protos.niraapad_pb2 as niraapad_pb2
 import niraapad.protos.niraapad_pb2_grpc as niraapad_pb2_grpc
 
