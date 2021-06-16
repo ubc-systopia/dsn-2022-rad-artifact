@@ -206,7 +206,7 @@ class NiraapadClient:
         method_name = utils.CALLER_METHOD_NAME()
 
         if NiraapadClient.mo == utils.MO.DIRECT:
-            getattr(self.backend_instance, method_name)(*args, **kwargs)
+            return getattr(self.backend_instance, method_name)(*args, **kwargs)
 
         if NiraapadClient.mo == utils.MO.VIA_MIDDLEBOX:
             return NiraapadClient.niraapad_client_helper.generic_method(
