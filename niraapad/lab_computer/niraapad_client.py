@@ -130,7 +130,7 @@ class NiraapadClientHelper:
                 exception=pickle.dumps(None))))
 
 class NiraapadClient:
-    mo = utils.MO.VIA_MIDDLEBOX
+    mo = utils.MO.DIRECT_PLUS_MIDDLEBOX
     niraapad_client_helper = None
 
     def __init__(self):
