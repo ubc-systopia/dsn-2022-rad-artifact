@@ -73,7 +73,7 @@ class TestN9Backend(unittest.TestCase):
             self.niraapad_server = NiraapadServer(args.port, args.tracedir, args.keysdir)
             self.niraapad_server.start()
         
-        NiraapadClient.start_niraapad_client_helper(args.host, args.port, args.keysdir)
+        Serial.connect_to_middlebox(args.host, args.port, args.keysdir)
 
     def tearDown(self):
         if args.distributed == False:
@@ -311,7 +311,7 @@ class TestUR3ArmBackend(unittest.TestCase):
             self.niraapad_server = NiraapadServer(args.port, args.tracedir, args.keysdir)
             self.niraapad_server.start()
         
-        NiraapadClient.start_niraapad_client_helper(args.host, args.port, args.keysdir)
+        UR3Arm.connect_to_middlebox(args.host, args.port, args.keysdir)
 
     def tearDown(self):
         if args.distributed == False:

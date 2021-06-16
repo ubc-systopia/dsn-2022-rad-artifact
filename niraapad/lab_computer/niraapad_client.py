@@ -141,7 +141,7 @@ class NiraapadClient:
     #    return object.__new__(cls, *args, **kwargs)
 
     @staticmethod
-    def start_niraapad_client_helper(host, port, keysdir=None):
+    def connect_to_middlebox(host, port, keysdir=None):
         if NiraapadClient.niraapad_client_helper != None:
             del NiraapadClient.niraapad_client_helper
         NiraapadClient.niraapad_client_helper = NiraapadClientHelper(host, port, keysdir)
