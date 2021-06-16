@@ -27,6 +27,7 @@ sys.path.append(urx_path)
 ftdi_serial_path = os.path.join(niraapad_path, "ftdi_serial")
 sys.path.append(ftdi_serial_path)
 
+# THIS IMPORT IS IMPORTANT FOR MONKEY PATCHING
 import niraapad.backends
 
 from ftdi_serial import Serial
