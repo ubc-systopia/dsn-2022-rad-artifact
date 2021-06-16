@@ -27,6 +27,10 @@ sys.path.append(urx_path)
 ftdi_serial_path = os.path.join(niraapad_path, "ftdi_serial")
 sys.path.append(ftdi_serial_path)
 
+import niraapad.backends
+
+from ftdi_serial import Serial
+from hein_robots.universal_robots.ur3 import UR3Arm
 from hein_robots.robotics import Units
 from hein_robots.base import robot_arms
 
@@ -36,8 +40,6 @@ import niraapad.protos.niraapad_pb2_grpc as niraapad_pb2_grpc
 from niraapad.shared.utils import *
 from niraapad.shared.tracing import Tracer
 from niraapad.middlebox.niraapad_server import NiraapadServer
-from niraapad.lab_computer.ur3 import UR3Arm
-from niraapad.lab_computer.ftdi_serial import Serial
 from niraapad.lab_computer.niraapad_client import NiraapadClient
 
 parser = argparse.ArgumentParser()

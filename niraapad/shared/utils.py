@@ -33,11 +33,16 @@ class MO(Enum):
 
 # Currently, we support three types of backend classes
 class BACKENDS:
-    SERIAL = "Serial"
-    UR3_ARM = "UR3Arm"
-    ROBOT_ARM = "RobotArm"
+    SERIAL = "DirectSerial"
+    UR3_ARM = "DirectUR3Arm"
+    ROBOT_ARM = "DirectRobotArm"
 
     modules = {}
-    modules[SERIAL] = "ftdi_serial"
-    modules[UR3_ARM] = "hein_robots.universal_robots.ur3"
-    modules[ROBOT_ARM] = "hein_robots.base.robot_arms"
+
+    #modules[SERIAL] = "ftdi_serial"
+    #modules[UR3_ARM] = "hein_robots.universal_robots.ur3"
+    #modules[ROBOT_ARM] = "hein_robots.base.robot_arms"
+
+    modules[SERIAL] = "niraapad.backends"
+    modules[UR3_ARM] = "niraapad.backends"
+    modules[ROBOT_ARM] = "niraapad.backends"
