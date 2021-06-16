@@ -49,7 +49,7 @@ parser.add_argument('-D', '--distributed',
                     action="store_true")
 parser.add_argument('-H', '--host',
                     default='localhost',
-                    help='Provide server hostname or IP address. Defaults to "ispy".',
+                    help='Provide server hostname or IP address. Defaults to "localhost".',
                     type=str)
 parser.add_argument('-P', '--port',
                     default='1337',
