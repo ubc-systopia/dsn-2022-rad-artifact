@@ -63,12 +63,18 @@ parser.add_argument('-T', '--tracedir',
                     default= os.path.join(niraapad_path, "niraapad", "traces"),
                     help='Provide path to the trace directory. Defaults to <project-dir>/niraapad/traces/.',
                     type=str)
+parser.add_argument('-S', '--secure',
+                    help='Use a secure connection.',
+                    action="store_true")
                     
 args=parser.parse_args()
 
 class TestN9Backend(unittest.TestCase):
     
     def setUp(self):
+        if args.secure == False:
+            args.keysdir = None
+
         if args.distributed == False:
             self.niraapad_server = NiraapadServer(args.port, args.tracedir, args.keysdir)
             self.niraapad_server.start()
@@ -307,6 +313,9 @@ class TestN9Backend(unittest.TestCase):
 class TestUR3ArmBackend(unittest.TestCase):
 
     def setUp(self):
+        if args.secure == False:
+            args.keysdir = None
+
         if args.distributed == False:
             self.niraapad_server = NiraapadServer(args.port, args.tracedir, args.keysdir)
             self.niraapad_server.start()

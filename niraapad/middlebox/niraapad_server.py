@@ -181,20 +181,23 @@ class NiraapadServicer(niraapad_pb2_grpc.NiraapadServicer):
  
 class NiraapadServer:
 
-    def __init__(self, port, tracedir, keysdir):
-        self.keysdir = keysdir
-        server_key_path = os.path.join(self.keysdir, "server.key")
-        server_crt_path = os.path.join(self.keysdir, "server.crt")
-
+    def __init__(self, port, tracedir, keysdir=None):
         self.server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
 
-        #print("NiraapadServer::__init__", port)
-        with open(server_key_path, 'rb') as f:
-            private_key = f.read()
-        with open(server_crt_path, 'rb') as f:
-            certificate_chain = f.read()
-        server_credentials = grpc.ssl_server_credentials( ( (private_key, certificate_chain), ) )
-        self.server.add_secure_port('[::]:' + str(port), server_credentials)
+        if keysdir == None:
+            self.server.add_insecure_port('[::]:' + str(port))
+
+        else:
+            self.keysdir = keysdir
+            server_key_path = os.path.join(self.keysdir, "server.key")
+            server_crt_path = os.path.join(self.keysdir, "server.crt")
+
+            with open(server_key_path, 'rb') as f:
+                private_key = f.read()
+            with open(server_crt_path, 'rb') as f:
+                certificate_chain = f.read()
+            server_credentials = grpc.ssl_server_credentials( ( (private_key, certificate_chain), ) )
+            self.server.add_secure_port('[::]:' + str(port), server_credentials)
 
         self.niraapad_servicer = NiraapadServicer(tracedir=tracedir)
         niraapad_pb2_grpc.add_NiraapadServicer_to_server(self.niraapad_servicer, self.server)

@@ -37,7 +37,13 @@ if __name__ == "__main__":
                         default= os.path.join(niraapad_path, "niraapad", "traces"),
                         help='Provide path to the trace directory. Defaults to <project-dir>/niraapad/traces/.',
                         type=str) 
+    parser.add_argument('-S', '--secure',
+                        help='Use a secure connection.',
+                        action="store_true")
     args=parser.parse_args()
+
+    if args.secure == False:
+        args.keysdir = None
 
     niraapad_server = NiraapadServer(args.port, args.tracedir, args.keysdir)
     niraapad_server.start(wait=True)
