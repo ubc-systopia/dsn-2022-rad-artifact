@@ -1,35 +1,38 @@
-# cps-security-code
-Prototyping for the CPS security project
+# Niraapad
+Prototype for the CPS security project
 
-## gRPC
+## Dependencies
 
-Currently working with the following versions: Python 3.7.3 and libprotoc (grpc_tools.protoc) 3.15.2.
+* Python 3.7.3
+* Python package grpcio 1.38.0
+* Python package grpcio-tools 1.38.0
+* Python package protobuf 3.17.3
 
-From my past experience, protocol buffers can be very sensitive to version changes!
+The package may work with earlier versions of these depenencies, but this has not been tested.
 
-Testing steps:
+## Build Steps
 
-<!-- Add the `niraapad` folder in the top-level directory to your PYTHONPATH environment variable. -->
+* Generate the gRPC stubs using one of the following methods:
+    * Run `scripts/compile_proto_files.sh` script in bash
+    * Run task `build` defined in `.vscode/tasks.json` in Visual Studio Code
 
-#### Linux:
-* Compile the protocol buffer IDL files by running the  `compile_proto_files.sh` bash script, which is located in `niraapad/script`
-* Run tests using `python niraapad/test/test_middlebox.py`
+## Testing Steps
 
-<!-- #### Windows:
-* Compile the protocol buffer IDL files by running the  `compile_proto_files_w.sh` bash script, which is located in `niraapad/script`
-* Run tests using `python niraapad/test/test_middlebox.py` -->
+* Test on a single machine using one of the following methods:
+    * Run `.\niraapad\test\test_middlebox.py`
+    * Run task `test` defined in `.vscode/tasks.json` in Visual Studio Code
 
-#### Visual Studio Code on Windows (tested on `ispy`):
-* The `.vscode` folder contains the necessary configuration files
-* Run the `build` task to compile  the protocol buffer IDL files
-* Run the `test` task to run `test_middlebox.py`
+* Test on two machines as follows:
+    * On the server machine, run `.\niraapad\middlebox\start_server.py -P 1337 -K .\niraapad\keys\ispy_cs_ubc_ca\`
+    * On the client machine, run `.\niraapad\test\test_niraapad.py -D -H ispy.cs.ubc.ca -P 1337 -K .\niraapad\keys\ispy_cs_ubc_ca\`
+    * (Use `.\niraapad\middlebox\start_server.py --help` or `.\niraapad\test\test_niraapad.py --help` for details)
 
 #### Running UR simulator
-* Turn on the Vmware Player and run the UR simulator virtual machine.
-* Run the UR3 robot simulator and turn on the robot from the button on the bottom left.
-* Run test_init_vm using `python niraapad/test/test_middlebox.py` to run UR simulator.
 
-<!-- ### UPDATED Dependencies
-* Updating protocol buffer, grpcio, and grpcio-tools versions to 3.5.1, 1.9.0, and 1.9.0, respectively
-* https://gitlab.com/heingroup/hein_robots
-* https://github.com/SintefManufacturing/python-urx -->
+* Test on a single machine as follows:
+    * Turn on the VMware Player and run the UR simulator virtual machine
+    * Run the UR3 robot simulator and turn on the robot from the button on the bottom left
+    * Run the `test_init_vm` test using `niraapad/test/test_middlebox.py`
+
+* Test on two machines as follows:
+    * TODO
