@@ -32,7 +32,7 @@ import niraapad.backends
 
 from ftdi_serial import Serial
 from hein_robots.universal_robots.ur3 import UR3Arm
-from hein_robots.robotics import Units
+from hein_robots.robotics import Location,Units
 from hein_robots.base import robot_arms
 
 import niraapad.protos.niraapad_pb2 as niraapad_pb2
@@ -319,21 +319,23 @@ class TestUR3ArmBackend(unittest.TestCase):
             del self.niraapad_server
     
     def test_init_vm(self):
-        for mo in MO:    
-            NiraapadClient.mo = mo
-            ur3_arm = UR3Arm("192.168.236.128")
-            
-            jointpositions = [-54.36, -60.60, -85.60, -52.12, 121.92, 50.02]
-            ur3_arm.move_joints(jointpositions)
-            self.assertEqual([round(elem,2) for elem in ur3_arm.joint_positions], [round(elem,2) for elem in jointpositions])
+        i = 1
+        for mo in MO:
+            if (i == 2):
+                NiraapadClient.mo = mo
+                ur3_arm = UR3Arm("192.168.236.128")
+                jointpositions = [-54.36, -60.60, -85.60, -52.12, 121.92, 50.02]
+                ur3_arm.move_joints(jointpositions)
+                self.assertEqual([round(elem,2) for elem in ur3_arm.joint_positions], [round(elem,2) for elem in jointpositions])
 
-            location = Location(x=50, y=-160, z=550, rx=-118.9, ry=56.53, rz=-135.8)
-            ur3_arm.move_to_location(location)
-            self.assertEqual(ur3_arm.location, location)
+                location = Location(x=50, y=-160, z=550, rx=-118.9, ry=56.53, rz=-135.8)
+                ur3_arm.move_to_location(location)
+                self.assertEqual(ur3_arm.location, location)
 
-            self.assertEqual(ur3_arm.joint_count, 6)
+                self.assertEqual(ur3_arm.joint_count, 6)
 
-            time.sleep(2)
+                time.sleep(2)
+            i = i + 1
 
     def test_simple_init(self):
         for mo in MO:
@@ -484,13 +486,13 @@ def suite_n9():
 
 def suite_ur3arm():
     suite = unittest.TestSuite()
-    #suite.addTest(TestUR3ArmBackend('test_init_vm'))
+    suite.addTest(TestUR3ArmBackend('test_init_vm'))
     suite.addTest(TestUR3ArmBackend('test_init'))
-    suite.addTest(TestUR3ArmBackend('test_simple_init'))
-    suite.addTest(TestUR3ArmBackend('test_exception_handling'))
+ #   suite.addTest(TestUR3ArmBackend('test_simple_init'))
+  #  suite.addTest(TestUR3ArmBackend('test_exception_handling'))
     return suite
 
 if __name__ == "__main__":
     runner = unittest.TextTestRunner()
-    runner.run(suite_n9())
+   # runner.run(suite_n9())
     runner.run(suite_ur3arm())
