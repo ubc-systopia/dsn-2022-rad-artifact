@@ -13,19 +13,6 @@ file_path = os.path.dirname(os.path.abspath(__file__))
 
 # Path to the cps-security-code (aka project niraapad) git repo
 niraapad_path = os.path.dirname(os.path.dirname(file_path))
-sys.path.append(niraapad_path)
-
-# Path to the hein_robots git repo (submodule)
-hein_robots_path = os.path.join(niraapad_path, "hein_robots")
-sys.path.append(hein_robots_path)
-
-# Path to the urx git repo (submodule)
-urx_path = os.path.join(niraapad_path, "python-urx")
-sys.path.append(urx_path)
-
-# Path to the ftdi_serial git repo (submodule)
-ftdi_serial_path = os.path.join(niraapad_path, "ftdi_serial")
-sys.path.append(ftdi_serial_path)
 
 # THIS IMPORT IS IMPORTANT FOR MONKEY PATCHING
 import niraapad.backends
@@ -63,17 +50,23 @@ parser.add_argument('-T', '--tracedir',
                     default= os.path.join(niraapad_path, "niraapad", "traces"),
                     help='Provide path to the trace directory. Defaults to <project-dir>/niraapad/traces/.',
                     type=str)
+parser.add_argument('-S', '--secure',
+                    help='Use a secure connection.',
+                    action="store_true")
                     
 args=parser.parse_args()
 
 class TestN9Backend(unittest.TestCase):
     
     def setUp(self):
+        if args.secure == False:
+            args.keysdir = None
+
         if args.distributed == False:
             self.niraapad_server = NiraapadServer(args.port, args.tracedir, args.keysdir)
             self.niraapad_server.start()
         
-        NiraapadClient.start_niraapad_client_helper(args.host, args.port, args.keysdir)
+        Serial.connect_to_middlebox(args.host, args.port, args.keysdir)
 
     def tearDown(self):
         if args.distributed == False:
@@ -307,11 +300,14 @@ class TestN9Backend(unittest.TestCase):
 class TestUR3ArmBackend(unittest.TestCase):
 
     def setUp(self):
+        if args.secure == False:
+            args.keysdir = None
+
         if args.distributed == False:
             self.niraapad_server = NiraapadServer(args.port, args.tracedir, args.keysdir)
             self.niraapad_server.start()
         
-        NiraapadClient.start_niraapad_client_helper(args.host, args.port, args.keysdir)
+        UR3Arm.connect_to_middlebox(args.host, args.port, args.keysdir)
 
     def tearDown(self):
         if args.distributed == False:
