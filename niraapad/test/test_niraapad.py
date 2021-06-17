@@ -317,7 +317,7 @@ class TestUR3ArmBackend(unittest.TestCase):
     def test_init_vm(self):
         for mo in MO: 
                 NiraapadClient.mo = mo
-                ur3_arm = UR3Arm("192.168.236.128")
+                ur3_arm = UR3Arm("192.168.236.128", gripper_base_port=30002)
                 jointpositions = [-54.36, -60.60, -85.60, -52.12, 121.92, 50.02]
                 ur3_arm.move_joints(jointpositions)
                 self.assertEqual([round(elem,2) for elem in ur3_arm.joint_positions], [round(elem,2) for elem in jointpositions])
@@ -535,10 +535,10 @@ def suite_n9():
 
 def suite_ur3arm():
     suite = unittest.TestSuite()
-    suite.addTest(TestUR3ArmBackend('test_init_vm'))
-   # suite.addTest(TestUR3ArmBackend('test_init'))
-  #  suite.addTest(TestUR3ArmBackend('test_simple_init'))
-  #  suite.addTest(TestUR3ArmBackend('test_exception_handling'))
+   # suite.addTest(TestUR3ArmBackend('test_init_vm'))
+    suite.addTest(TestUR3ArmBackend('test_init'))
+    suite.addTest(TestUR3ArmBackend('test_simple_init'))
+    suite.addTest(TestUR3ArmBackend('test_exception_handling'))
     return suite
 
 def suite_fault_tolerance():
