@@ -35,7 +35,6 @@ DATA_FILES = [
 ]
 
 PACKAGES = [
-    'niraapad'
 ]
 
 # The rest you shouldn't have to touch too much :)
@@ -72,7 +71,7 @@ setup(
     author_email=EMAIL,
     python_requires=REQUIRES_PYTHON,
     url=URL,
-    packages=PACKAGES,
+    packages=find_packages(),
     install_requires=REQUIRED,
     dependency_links=REQUIRED_REPOS,
     extras_require=EXTRAS,
