@@ -315,9 +315,7 @@ class TestUR3ArmBackend(unittest.TestCase):
             del self.niraapad_server
     
     def test_init_vm(self):
-        i = 1
-        for mo in MO:
-            if (i == 2):
+        for mo in MO: 
                 NiraapadClient.mo = mo
                 ur3_arm = UR3Arm("192.168.236.128")
                 jointpositions = [-54.36, -60.60, -85.60, -52.12, 121.92, 50.02]
@@ -331,7 +329,6 @@ class TestUR3ArmBackend(unittest.TestCase):
                 self.assertEqual(ur3_arm.joint_count, 6)
 
                 time.sleep(2)
-            i = i + 1
 
     def test_simple_init(self):
         for mo in MO:
@@ -538,10 +535,10 @@ def suite_n9():
 
 def suite_ur3arm():
     suite = unittest.TestSuite()
-    #suite.addTest(TestUR3ArmBackend('test_init_vm'))
-    suite.addTest(TestUR3ArmBackend('test_init'))
-    suite.addTest(TestUR3ArmBackend('test_simple_init'))
-    suite.addTest(TestUR3ArmBackend('test_exception_handling'))
+    suite.addTest(TestUR3ArmBackend('test_init_vm'))
+   # suite.addTest(TestUR3ArmBackend('test_init'))
+  #  suite.addTest(TestUR3ArmBackend('test_simple_init'))
+  #  suite.addTest(TestUR3ArmBackend('test_exception_handling'))
     return suite
 
 def suite_fault_tolerance():
@@ -551,6 +548,6 @@ def suite_fault_tolerance():
 
 if __name__ == "__main__":
     runner = unittest.TextTestRunner()
-    runner.run(suite_n9())
+  #  runner.run(suite_n9())
     runner.run(suite_ur3arm())
     runner.run(suite_fault_tolerance())
