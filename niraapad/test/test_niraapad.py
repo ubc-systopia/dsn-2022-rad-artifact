@@ -315,13 +315,7 @@ class TestUR3ArmBackend(unittest.TestCase):
             del self.niraapad_server
     
     def test_init_vm(self):
-<<<<<<< HEAD
-        for mo in MO:  
-=======
-        i = 1
-        for mo in MO:
-            if (i == 2):
->>>>>>> a29c191aaff29736f94f7398aae72f6091624f12
+        for mo in MO: 
                 NiraapadClient.mo = mo
                 ur3_arm = UR3Arm("192.168.236.128")
                 jointpositions = [-54.36, -60.60, -85.60, -52.12, 121.92, 50.02]
@@ -335,11 +329,6 @@ class TestUR3ArmBackend(unittest.TestCase):
                 self.assertEqual(ur3_arm.joint_count, 6)
 
                 time.sleep(2)
-<<<<<<< HEAD
-           
-=======
-            i = i + 1
->>>>>>> a29c191aaff29736f94f7398aae72f6091624f12
 
     def test_simple_init(self):
         for mo in MO:
