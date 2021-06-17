@@ -4,3 +4,6 @@
 *pb2_grpc.py
 *__pycache__*
 *.log
+build/*
+dist/*
+*.egg-info/*
