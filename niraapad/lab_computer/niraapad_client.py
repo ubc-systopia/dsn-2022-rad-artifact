@@ -15,17 +15,19 @@ class NiraapadClientHelper:
     Serial, there is only one global instance of class NiraapadClientHelper.
     """
 
-    def __init__(self, host, port, keysdir):
-        self.keysdir = keysdir
-        server_crt_path = os.path.join(self.keysdir, "server.crt")
+    def __init__(self, host, port, keysdir=None):
+        if keysdir == None:
+            channel = grpc.insecure_channel(host + ':' + port)
+        else:
+            self.keysdir = keysdir
+            server_crt_path = os.path.join(self.keysdir, "server.crt")
+            with open(server_crt_path, 'rb') as f:
+                trusted_certs = f.read()
+            client_credentials = grpc.ssl_channel_credentials(
+                root_certificates=trusted_certs)
+            channel = grpc.secure_channel(host + ':' + port, client_credentials)
 
-        with open(server_crt_path, 'rb') as f:
-            trusted_certs = f.read()
-        client_credentials = grpc.ssl_channel_credentials(
-            root_certificates=trusted_certs)
-        channel = grpc.secure_channel(host + ':' + port, client_credentials)
         self.stub = niraapad_pb2_grpc.NiraapadStub(channel)
-
         self.backend_instance_count = 0
 
     def static_method(self, backend_type, method_name, args_pickled,
@@ -128,7 +130,7 @@ class NiraapadClientHelper:
                 exception=pickle.dumps(None))))
 
 class NiraapadClient:
-    mo = utils.MO.VIA_MIDDLEBOX
+    mo = utils.MO.DIRECT_PLUS_MIDDLEBOX
     niraapad_client_helper = None
 
     def __init__(self):
@@ -141,10 +143,11 @@ class NiraapadClient:
     #    return object.__new__(cls, *args, **kwargs)
 
     @staticmethod
-    def start_niraapad_client_helper(host, port, keysdir=None):
+    def connect_to_middlebox(host, port, keysdir=None):
         if NiraapadClient.niraapad_client_helper != None:
             del NiraapadClient.niraapad_client_helper
-        NiraapadClient.niraapad_client_helper = NiraapadClientHelper(host, port, keysdir)
+        NiraapadClient.niraapad_client_helper = NiraapadClientHelper(host, port,
+                                                                     keysdir)
 
     @staticmethod
     def static_method(backend_type, *args, **kwargs):
@@ -206,7 +209,7 @@ class NiraapadClient:
         method_name = utils.CALLER_METHOD_NAME()
 
         if NiraapadClient.mo == utils.MO.DIRECT:
-            getattr(self.backend_instance, method_name)(*args, **kwargs)
+            return getattr(self.backend_instance, method_name)(*args, **kwargs)
 
         if NiraapadClient.mo == utils.MO.VIA_MIDDLEBOX:
             return NiraapadClient.niraapad_client_helper.generic_method(
