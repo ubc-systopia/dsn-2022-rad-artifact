@@ -474,11 +474,8 @@ class TestFaultTolerance(unittest.TestCase):
     def setUp(self):
         if args.secure == False:
             args.keysdir = None
-
-        if args.distributed == False:
-            self.niraapad_server = NiraapadServer(args.port, args.tracedir, args.keysdir)
-            self.niraapad_server.start()
-
+        self.niraapad_server = NiraapadServer(args.port, args.tracedir, args.keysdir)
+        self.niraapad_server.start()
         NiraapadClient.connect_to_middlebox(args.host, args.port, args.keysdir)
 
     def tearDown(self):
