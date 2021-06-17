@@ -23,8 +23,8 @@ The package may work with earlier versions of these depenencies, but this has no
     * Run task `test` defined in `.vscode/tasks.json` in Visual Studio Code
 
 * Test on two machines as follows:
-    * On the server machine, run `.\niraapad\middlebox\start_server.py -P 1337 -K .\niraapad\keys\ispy_cs_ubc_ca\`
-    * On the client machine, run `.\niraapad\test\test_niraapad.py -D -H ispy.cs.ubc.ca -P 1337 -K .\niraapad\keys\ispy_cs_ubc_ca\`
+    * On the server machine, run `.\niraapad\middlebox\start_server.py -P 1337 -K .\niraapad\keys\ispy_cs_ubc_ca\ -S`
+    * On the client machine, run `.\niraapad\test\test_niraapad.py -D -H ispy.cs.ubc.ca -P 1337 -K .\niraapad\keys\ispy_cs_ubc_ca\ -S`
     * (Use `.\niraapad\middlebox\start_server.py --help` or `.\niraapad\test\test_niraapad.py --help` for details)
 
 #### Running UR simulator
