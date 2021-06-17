@@ -469,6 +469,65 @@ class TestUR3ArmBackend(unittest.TestCase):
             with self.assertRaises(robot_arms.RobotArmNotSupportedError):
                 ur3_arm.move_twist_to(twist=None)
 
+class TestFaultTolerance(unittest.TestCase):
+
+    def setUp(self):
+        if args.secure == False:
+            args.keysdir = None
+
+        if args.distributed == False:
+            self.niraapad_server = NiraapadServer(args.port, args.tracedir, args.keysdir)
+            self.niraapad_server.start()
+
+        NiraapadClient.connect_to_middlebox(args.host, args.port, args.keysdir)
+
+    def tearDown(self):
+        if args.distributed == False:
+            self.niraapad_server.stop()
+            del self.niraapad_server
+
+    def test_ur3_arm_init(self):
+        NiraapadClient.mo = MO.DIRECT_PLUS_MIDDLEBOX
+
+        ur3_arm = UR3Arm(connect=False)
+        self.assertEqual(ur3_arm.default_velocity, 250)
+        self.assertEqual(ur3_arm.max_velocity, 500)
+        self.assertEqual(ur3_arm.default_joint_velocity, ur3_arm.default_velocity)
+        self.assertEqual(ur3_arm.gripper_default_velocity, 0.5)
+        self.assertEqual(ur3_arm.gripper_default_force, 0.5)
+        self.assertEqual(ur3_arm.connected, False)
+
+        ur3_arm = UR3Arm(host='localhost', default_velocity=1,
+            connect=False)
+        self.assertEqual(ur3_arm.default_velocity, 1)
+        self.assertEqual(ur3_arm.max_velocity, 500)
+        self.assertEqual(ur3_arm.default_joint_velocity, ur3_arm.default_velocity)
+        self.assertEqual(ur3_arm.gripper_default_velocity, 0.5)
+        self.assertEqual(ur3_arm.gripper_default_force, 0.5)
+        self.assertEqual(ur3_arm.connected, False)
+
+        self.niraapad_server.stop()
+        disable_print()
+
+        ur3_arm = UR3Arm(host='localhost', default_velocity=1,
+            max_velocity=2, connect=False)
+        self.assertEqual(ur3_arm.default_velocity, 1)
+        self.assertEqual(ur3_arm.max_velocity, 2)
+        self.assertEqual(ur3_arm.default_joint_velocity, ur3_arm.default_velocity)
+        self.assertEqual(ur3_arm.gripper_default_velocity, 0.5)
+        self.assertEqual(ur3_arm.gripper_default_force, 0.5)
+        self.assertEqual(ur3_arm.connected, False)
+
+        ur3_arm = UR3Arm(host='localhost', default_velocity=1,
+            max_velocity=2, position_units=Units.METERS, connect=False)
+        self.assertEqual(ur3_arm.default_velocity, 1)
+        self.assertEqual(ur3_arm.max_velocity, 2)
+        self.assertEqual(ur3_arm.default_joint_velocity, ur3_arm.default_velocity)
+        self.assertEqual(ur3_arm.gripper_default_velocity, 0.5)
+        self.assertEqual(ur3_arm.gripper_default_force, 0.5)
+        self.assertEqual(ur3_arm.connected, False)
+
+        enable_print()
 
 def suite_n9():
     suite = unittest.TestSuite()
@@ -488,7 +547,13 @@ def suite_ur3arm():
   #  suite.addTest(TestUR3ArmBackend('test_exception_handling'))
     return suite
 
+def suite_fault_tolerance():
+    suite = unittest.TestSuite()
+    suite.addTest(TestFaultTolerance('test_ur3_arm_init'))
+    return suite
+
 if __name__ == "__main__":
     runner = unittest.TextTestRunner()
    # runner.run(suite_n9())
     runner.run(suite_ur3arm())
+    runner.run(suite_fault_tolerance())
