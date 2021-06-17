@@ -303,6 +303,23 @@ class VirtualSerial(NiraapadClient):
     global object of type "class NiraapadClientHelper" (which in turn invokes
     an RPC to the middlebox), or both.
     """
+
+    # FT_STATUS
+    FT_OK = 0
+
+    # FT_Purge
+    FT_PURGE_RX = 1
+    FT_PURGE_TX = 2
+
+    PARITY_NONE = 0
+    PARITY_ODD = 1
+    PARITY_EVEN = 2
+
+    STOP_BITS_1 = 0
+    STOP_BITS_2 = 2
+
+    DATA_BITS_7 = 7
+    DATA_BITS_8 = 8
     
     backend_type = utils.BACKENDS.SERIAL
 
