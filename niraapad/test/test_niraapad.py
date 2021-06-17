@@ -535,10 +535,10 @@ def suite_n9():
 
 def suite_ur3arm():
     suite = unittest.TestSuite()
-    suite.addTest(TestUR3ArmBackend('test_init_vm'))
-   # suite.addTest(TestUR3ArmBackend('test_init'))
-  #  suite.addTest(TestUR3ArmBackend('test_simple_init'))
-  #  suite.addTest(TestUR3ArmBackend('test_exception_handling'))
+    #suite.addTest(TestUR3ArmBackend('test_init_vm'))
+    suite.addTest(TestUR3ArmBackend('test_init'))
+    suite.addTest(TestUR3ArmBackend('test_simple_init'))
+    suite.addTest(TestUR3ArmBackend('test_exception_handling'))
     return suite
 
 def suite_fault_tolerance():
@@ -548,6 +548,6 @@ def suite_fault_tolerance():
 
 if __name__ == "__main__":
     runner = unittest.TextTestRunner()
-  #  runner.run(suite_n9())
+    runner.run(suite_n9())
     runner.run(suite_ur3arm())
     runner.run(suite_fault_tolerance())
