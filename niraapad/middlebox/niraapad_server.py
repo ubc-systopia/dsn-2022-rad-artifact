@@ -31,6 +31,7 @@ class NiraapadServicer(niraapad_pb2_grpc.NiraapadServicer):
         self.tracer.write_to_file(trace_msg)
 
     def StaticMethod(self, req, context):
+        print("%s.%s" % (req.backend_type, req.method_name))
 
         args = pickle.loads(req.args)
         kwargs = pickle.loads(req.kwargs)
@@ -54,10 +55,14 @@ class NiraapadServicer(niraapad_pb2_grpc.NiraapadServicer):
         return resp
 
     def StaticMethodTrace(self, trace_msg, context):
+        print("%s.%s" % (trace_msg.req.backend_type, trace_msg.req.method_name))
+
         self.log_trace_msg(trace_msg)
         return niraapad_pb2.EmptyMsg()
 
     def Initialize(self, req, context):
+        print("%s.__init__" % (req.backend_type))
+
         # Since the __init__ function is invoked similar to static methods,
         # that is, it is invoked using the class name, this function is
         # analogous to the static_method function above, except that we do not
@@ -89,10 +94,14 @@ class NiraapadServicer(niraapad_pb2_grpc.NiraapadServicer):
         return resp
 
     def InitializeTrace(self, trace_msg, context):
+        print("%s.__init__" % (trace_msg.req.backend_type))
+
         self.log_trace_msg(trace_msg)
         return niraapad_pb2.EmptyMsg()
 
     def GenericMethod(self, req, context):
+        print("%s.%s" % (req.backend_type, req.method_name))
+
         # For any generic class instance method, the logic is similar to that
         # of any generic static method, except that the method is invoked using
         # the class instance name and not directly using the class name.
@@ -123,10 +132,14 @@ class NiraapadServicer(niraapad_pb2_grpc.NiraapadServicer):
         return resp
 
     def GenericMethodTrace(self, trace_msg, context):
+        print("%s.%s" % (trace_msg.req.backend_type, trace_msg.req.method_name))
+
         self.log_trace_msg(trace_msg)
         return niraapad_pb2.EmptyMsg()
 
     def GenericGetter(self, req, context):
+        print("%s.%s" % (req.backend_type, req.property_name))
+
         # Getter functions are an extremely simplified version of GenericMethod
         # since they are interpreted not as functions but as variables, which
         # may be used in an expression; in this case, we simply return the
@@ -150,10 +163,14 @@ class NiraapadServicer(niraapad_pb2_grpc.NiraapadServicer):
         return resp
 
     def GenericGetterTrace(self, trace_msg, context):
+        print("%s.%s" % (trace_msg.req.backend_type, trace_msg.req.property_name))
+
         self.log_trace_msg(trace_msg)
         return niraapad_pb2.EmptyMsg()
 
     def GenericSetter(self, req, context):
+        print("%s.set_%s" % (req.backend_type, req.property_name))
+
         # Setter functions are the opposite of getter functions. They simply
         # assign the provided value to the specified property.
 
@@ -176,6 +193,8 @@ class NiraapadServicer(niraapad_pb2_grpc.NiraapadServicer):
         return resp
 
     def GenericSetterTrace(self, trace_msg, context):
+        print("%s.set_%s" % (trace_msg.req.backend_type, trace_msg.req.property_name))
+
         self.log_trace_msg(trace_msg)
         return niraapad_pb2.EmptyMsg()
  
