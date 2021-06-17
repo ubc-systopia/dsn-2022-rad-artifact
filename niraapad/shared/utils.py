@@ -1,3 +1,5 @@
+import os
+import sys
 import inspect
 
 from enum import Enum
@@ -5,6 +7,14 @@ from enum import Enum
 FUNC_NAME = lambda: inspect.stack()[1].function
 CALLER_METHOD_NAME = lambda: inspect.stack()[2].function
 max_func_name_len = 100
+
+# Disable print() output
+def disable_print():
+    sys.stdout = open(os.devnull, 'w')
+
+# Restore print() output
+def enable_print():
+    sys.stdout = sys.__stdout__
 
 # We define three different mode of operation (MOs)..
 #

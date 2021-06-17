@@ -166,9 +166,14 @@ class NiraapadClient:
                 pickle.dumps(kwargs))
 
         resp = getattr(class_name, method_name)(*args, **kwargs)
-        NiraapadClient.niraapad_client_helper.static_method_trace(
-            backend_type, method_name, pickle.dumps(args),
-            pickle.dumps(kwargs), pickle.dumps(resp))
+
+        try:
+            NiraapadClient.niraapad_client_helper.static_method_trace(
+                backend_type, method_name, pickle.dumps(args),
+                pickle.dumps(kwargs), pickle.dumps(resp))
+        except Exception as e:
+            print("Call to middlebox failed with exception:")
+            print(e)
         return resp
 
     def initialize(self, *args, **kwargs):
@@ -192,9 +197,15 @@ class NiraapadClient:
                     self.backend_type, pickle.dumps(args), pickle.dumps(kwargs))
 
         if NiraapadClient.mo == utils.MO.DIRECT_PLUS_MIDDLEBOX:
-            self.backend_instance_id = \
-                NiraapadClient.niraapad_client_helper.initialize_trace(
-                    self.backend_type, pickle.dumps(args), pickle.dumps(kwargs))
+            try:
+                self.backend_instance_id = \
+                    NiraapadClient.niraapad_client_helper.initialize_trace(
+                        self.backend_type, pickle.dumps(args),
+                        pickle.dumps(kwargs))
+            except Exception as e:
+                self.backend_instance_id = 0
+                print("Call to middlebox failed with exception:")
+                print(e)
 
     def generic_method(self, *args, **kwargs):
         # For any generic class instance method, the logic is similar to that
@@ -217,9 +228,14 @@ class NiraapadClient:
                 pickle.dumps(args), pickle.dumps(kwargs))
 
         resp = getattr(self.backend_instance, method_name)(*args, **kwargs)
-        NiraapadClient.niraapad_client_helper.generic_method_trace(
-            self.backend_type, self.backend_instance_id, method_name,
-            pickle.dumps(args), pickle.dumps(kwargs), pickle.dumps(resp))
+
+        try:
+            NiraapadClient.niraapad_client_helper.generic_method_trace(
+                self.backend_type, self.backend_instance_id, method_name,
+                pickle.dumps(args), pickle.dumps(kwargs), pickle.dumps(resp))
+        except Exception as e:
+            print("Call to middlebox failed with exception:")
+            print(e)
         
         return resp
 
@@ -239,9 +255,14 @@ class NiraapadClient:
                 self.backend_type, self.backend_instance_id, property_name)
 
         resp = getattr(self.backend_instance, property_name)
-        NiraapadClient.niraapad_client_helper.generic_getter_trace(
-            self.backend_type, self.backend_instance_id, property_name,
-            pickle.dumps(resp))
+
+        try:
+            NiraapadClient.niraapad_client_helper.generic_getter_trace(
+                self.backend_type, self.backend_instance_id, property_name,
+                pickle.dumps(resp))
+        except Exception as e:
+            print("Call to middlebox failed with exception:")
+            print(e)
 
         return resp
             
@@ -262,8 +283,13 @@ class NiraapadClient:
             return
 
         setattr(self.backend_instance, property_name, value)
-        NiraapadClient.niraapad_client_helper.generic_setter_trace(
-            self.backend_type, self.backend_instance_id, property_name,
-            pickle.dumps(value))
+
+        try:
+            NiraapadClient.niraapad_client_helper.generic_setter_trace(
+                self.backend_type, self.backend_instance_id, property_name,
+                pickle.dumps(value))
+        except Exception as e:
+            print("Call to middlebox failed with exception:")
+            print(e)
 
         return
