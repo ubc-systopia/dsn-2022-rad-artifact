@@ -11,11 +11,12 @@ class Tracer:
 
     def __init__(self, trace_path=None):
         self.trace_file = Tracer.get_trace_file(trace_path)
-        self.logf = open(self.trace_file, "ab+")
         self.tracing = True
 
     def write_to_file(self, trace_msg):
         if self.tracing == False: return
+
+        logf = open(self.trace_file, "ab+")
 
         now = datetime.now()
         trace_msg_str = trace_msg.SerializeToString()
@@ -31,14 +32,15 @@ class Tracer:
             metadata_size=len(trace_metadata_str))
         trace_header_str = trace_header.SerializeToString()
 
-        self.logf.write(trace_header_str)
-        self.logf.write(trace_metadata_str)
-        self.logf.write(trace_msg_str)
+        logf.write(trace_header_str)
+        logf.write(trace_metadata_str)
+        logf.write(trace_msg_str)
+
+        logf.close()
 
     def stop_tracing(self):
         if self.tracing:
             self.tracing = False
-            self.logf.close()
 
     @staticmethod
     def get_trace_file(trace_path):
