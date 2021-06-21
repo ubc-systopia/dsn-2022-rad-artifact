@@ -8,7 +8,31 @@ import ftdi_serial
 from hein_robots.universal_robots import ur3
 from hein_robots.base import robot_arms
 
-class VirtualRobotArm(NiraapadClient):
+class AttributeMeta(type):
+    def __getattribute__(cls, key):
+        """
+        This function overrides the object.__getattribute__ method and is used
+        trap and appropriately handle all read accesses to class variables.
+        """
+
+        try:
+            return type.__getattribute__(cls, key)
+        except AttributeError:
+            niraapad_backend_type = type.__getattribute__(
+                cls, "niraapad_backend_type")
+            return NiraapadClient.static_getter(niraapad_backend_type, key)
+
+    def __setattr__(cls, key, value):
+        """
+        This function overrides the type.__setattr__ method and is used to
+        trap and appropriately handle all write accesses to class variables.
+        """
+
+        niraapad_backend_type = type.__getattribute__(
+            cls, "niraapad_backend_type")
+        NiraapadClient.static_setter(niraapad_backend_type, key, value)
+
+class VirtualRobotArm(NiraapadClient, metaclass=AttributeMeta):
     """
     This class is just a facade. It's objective is to provide the same
     interface to all Hein Lab experiment scripts as the erstwhile "class
@@ -21,99 +45,11 @@ class VirtualRobotArm(NiraapadClient):
     an RPC to the middlebox), or both.
     """
 
-    backend_type = utils.BACKENDS.ROBOT_ARM
+    niraapad_backend_type = utils.BACKENDS.ROBOT_ARM
 
     def __init__(self, *args, **kwargs):
         return self.initialize(*args, **kwargs)
-
-    @property
-    def connected(self):
-        return self.generic_getter()
-
-    @property
-    def max_velocity(self):
-        return self.generic_getter()
-
-    @max_velocity.setter
-    def max_velocity(self, value):
-        return self.generic_setter(value)
-
-    @property
-    def default_velocity(self):
-        return self.generic_getter()
-
-    @default_velocity.setter
-    def default_velocity(self, value):
-        return self.generic_setter(value)
-
-    @property
-    def acceleration(self):
-        return self.generic_getter()
-
-    @property
-    def velocity(self):
-        return self.generic_getter()
-
-    @property
-    def location(self):
-        return self.generic_getter()
-
-    @property
-    def twist(self):
-        return self.generic_getter()
-
-    @property
-    def wrench(self):
-        return self.generic_getter()
-
-    @property
-    def joint_positions(self):
-        return self.generic_getter()
-
-    @property
-    def joint_count(self):
-        return self.generic_getter()
-
-    @property
-    def gripper_position(self):
-        return self.generic_getter()
-
-    @property
-    def gripper_velocity(self):
-        return self.generic_getter()
-
-    @property
-    def gripper_default_velocity(self):
-        return self.generic_getter()
-
-    @gripper_default_velocity.setter
-    def gripper_default_velocity(self, velocity):
-        return self.generic_setter(value)
-
-    @property
-    def gripper_default_force(self):
-        return self.generic_getter()
-
-    @gripper_default_force.setter
-    def gripper_default_force(self, force):
-        return self.generic_setter(value)
-
-    @property
-    def tool_offset(self):
-        return self.generic_getter()
-
-    @tool_offset.setter
-    def tool_offset(self):
-        return self.generic_setter(value)
-
-    @property
-    def tool_mass(self):
-        return self.generic_getter()
-
-    @tool_mass.setter
-    def tool_mass(self, value):
-        return self.generic_setter(value)
-
+    
     def connect(self, *args, **kwargs):
         return self.generic_method(*args, **kwargs)
 
@@ -180,7 +116,7 @@ class VirtualRobotArm(NiraapadClient):
     def close_gripper(self, *args, **kwargs):
         return self.generic_method(*args, **kwargs)
 
-class VirtualUR3Arm(VirtualRobotArm):
+class VirtualUR3Arm(VirtualRobotArm, metaclass=AttributeMeta):
     """
     This class is just a facade. It's objective is to provide the same
     interface to all Hein Lab experiment scripts as the erstwhile "class
@@ -193,70 +129,10 @@ class VirtualUR3Arm(VirtualRobotArm):
     an RPC to the middlebox), or both.
     """
 
-    backend_type = utils.BACKENDS.UR3_ARM
+    niraapad_backend_type = utils.BACKENDS.UR3_ARM
 
     def __init__(self, *args, **kwargs):
         return self.initialize(*args, **kwargs)
-
-    @property
-    def robot(self):
-        return self.generic_getter()
-
-    @property
-    def connected(self):
-        return self.generic_getter()
-
-    @property
-    def default_joint_velocity(self):
-        return self.generic_getter()
-
-    @default_joint_velocity.setter
-    def default_joint_velocity(self, value):
-        return self.generic_setter(value)
-
-    @property
-    def acceleration(self):
-        return self.generic_getter()
-
-    @property
-    def velocity(self):
-        return self.generic_getter()
-
-    @property
-    def pose(self):
-        return self.generic_getter()
-
-    @property
-    def location(self):
-        return self.generic_getter()
-
-    @property
-    def joint_positions(self):
-        return self.generic_getter()
-
-    @property
-    def joint_count(self):
-        return self.generic_getter()
-
-    @property
-    def tool_offset(self):
-        return self.generic_getter()
-
-    @tool_offset.setter
-    def tool_offset(self, value):
-        return self.generic_setter(value)
-
-    @property
-    def tool_mass(self):
-        return self.generic_getter()
-
-    @tool_mass.setter
-    def tool_mass(self, value):
-        return self.generic_setter(value)
-
-    @property
-    def gripper_position(self):
-        return self.generic_getter()
 
     def connect(self, *args, **kwargs):
         return self.generic_method(*args, **kwargs)
@@ -291,7 +167,7 @@ class VirtualUR3Arm(VirtualRobotArm):
     def open_gripper(self, *args, **kwargs):
         return self.generic_method(*args, **kwargs)
 
-class VirtualSerial(NiraapadClient):
+class VirtualSerial(NiraapadClient, metaclass=AttributeMeta):
     """
     This class is just a facade. It's objective is to provide the same
     interface to all Hein Lab experiment scripts as the erstwhile "class
@@ -304,39 +180,19 @@ class VirtualSerial(NiraapadClient):
     an RPC to the middlebox), or both.
     """
 
-    # FT_STATUS
-    FT_OK = 0
-
-    # FT_Purge
-    FT_PURGE_RX = 1
-    FT_PURGE_TX = 2
-
-    PARITY_NONE = 0
-    PARITY_ODD = 1
-    PARITY_EVEN = 2
-
-    STOP_BITS_1 = 0
-    STOP_BITS_2 = 2
-
-    DATA_BITS_7 = 7
-    DATA_BITS_8 = 8
-    
-    backend_type = utils.BACKENDS.SERIAL
+    niraapad_backend_type = utils.BACKENDS.SERIAL
 
     @staticmethod
     def list_devices(*args, **kwargs):
-        return NiraapadClient.static_method(VirtualSerial.backend_type,
-                                            *args, **kwargs)
+        return NiraapadClient.static_method(VirtualSerial.niraapad_backend_type, *args, **kwargs)
 
     @staticmethod
     def list_device_ports(*args, **kwargs):
-        return NiraapadClient.static_method(VirtualSerial.backend_type,
-                                            *args, **kwargs)
+        return NiraapadClient.static_method(VirtualSerial.niraapad_backend_type, *args, **kwargs)
 
     @classmethod
     def list_device_serials(cls, *args, **kwargs):
-        return NiraapadClient.static_method(VirtualSerial.backend_type,
-                                            *args, **kwargs)
+        return NiraapadClient.static_method(VirtualSerial.niraapad_backend_type, *args, **kwargs)
 
     def __init__(self, *args, **kwargs):
         return self.initialize(*args, **kwargs)
@@ -358,38 +214,6 @@ class VirtualSerial(NiraapadClient):
 
     def update_timeouts(self, *args, **kwargs):
         return self.generic_method(*args, **kwargs)
-
-    @property
-    def info(self):
-        return self.generic_getter()
-
-    @property
-    def serial_number(self):
-        return self.generic_getter()
-
-    @property
-    def in_waiting(self):
-        return self.generic_getter()
-
-    @property
-    def out_waiting(self):
-        return self.generic_getter()
-
-    @property
-    def read_timeout(self):
-        return self.generic_getter()
-
-    @read_timeout.setter
-    def read_timeout(self, value):
-        self.generic_setter(value)
-
-    @property
-    def write_timeout(self):
-        return self.generic_getter()
-
-    @write_timeout.setter
-    def write_timeout(self, value):
-        self.generic_setter(value)
 
     def read(self, *args, **kwargs):
         return self.generic_method(*args, **kwargs)

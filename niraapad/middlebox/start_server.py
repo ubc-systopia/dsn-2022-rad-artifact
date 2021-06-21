@@ -1,5 +1,6 @@
 import os
 import sys
+import signal
 import argparse
 
 # Path to this file start_server.py
@@ -9,6 +10,14 @@ file_path = os.path.dirname(os.path.abspath(__file__))
 niraapad_path = os.path.dirname(os.path.dirname(file_path))
 
 from niraapad.middlebox.niraapad_server import NiraapadServer
+
+server = None
+
+def signal_handler(signal_received, frame):
+    print("Signal %s received, exiting gracefully" % str(signal_received))
+    if server != None: server.stop()
+
+signal.signal(signal.SIGINT, signal_handler);
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
@@ -32,5 +41,5 @@ if __name__ == "__main__":
     if args.secure == False:
         args.keysdir = None
 
-    niraapad_server = NiraapadServer(args.port, args.tracedir, args.keysdir)
-    niraapad_server.start(wait=True)
+    server = NiraapadServer(args.port, args.tracedir, args.keysdir)
+    server.start(wait=True)

@@ -55,7 +55,62 @@ class NiraapadServicer(niraapad_pb2_grpc.NiraapadServicer):
         return resp
 
     def StaticMethodTrace(self, trace_msg, context):
-        print("%s.%s" % (trace_msg.req.backend_type, trace_msg.req.method_name))
+        print("(trace) %s.%s" % (trace_msg.req.backend_type, trace_msg.req.method_name))
+
+        self.log_trace_msg(trace_msg)
+        return niraapad_pb2.EmptyMsg()
+
+    def StaticGetter(self, req, context):
+        print("%s.%s" % (req.backend_type, req.property_name))
+
+        resp = None
+        exception = None
+
+        try:
+            module_name = importlib.import_module(
+                utils.BACKENDS.modules[req.backend_type])
+            class_name = getattr(module_name, req.backend_type)
+            resp = getattr(class_name, req.property_name)
+        except Exception as e: exception = e
+            
+        resp = niraapad_pb2.StaticGetterResp(exception=pickle.dumps(exception),
+                                             resp=pickle.dumps(resp))
+
+        trace_msg = niraapad_pb2.StaticGetterTraceMsg(req=req, resp=resp)
+        self.log_trace_msg(trace_msg)
+
+        return resp
+
+    def StaticGetterTrace(self, trace_msg, context):
+        print("(trace) %s.%s" % (trace_msg.req.backend_type, trace_msg.req.property_name))
+
+        self.log_trace_msg(trace_msg)
+        return niraapad_pb2.EmptyMsg()
+
+    def StaticSetter(self, req, context):
+        print("%s.set_%s" % (req.backend_type, req.property_name))
+
+        value = pickle.loads(req.value)
+
+        resp = None
+        exception = None
+
+        try:
+            module_name = importlib.import_module(
+                utils.BACKENDS.modules[req.backend_type])
+            class_name = getattr(module_name, req.backend_type)
+            setattr(class_name, req.property_name, value)
+        except Exception as e: exception = e
+            
+        resp = niraapad_pb2.StaticSetterResp(exception=pickle.dumps(exception))
+
+        trace_msg = niraapad_pb2.StaticSetterTraceMsg(req=req, resp=resp)
+        self.log_trace_msg(trace_msg)
+
+        return resp
+
+    def StaticSetterTrace(self, trace_msg, context):
+        print("(trace) %s.%s" % (trace_msg.req.backend_type, trace_msg.req.property_name))
 
         self.log_trace_msg(trace_msg)
         return niraapad_pb2.EmptyMsg()
@@ -94,7 +149,7 @@ class NiraapadServicer(niraapad_pb2_grpc.NiraapadServicer):
         return resp
 
     def InitializeTrace(self, trace_msg, context):
-        print("%s.__init__" % (trace_msg.req.backend_type))
+        print("(trace) %s.__init__" % (trace_msg.req.backend_type))
 
         self.log_trace_msg(trace_msg)
         return niraapad_pb2.EmptyMsg()
@@ -132,7 +187,7 @@ class NiraapadServicer(niraapad_pb2_grpc.NiraapadServicer):
         return resp
 
     def GenericMethodTrace(self, trace_msg, context):
-        print("%s.%s" % (trace_msg.req.backend_type, trace_msg.req.method_name))
+        print("(trace) %s.%s" % (trace_msg.req.backend_type, trace_msg.req.method_name))
 
         self.log_trace_msg(trace_msg)
         return niraapad_pb2.EmptyMsg()
@@ -163,7 +218,7 @@ class NiraapadServicer(niraapad_pb2_grpc.NiraapadServicer):
         return resp
 
     def GenericGetterTrace(self, trace_msg, context):
-        print("%s.%s" % (trace_msg.req.backend_type, trace_msg.req.property_name))
+        print("(trace) %s.%s" % (trace_msg.req.backend_type, trace_msg.req.property_name))
 
         self.log_trace_msg(trace_msg)
         return niraapad_pb2.EmptyMsg()
@@ -193,7 +248,7 @@ class NiraapadServicer(niraapad_pb2_grpc.NiraapadServicer):
         return resp
 
     def GenericSetterTrace(self, trace_msg, context):
-        print("%s.set_%s" % (trace_msg.req.backend_type, trace_msg.req.property_name))
+        print("(trace) %s.set_%s" % (trace_msg.req.backend_type, trace_msg.req.property_name))
 
         self.log_trace_msg(trace_msg)
         return niraapad_pb2.EmptyMsg()
@@ -222,7 +277,7 @@ class NiraapadServer:
         niraapad_pb2_grpc.add_NiraapadServicer_to_server(self.niraapad_servicer, self.server)
 
     def start(self, wait=False):
-        #print("NiraapadServer::start")
+        print("NiraapadServer::start")
         self.server.start()
         
         # cleanly blocks the calling thread until the server terminates
@@ -231,7 +286,7 @@ class NiraapadServer:
             self.server.wait_for_termination()
 
     def stop(self):
-        #print("NiraapadServer::stop")
+        print("NiraapadServer::stop")
         sys.stdout.flush()
         self.niraapad_servicer.stop_tracing()
         event = self.server.stop(None)

@@ -9,9 +9,9 @@ import niraapad.shared.utils as utils
 
 class NiraapadClientHelper:
     """
-    The NiraapadClientHelper class encapsulates a gRPC client, which forwards all
-    calls from class Serial on Lab Computer to the middlebox, which in turn is
-    connected to the modules via actual serial communication. Unlike class
+    The NiraapadClientHelper class encapsulates a gRPC client, which forwards
+    all calls from class Serial on Lab Computer to the middlebox, which in turn
+    is connected to the modules via actual serial communication. Unlike class
     Serial, there is only one global instance of class NiraapadClientHelper.
     """
 
@@ -47,6 +47,38 @@ class NiraapadClientHelper:
                 backend_type=backend_type, method_name=method_name,
                 args=args_pickled, kwargs=kwargs_pickled),
             resp=niraapad_pb2.StaticMethodResp(resp=resp_pickled)))
+
+    def static_getter(self, backend_type, property_name):
+        resp = self.stub.StaticGetter(niraapad_pb2.StaticGetterReq(
+            backend_type=backend_type, property_name=property_name))
+
+        exception = pickle.loads(resp.exception)
+        if exception != None: raise exception
+        return pickle.loads(resp.resp)
+
+    def static_getter_trace(self, backend_type, property_name, resp_pickled):
+        resp = self.stub.StaticGetterTrace(niraapad_pb2.StaticGetterTraceMsg(
+            req=niraapad_pb2.StaticGetterReq(
+                backend_type=backend_type, property_name=property_name),
+            resp=niraapad_pb2.StaticGetterResp(resp=resp_pickled)))
+
+    def static_setter(self, backend_type, property_name, value_pickled):
+        resp = self.stub.StaticSetter(niraapad_pb2.StaticSetterReq(
+            backend_type=backend_type,
+            property_name=property_name,
+            value=value_pickled))
+
+        exception = pickle.loads(resp.exception)
+        if exception != None: raise exception
+
+    def static_setter_trace(self, backend_type, property_name, value_pickled):
+        self.stub.StaticSetterTrace(niraapad_pb2.StaticSetterTraceMsg(
+            req=niraapad_pb2.StaticSetterReq(
+                backend_type=backend_type,
+                property_name=property_name,
+                value=value_pickled),
+            resp=niraapad_pb2.StaticSetterResp(
+                exception=pickle.dumps(None))))
 
     def initialize(self, backend_type, args_pickled, kwargs_pickled):
         self.backend_instance_count += 1
@@ -130,7 +162,7 @@ class NiraapadClientHelper:
                 exception=pickle.dumps(None))))
 
 class NiraapadClient:
-    mo = utils.MO.DIRECT_PLUS_MIDDLEBOX
+    niraapad_mo = utils.MO.DIRECT_PLUS_MIDDLEBOX
     niraapad_client_helper = None
 
     def __init__(self):
@@ -157,10 +189,10 @@ class NiraapadClient:
             utils.BACKENDS.modules[backend_type])
         class_name = getattr(module_name, backend_type)
 
-        if NiraapadClient.mo == utils.MO.DIRECT:
+        if NiraapadClient.niraapad_mo == utils.MO.DIRECT:
             return getattr(class_name, method_name)(*args, **kwargs)
 
-        if NiraapadClient.mo == utils.MO.VIA_MIDDLEBOX:
+        if NiraapadClient.niraapad_mo == utils.MO.VIA_MIDDLEBOX:
             return NiraapadClient.niraapad_client_helper.static_method(
                 backend_type, method_name, pickle.dumps(args),
                 pickle.dumps(kwargs))
@@ -176,120 +208,205 @@ class NiraapadClient:
             print(e)
         return resp
 
+    @staticmethod
+    def static_getter(backend_type, property_name):
+        module_name = importlib.import_module(
+            utils.BACKENDS.modules[backend_type])
+        class_name = getattr(module_name, backend_type)
+
+        if NiraapadClient.niraapad_mo == utils.MO.DIRECT:
+            return getattr(class_name, property_name)
+
+        if NiraapadClient.niraapad_mo == utils.MO.VIA_MIDDLEBOX:
+            return NiraapadClient.niraapad_client_helper.static_getter(
+                backend_type, property_name)
+
+        resp = getattr(class_name, property_name)
+
+        try:
+            NiraapadClient.niraapad_client_helper.static_getter_trace(
+                backend_type,property_name, pickle.dumps(resp))
+        except Exception as e:
+            print("Call to middlebox failed with exception:")
+            print(e)
+
+        return resp
+
+    @staticmethod
+    def static_setter(backend_type, property_name, value):
+        module_name = importlib.import_module(
+            utils.BACKENDS.modules[backend_type])
+        class_name = getattr(module_name, backend_type)
+
+        if NiraapadClient.niraapad_mo == utils.MO.DIRECT:
+            return setattr(class_name, property_name, value)
+
+        if NiraapadClient.niraapad_mo == utils.MO.VIA_MIDDLEBOX:
+            return NiraapadClient.niraapad_client_helper.static_setter(
+                backend_type, property_name, pickle.dumps(value))
+
+        setattr(class_name, property_name, value)
+
+        try:
+            NiraapadClient.niraapad_client_helper.static_setter_trace(
+                backend_type, property_name, pickle.dumps(value))
+        except Exception as e:
+            print("Call to middlebox failed with exception:")
+            print(e)
+
     def initialize(self, *args, **kwargs):
-        # Since the __init__ function is invoked similar to static methods,
-        # that is, it is invoked using the class name, this function is
-        # analogous to the static_method function above, except that we do not
-        # need a variable for the method name, which is known to be "__init__"
-        # in this case.
+        """
+        Since the __init__ function is invoked similar to static methods,
+        that is, it is invoked using the class name, this function is
+        analogous to the static_method function above, except that we do not
+        need a variable for the method name, which is known to be "__init__"
+        in this case.
+        """
 
         module_name = importlib.import_module(
-            utils.BACKENDS.modules[self.backend_type])
-        class_name = getattr(module_name, self.backend_type)
+            utils.BACKENDS.modules[self.niraapad_backend_type])
+        class_name = getattr(module_name, self.niraapad_backend_type)
 
-        if NiraapadClient.mo == utils.MO.DIRECT or \
-           NiraapadClient.mo == utils.MO.DIRECT_PLUS_MIDDLEBOX:
-            self.backend_instance = class_name(*args, **kwargs)
+        if NiraapadClient.niraapad_mo == utils.MO.DIRECT or \
+           NiraapadClient.niraapad_mo == utils.MO.DIRECT_PLUS_MIDDLEBOX:
+            self.niraapad_backend_instance = class_name(*args, **kwargs)
 
-        if NiraapadClient.mo == utils.MO.VIA_MIDDLEBOX:
-            self.backend_instance_id = \
+        if NiraapadClient.niraapad_mo == utils.MO.VIA_MIDDLEBOX:
+            self.niraapad_backend_instance_id = \
                 NiraapadClient.niraapad_client_helper.initialize(
-                    self.backend_type, pickle.dumps(args), pickle.dumps(kwargs))
+                    self.niraapad_backend_type, pickle.dumps(args),
+                    pickle.dumps(kwargs))
 
-        if NiraapadClient.mo == utils.MO.DIRECT_PLUS_MIDDLEBOX:
+        if NiraapadClient.niraapad_mo == utils.MO.DIRECT_PLUS_MIDDLEBOX:
             try:
-                self.backend_instance_id = \
+                self.niraapad_backend_instance_id = \
                     NiraapadClient.niraapad_client_helper.initialize_trace(
-                        self.backend_type, pickle.dumps(args),
+                        self.niraapad_backend_type, pickle.dumps(args),
                         pickle.dumps(kwargs))
             except Exception as e:
-                self.backend_instance_id = 0
+                self.niraapad_backend_instance_id = 0
                 print("Call to middlebox failed with exception:")
                 print(e)
 
     def generic_method(self, *args, **kwargs):
-        # For any generic class instance method, the logic is similar to that
-        # of any generic static method, except that the method is invoked using
-        # the class instance name and not directly using the class name.
-        # Thus, the following set of statements is analogous to the function
-        # definition of the static_methods function above, except that we deal
-        # with specific class instances identified using their unique
-        # identifiers ("backend_instance_id"), which were set during
-        # initialization.
+        """
+        For any generic class instance method, the logic is similar to that
+        of any generic static method, except that the method is invoked using
+        the class instance name and not directly using the class name.
+        Thus, the following set of statements is analogous to the function
+        definition of the static_methods function above, except that we deal
+        with specific class instances identified using their unique
+        identifiers ("niraapad_backend_instance_id"), which were set during
+        initialization.
+        """
 
         method_name = utils.CALLER_METHOD_NAME()
 
-        if NiraapadClient.mo == utils.MO.DIRECT:
-            return getattr(self.backend_instance, method_name)(*args, **kwargs)
+        if NiraapadClient.niraapad_mo == utils.MO.DIRECT:
+            return getattr(self.niraapad_backend_instance, method_name)(
+                *args, **kwargs)
 
-        if NiraapadClient.mo == utils.MO.VIA_MIDDLEBOX:
+        if NiraapadClient.niraapad_mo == utils.MO.VIA_MIDDLEBOX:
             return NiraapadClient.niraapad_client_helper.generic_method(
-                self.backend_type, self.backend_instance_id, method_name,
-                pickle.dumps(args), pickle.dumps(kwargs))
+                self.niraapad_backend_type, self.niraapad_backend_instance_id,
+                method_name, pickle.dumps(args), pickle.dumps(kwargs))
 
-        resp = getattr(self.backend_instance, method_name)(*args, **kwargs)
+        resp = getattr(self.niraapad_backend_instance, method_name)(
+            *args, **kwargs)
 
         try:
             NiraapadClient.niraapad_client_helper.generic_method_trace(
-                self.backend_type, self.backend_instance_id, method_name,
-                pickle.dumps(args), pickle.dumps(kwargs), pickle.dumps(resp))
+                self.niraapad_backend_type, self.niraapad_backend_instance_id,
+                method_name, pickle.dumps(args), pickle.dumps(kwargs),
+                pickle.dumps(resp))
         except Exception as e:
             print("Call to middlebox failed with exception:")
             print(e)
         
         return resp
 
-    def generic_getter(self):
-        # Getter functions are an extremely simplified version of GenericMethod
-        # since they are interpreted not as functions but as variables, which
-        # may be used in an expression; in this case, we simply return the
-        # variable value.
+    def generic_getter(self, property_name):
+        """
+        Getter functions are an extremely simplified version of GenericMethod
+        since they are interpreted not as functions but as variables, which
+        may be used in an expression; in this case, we simply return the
+        variable value.
+        """
 
-        property_name = utils.CALLER_METHOD_NAME()
+        if NiraapadClient.niraapad_mo == utils.MO.DIRECT:
+            return getattr(self.niraapad_backend_instance, property_name)
 
-        if NiraapadClient.mo == utils.MO.DIRECT:
-            return getattr(self.backend_instance, property_name)
-
-        if NiraapadClient.mo == utils.MO.VIA_MIDDLEBOX:
+        if NiraapadClient.niraapad_mo == utils.MO.VIA_MIDDLEBOX:
             return NiraapadClient.niraapad_client_helper.generic_getter(
-                self.backend_type, self.backend_instance_id, property_name)
+                self.niraapad_backend_type, self.niraapad_backend_instance_id,
+                property_name)
 
-        resp = getattr(self.backend_instance, property_name)
+        resp = getattr(self.niraapad_backend_instance, property_name)
 
         try:
             NiraapadClient.niraapad_client_helper.generic_getter_trace(
-                self.backend_type, self.backend_instance_id, property_name,
-                pickle.dumps(resp))
+                self.niraapad_backend_type, self.niraapad_backend_instance_id,
+                property_name, pickle.dumps(resp))
         except Exception as e:
             print("Call to middlebox failed with exception:")
             print(e)
 
         return resp
             
-    def generic_setter(self, value):
-        # Setter functions are the opposite of getter functions. They simply
-        # assign the provided value to the specified property.
+    def generic_setter(self, property_name, value):
+        """
+        Setter functions are the opposite of getter functions. They simply
+        assign the provided value to the specified property.
+        """
 
-        property_name = utils.CALLER_METHOD_NAME()
-
-        if NiraapadClient.mo == utils.MO.DIRECT:
-            setattr(self.backend_instance, property_name, value)
+        if NiraapadClient.niraapad_mo == utils.MO.DIRECT:
+            setattr(self.niraapad_backend_instance, property_name, value)
             return 
 
-        if NiraapadClient.mo == utils.MO.VIA_MIDDLEBOX:
+        if NiraapadClient.niraapad_mo == utils.MO.VIA_MIDDLEBOX:
             NiraapadClient.niraapad_client_helper.generic_setter(
-                self.backend_type, self.backend_instance_id, property_name,
-                pickle.dumps(value))
+                self.niraapad_backend_type, self.niraapad_backend_instance_id,
+                property_name, pickle.dumps(value))
             return
 
-        setattr(self.backend_instance, property_name, value)
+        setattr(self.niraapad_backend_instance, property_name, value)
 
         try:
             NiraapadClient.niraapad_client_helper.generic_setter_trace(
-                self.backend_type, self.backend_instance_id, property_name,
-                pickle.dumps(value))
+                self.niraapad_backend_type, self.niraapad_backend_instance_id,
+                property_name, pickle.dumps(value))
         except Exception as e:
             print("Call to middlebox failed with exception:")
             print(e)
 
         return
+
+    def __getattribute__(self, key):
+        """
+        This function overrides the object.__getattribute__ method and is used
+        trap and appropriately handle all read accesses to instance variables.
+        """
+
+        try:
+            return object.__getattribute__(self, key)
+        except AttributeError:
+            return self.generic_getter(key)
+
+    def __setattr__(self, key, value):
+        """
+        This function overrides the object.__setattr__ method and is used to
+        trap and appropriately handle all write accesses to instance variables.
+        We distinguish between HeinLab-specific variables and
+        Niraapad-speicific variables using the "niraapad" prefix. Tihs
+        distinction is necessary when assigning values or seting new
+        variables. For HeinLab-specific variables, we need to assign the
+        corresponding variables in the original class, e.g., DirectSerial,
+        which may be on the remote machine as well, depending on the mode of
+        operation. However, for Niraapad-specific variables, we need to
+        assign the variables in this class (NiraapadCLient) itself!
+        """
+
+        if key.startswith("niraapad"):
+            return object.__setattr__(self, key, value)
+
+        self.generic_setter(key, value)
