@@ -45,6 +45,12 @@ service Niraapad {
   rpc GenericMethodTrace(GenericMethodTraceMsg) returns (EmptyMsg) {}
 }
 
+message StartServerTraceMsg {
+}
+
+message StopServerTraceMsg {
+}
+
 message StaticMethodReq {
   string backend_type = 1;
   string method_name = 2;

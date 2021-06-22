@@ -24,7 +24,12 @@ class NiraapadServicer(niraapad_pb2_grpc.NiraapadServicer):
         self.backend_instances = {}
         self.tracer = Tracer(tracedir)
 
+        trace_msg = niraapad_pb2.StartServerTraceMsg()
+        self.tracer.write_to_file(trace_msg)
+
     def stop_tracing(self):
+        trace_msg = niraapad_pb2.StopServerTraceMsg()
+        self.tracer.write_to_file(trace_msg)
         self.tracer.stop_tracing()
 
     def log_trace_msg(self, trace_msg):
