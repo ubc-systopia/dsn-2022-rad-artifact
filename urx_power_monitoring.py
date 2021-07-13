@@ -9,8 +9,7 @@ from pymongo import MongoClient
 # python_urx_path = os.path.join(urx_path, "python-urx-master")
 # sys.path.append(python_urx_path)
 
-
-sys.path.append(r"C:\Users\LBRY-SVC-Patron\Desktop\moduals\python-urx-master")
+sys.path.append(r"C:\Users\LBRY-SVC-Patron\Desktop\moduals\python-urx-master")# change the path to where the folder for urx is when start to run the code 
 import urx
 
 
@@ -18,10 +17,9 @@ import json
 import csv
 import numpy
 
-r = urx.Robot("192.168.229.128", use_rt=True, urFirm=5.1)
+r = urx.Robot("192.168.229.128", use_rt=True, urFirm=5.1) # change the ip address when start to run the code
 
 if __name__ == "__main__":
-    logging.basicConfig(level=logging.INFO)
     while 1:
         #try:
             get_all_data = r.get_all_rt_data()
