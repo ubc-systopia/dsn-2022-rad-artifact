@@ -14,24 +14,26 @@ from pymongo import MongoClient
 sys.path.append(r"C:\Users\LBRY-SVC-Patron\Desktop\moduals\python-urx-master")# change the path to where the folder for urx is when start to run the code 
 import urx
 
+import getopt
+import sys
 
 
-# getting arg from command line, this part may needs some testing and debuging
+
+
+# getting arg from command line
 ip_address = "0.0.0.0"
 frequency = 1
 data_base_client="data_from_sim"
 output_filename = "bookForData.csv"
 
-options, remainder = getopt.gnu_getopt(sys.argv[1:], 'o:v',['ip_address=', 
-                                                             'frequency=‘,
-                                                       'data_base_client=','output_filename=',])
+options, remainder = getopt.gnu_getopt(sys.argv[1:], 'o:v',['ip_address=', 'frequency=','data_base_client=','output_filename=',])
 
 for opt, arg in options:
-    if opt == '--ip_address’:
+    if opt == '--ip_address':
         ip_address = arg
-    elif opt == '--frequency’:
+    elif opt == '--frequency':
         frequency = arg
-    elif opt == '--data_base_client’:
+    elif opt == '--data_base_client':
         data_base_client = arg
     elif opt == '--output_filename':
         output_filename = arg
@@ -67,7 +69,7 @@ if __name__ == "__main__":
                 for key, value in all_data_dictionary.items():
                     writer.writerow([key, value])
 
-            print("##########\t##########\t##########\t##########")
+            print("end of excution ##########\t##########\t##########\t##########")
 
             time.sleep(frequency)
             break
