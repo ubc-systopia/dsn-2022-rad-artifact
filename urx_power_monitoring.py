@@ -16,8 +16,31 @@ import urx
 
 
 
+# getting arg from command line, this part may needs some testing and debuging
+ip_address = "0.0.0.0"
+frequency = 1
+data_base_client="data_from_sim"
+output_filename = "bookForData.csv"
 
-r = urx.Robot("192.168.229.128", use_rt=True, urFirm=5.1) # change the ip address when start to run the code
+options, remainder = getopt.gnu_getopt(sys.argv[1:], 'o:v',['ip_address=', 
+                                                             'frequency=‘,
+                                                       'data_base_client=','output_filename=',])
+
+for opt, arg in options:
+    if opt == '--ip_address’:
+        ip_address = arg
+    elif opt == '--frequency’:
+        frequency = arg
+    elif opt == '--data_base_client’:
+        data_base_client = arg
+    elif opt == '--output_filename':
+        output_filename = arg
+ # end of gettting arg from command line
+
+
+
+
+r = urx.Robot(ip_address, use_rt=True, urFirm=5.1) # change the ip address when start to run the code
 
 if __name__ == "__main__":
     while 1:
@@ -35,18 +58,18 @@ if __name__ == "__main__":
 
             #working code for mongo DB
             client=MongoClient("localhost",27017)
-            db=client["dataFromSim"]
-            collection_traces=db["commandTraces"]
+            db=client[data_base_client]
+            collection_traces=db["command_traces"]
             collection_traces.insert_one(all_data_dictionary)
 
-            with open('bookForData.csv', 'w', newline='') as csv_file:
+            with open('output_filename', 'w', newline='') as csv_file:
                 writer = csv.writer(csv_file)
                 for key, value in all_data_dictionary.items():
                     writer.writerow([key, value])
 
             print("##########\t##########\t##########\t##########")
 
-            time.sleep(1)
+            time.sleep(frequency)
             break
 
         except:
