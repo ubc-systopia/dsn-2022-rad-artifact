@@ -27,28 +27,23 @@ if __name__ == "__main__":
             get_all_data = r.get_all_rt_data()
             print(get_all_data)
 
+            all_data_dictionary=get_all_data
 
-            allDataDictionary=get_all_data
-            print(allDataDictionary)
-            print(type(allDataDictionary))
-           # str1 = str(allDataDictionary)
+            for value in all_data_dictionary:
+                if(type(all_data_dictionary[value]) ==  numpy.ndarray):
+                    all_data_dictionary[value]=str(all_data_dictionary[value])
 
-
-            for value in allDataDictionary:
-                if(type(allDataDictionary[value]) ==  numpy.ndarray):
-                    allDataDictionary[value]=str(allDataDictionary[value])
-
-            DataInjson = json.dumps(allDataDictionary,indent = 4)
+            data_in_json = json.dumps(all_data_dictionary,indent = 4)
 
             #working code for mongo DB
             client=MongoClient("localhost",27017)
             db=client["dataFromSim"]
-            collectionTraces=db["commandTraces"]
-            collectionTraces.insert_one(allDataDictionary)
+            collection_traces=db["commandTraces"]
+            collection_traces.insert_one(all_data_dictionary)
 
             with open('bookForData.csv', 'w', newline='') as csv_file:
                 writer = csv.writer(csv_file)
-                for key, value in allDataDictionary.items():
+                for key, value in all_data_dictionary.items():
                     writer.writerow([key, value])
 
             print("##########\t##########\t##########\t##########")
