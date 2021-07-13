@@ -21,7 +21,7 @@ r = urx.Robot("192.168.229.128", use_rt=True, urFirm=5.1) # change the ip addres
 
 if __name__ == "__main__":
     while 1:
-        #try:
+        try:
             get_all_data = r.get_all_rt_data()
             print(get_all_data)
 
@@ -49,7 +49,7 @@ if __name__ == "__main__":
             time.sleep(1)
             break
 
-        #except:
+        except:
             pass
 
     r.close()
