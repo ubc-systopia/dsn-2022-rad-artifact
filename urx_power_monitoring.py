@@ -2,20 +2,20 @@ import time
 import logging
 import sys
 import os
+import json
+import csv
+import numpy
 from pymongo import MongoClient
 
 # file_path = os.path.dirname(os.path.abspath(__file__))
 # urx_path = os.path.dirname(os.path.dirname(file_path))
 # python_urx_path = os.path.join(urx_path, "python-urx-master")
 # sys.path.append(python_urx_path)
-
 sys.path.append(r"C:\Users\LBRY-SVC-Patron\Desktop\moduals\python-urx-master")# change the path to where the folder for urx is when start to run the code 
 import urx
 
 
-import json
-import csv
-import numpy
+
 
 r = urx.Robot("192.168.229.128", use_rt=True, urFirm=5.1) # change the ip address when start to run the code
 
