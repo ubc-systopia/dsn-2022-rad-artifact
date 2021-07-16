@@ -11,7 +11,10 @@ from pymongo import MongoClient
 # urx_path = os.path.dirname(os.path.dirname(file_path))
 # python_urx_path = os.path.join(urx_path, "python-urx-master")
 # sys.path.append(python_urx_path)
-sys.path.append(r"C:\Users\LBRY-SVC-Patron\Desktop\moduals\python-urx-master")# change the path to where the folder for urx is when start to run the code 
+
+#sys.path.append(r"C:\Users\LBRY-SVC-Patron\Desktop\moduals\python-urx-master")# change the path to where the folder for urx is when start to run the code 
+
+#importing urx may require some special steps, unlike other imports
 import urx
 
 import getopt
