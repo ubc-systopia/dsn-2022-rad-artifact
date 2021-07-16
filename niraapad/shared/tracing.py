@@ -10,15 +10,22 @@ class Tracer:
     trace_file_counter = 1
 
     def __init__(self, trace_path=None):
-        self.trace_file = Tracer.get_trace_file(trace_path)
+        self.trace_path = trace_path
+        self.trace_file = Tracer.get_trace_file(self.trace_path)
         self.tracing = True
+        self.tracing_day = datetime.now().date().day
 
     def write_to_file(self, trace_msg):
         if self.tracing == False: return
 
+        now = datetime.now()
+        today = now.date().day
+        if today != self.tracing_day:
+            self.trace_file = Tracer.get_trace_file(self.trace_path)
+        self.tracing_day = today
+
         logf = open(self.trace_file, "ab+")
 
-        now = datetime.now()
         trace_msg_str = trace_msg.SerializeToString()
         trace_msg_type = (str(type(trace_msg))).split("'")[1].split(".")[-1]
 
