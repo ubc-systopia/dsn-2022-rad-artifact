@@ -46,7 +46,9 @@ class NiraapadClientHelper:
             req=niraapad_pb2.StaticMethodReq(
                 backend_type=backend_type, method_name=method_name,
                 args=args_pickled, kwargs=kwargs_pickled),
-            resp=niraapad_pb2.StaticMethodResp(resp=resp_pickled)))
+            resp=niraapad_pb2.StaticMethodResp(
+                exception=pickle.dumps(None),
+                resp=resp_pickled)))
 
     def static_getter(self, backend_type, property_name):
         resp = self.stub.StaticGetter(niraapad_pb2.StaticGetterReq(
@@ -60,7 +62,9 @@ class NiraapadClientHelper:
         resp = self.stub.StaticGetterTrace(niraapad_pb2.StaticGetterTraceMsg(
             req=niraapad_pb2.StaticGetterReq(
                 backend_type=backend_type, property_name=property_name),
-            resp=niraapad_pb2.StaticGetterResp(resp=resp_pickled)))
+            resp=niraapad_pb2.StaticGetterResp(
+                exception=pickle.dumps(None),
+                resp=resp_pickled)))
 
     def static_setter(self, backend_type, property_name, value_pickled):
         resp = self.stub.StaticSetter(niraapad_pb2.StaticSetterReq(
@@ -122,7 +126,9 @@ class NiraapadClientHelper:
                 method_name=method_name,
                 args=args_pickled,
                 kwargs=kwargs_pickled),
-            resp=niraapad_pb2.GenericMethodResp(resp=resp_pickled)))
+            resp=niraapad_pb2.GenericMethodResp(
+                exception=pickle.dumps(None),
+                resp=resp_pickled)))
 
     def generic_getter(self, backend_type, backend_instance_id, property_name):
         resp = self.stub.GenericGetter(niraapad_pb2.GenericGetterReq(
@@ -140,7 +146,9 @@ class NiraapadClientHelper:
                 backend_type=backend_type,
                 backend_instance_id=backend_instance_id,
                 property_name=property_name),
-            resp=niraapad_pb2.GenericGetterResp(resp=resp_pickled)))
+            resp=niraapad_pb2.GenericGetterResp(
+                exception=pickle.dumps(None),
+                resp=resp_pickled)))
 
     def generic_setter(self, backend_type, backend_instance_id, property_name,
                        value_pickled):
