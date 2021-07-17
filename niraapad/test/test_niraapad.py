@@ -374,8 +374,11 @@ class TestN9Backend(unittest.TestCase):
             serial = Serial(connect=False)
         self.niraapad_server.stop_tracing()
         trace_file = self.niraapad_server.get_trace_file()
+
         backend_instance_id = 0
         for trace_msg_type, trace_msg in Tracer.parse_file(trace_file):
+            if trace_msg_type == "StartServerTraceMsg": continue
+            if trace_msg_type == "StopServerTraceMsg": continue
             backend_instance_id += 1
             self.assertEqual(trace_msg.req.backend_instance_id, backend_instance_id)
             self.assertEqual(pickle.loads(trace_msg.req.args), ())
@@ -409,6 +412,8 @@ class TestN9Backend(unittest.TestCase):
         trace_file = self.niraapad_server.get_trace_file()
         counter = 0
         for trace_msg_type, trace_msg in Tracer.parse_file(trace_file):
+            if trace_msg_type == "StartServerTraceMsg": continue
+            if trace_msg_type == "StopServerTraceMsg": continue
             if counter == 0:
                 self.assertEqual(trace_msg_type, "StaticMethodTraceMsg")
                 self.assertEqual(trace_msg.req.method_name, "list_devices")
@@ -637,6 +642,37 @@ class TestUR3ArmBackend(unittest.TestCase):
             with self.assertRaises(robot_arms.RobotArmNotSupportedError):
                 ur3_arm.move_twist_to(twist=None)
 
+class TestIKABackend(unittest.TestCase):
+
+    def setUp(self):
+        if args.secure == False:
+            args.keysdir = None
+
+        if args.distributed == False:
+            self.niraapad_server = NiraapadServer(args.port, args.tracedir, args.keysdir)
+            self.niraapad_server.start()
+
+        NiraapadClient.connect_to_middlebox(args.host, args.port, args.keysdir)
+
+    def tearDown(self):
+        if args.distributed == False:
+            self.niraapad_server.stop()
+            del self.niraapad_server
+
+    def test_simple_init(self):
+
+        # Importing MagneticStirrer here as opposed to at the top because
+        # it invokes the Niraapad middlebox even before it's initialized
+        from ika.errors import IKAError
+        from ika.magnetic_stirrer import MagneticStirrer
+
+        for mo in MO:
+            if mo != MO.DIRECT_PLUS_MIDDLEBOX:
+                continue
+            NiraapadClient.niraapad_mo = mo
+            with self.assertRaises(IKAError):
+                magnetic_stirrer = MagneticStirrer(device_port='COM16')
+
 class TestFaultTolerance(unittest.TestCase):
 
     def setUp(self):
@@ -717,6 +753,11 @@ def suite_ur3arm():
     suite.addTest(TestUR3ArmBackend('test_exception_handling'))
     return suite
 
+def suite_ika():
+    suite = unittest.TestSuite()
+    suite.addTest(TestIKABackend('test_simple_init'))
+    return suite
+
 def suite_fault_tolerance():
     suite = unittest.TestSuite()
     suite.addTest(TestFaultTolerance('test_ur3_arm_init'))
@@ -726,4 +767,6 @@ if __name__ == "__main__":
     runner = unittest.TextTestRunner()
     runner.run(suite_n9())
     runner.run(suite_ur3arm())
+    runner.run(suite_ika())
     runner.run(suite_fault_tolerance())
+    
