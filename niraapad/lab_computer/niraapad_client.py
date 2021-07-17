@@ -2,6 +2,7 @@ import os
 import grpc
 import pickle
 import importlib
+import traceback
 
 import niraapad.protos.niraapad_pb2 as niraapad_pb2
 import niraapad.protos.niraapad_pb2_grpc as niraapad_pb2_grpc
@@ -84,25 +85,27 @@ class NiraapadClientHelper:
             resp=niraapad_pb2.StaticSetterResp(
                 exception=pickle.dumps(None))))
 
-    def initialize(self, backend_type, args_pickled, kwargs_pickled):
+    def initialize(self, backend_type, args_pickled, kwargs_pickled, stacktrace_pickled):
         self.backend_instance_count += 1
         resp = self.stub.Initialize(niraapad_pb2.InitializeReq(
             backend_type=backend_type,
             backend_instance_id=self.backend_instance_count,
             args=args_pickled,
-            kwargs=kwargs_pickled))
+            kwargs=kwargs_pickled,
+            stacktrace=stacktrace_pickled))
         exception = pickle.loads(resp.exception)
         if exception != None: raise exception
         return self.backend_instance_count
 
-    def initialize_trace(self, backend_type, args_pickled, kwargs_pickled):
+    def initialize_trace(self, backend_type, args_pickled, kwargs_pickled, stacktrace_pickled):
         self.backend_instance_count += 1
         self.stub.InitializeTrace(niraapad_pb2.InitializeTraceMsg(
             req=niraapad_pb2.InitializeReq(
                 backend_type=backend_type,
                 backend_instance_id=self.backend_instance_count,
                 args=args_pickled,
-                kwargs=kwargs_pickled),
+                kwargs=kwargs_pickled,
+                stacktrace=stacktrace_pickled),
             resp=niraapad_pb2.InitializeResp(
                 exception=pickle.dumps(None))))
         return self.backend_instance_count
@@ -271,6 +274,8 @@ class NiraapadClient:
         in this case.
         """
 
+        stacktrace = traceback.extract_stack()
+
         module_name = importlib.import_module(
             utils.BACKENDS.modules[self.niraapad_backend_type])
         class_name = getattr(module_name, self.niraapad_backend_type)
@@ -283,14 +288,14 @@ class NiraapadClient:
             self.niraapad_backend_instance_id = \
                 NiraapadClient.niraapad_client_helper.initialize(
                     self.niraapad_backend_type, pickle.dumps(args),
-                    pickle.dumps(kwargs))
+                    pickle.dumps(kwargs), pickle.dumps(stacktrace))
 
         if NiraapadClient.niraapad_mo == utils.MO.DIRECT_PLUS_MIDDLEBOX:
             try:
                 self.niraapad_backend_instance_id = \
                     NiraapadClient.niraapad_client_helper.initialize_trace(
                         self.niraapad_backend_type, pickle.dumps(args),
-                        pickle.dumps(kwargs))
+                        pickle.dumps(kwargs), pickle.dumps(stacktrace))
             except Exception as e:
                 self.niraapad_backend_instance_id = 0
                 print("Call to middlebox failed with exception:")

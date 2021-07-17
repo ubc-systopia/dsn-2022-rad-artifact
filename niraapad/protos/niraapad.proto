@@ -103,6 +103,7 @@ message InitializeReq {
   int32 backend_instance_id = 2;
   bytes args = 3;
   bytes kwargs = 4;
+  bytes stacktrace = 5;
 }
 
 message InitializeResp {
