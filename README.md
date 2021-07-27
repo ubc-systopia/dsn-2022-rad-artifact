@@ -47,3 +47,4 @@ The package may work with earlier versions of these depenencies, but this has no
    * If you want to test the final package, upload it first to TestPyPI server using `twine upload --repository testpypi dist/*`
    * The package can be installed from TestPyPI server using `pip install -i https://test.pypi.org/simple/ niraapad==1.1.0`
    * After the package is tested, upload it to the PyPI server using `twine upload dist/*`
+* Currently, Arpan Gujarati is the sole owner and maintainer of the `niraapad` package on Python Package Index
