@@ -4,9 +4,10 @@ Prototype for the CPS security project
 ## Dependencies
 
 * Python 3.7.3
-* Python package grpcio 1.38.0
+* Python package grpcio 1.32.0
 * Python package grpcio-tools 1.38.0
-* Python package protobuf 3.17.3
+* Python package protobuf 3.15.6
+* Python package tensorflow 2.4.1
 
 The package may work with earlier versions of these depenencies, but this has not been tested.
 
