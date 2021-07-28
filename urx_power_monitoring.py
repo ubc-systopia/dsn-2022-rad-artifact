@@ -106,9 +106,10 @@ if __name__ == "__main__":
 
             
             now = datetime.now()
-            dt_string = now.strftime("%d/%m/%Y %H:%M:%S")
+            dt_string = now.strftime("%d/%m/%Y %H:%M")
             isOutPutFileEsist=os.path.isfile(output_filename)
             dt_string=dt_string.replace(" ","--")
+            dt_string=dt_string.replace(":","-")
             dt_string=dt_string.replace("/","-")
             output_filename+=dt_string
             
