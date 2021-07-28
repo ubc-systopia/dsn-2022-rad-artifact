@@ -103,7 +103,6 @@ if __name__ == "__main__":
             collection_traces.insert_one(all_data_dictionary)
 
             
-            isOutPutFileEsist=os.path.isfile(output_filename)
 
             
             now = datetime.now()
@@ -112,6 +111,13 @@ if __name__ == "__main__":
             dt_string=dt_string.replace(" ","--")
             dt_string=dt_string.replace("/","-")
             output_filename+=dt_string
+            
+            output_filename=output_filename.replace(".csv","")
+            output_filename=output_filename.replace(".CSV","")
+            output_filename+='.csv'
+
+            isOutPutFileEsist=os.path.isfile(output_filename)
+
             
             
             with open(output_filename, 'a' ) as csv_file:
