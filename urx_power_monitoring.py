@@ -124,6 +124,10 @@ if __name__ == "__main__":
                 writer = csv.writer(csv_file)
                 header = []
                 data = []
+                
+                header.append(dt_string)
+                data.append(" ")# empty space, to align with the headers
+
                 for key, value in all_data_dictionary.items():
                     header.append(key)
                     data.append(value)
