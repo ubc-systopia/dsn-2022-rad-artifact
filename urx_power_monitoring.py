@@ -16,6 +16,7 @@ import getopt
 import sys
 
 import argparse
+from datetime import datetime
 
 
 
@@ -104,6 +105,15 @@ if __name__ == "__main__":
             
             isOutPutFileEsist=os.path.isfile(output_filename)
 
+            
+            now = datetime.now()
+            dt_string = now.strftime("%d/%m/%Y %H:%M:%S")
+            isOutPutFileEsist=os.path.isfile(output_filename)
+            dt_string=dt_string.replace(" ","--")
+            dt_string=dt_string.replace("/","-")
+            output_filename+=dt_string
+            
+            
             with open(output_filename, 'a' ) as csv_file:
                 writer = csv.writer(csv_file)
                 header = []
