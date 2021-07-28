@@ -111,6 +111,8 @@ if __name__ == "__main__":
             dt_string=dt_string.replace(" ","--")
             dt_string=dt_string.replace(":","-")
             dt_string=dt_string.replace("/","-")
+            
+            #the following 4 lines of code are to add data and time to file name, and they can be commented out if not needed
             output_filename+=dt_string
             
             output_filename=output_filename.replace(".csv","")
