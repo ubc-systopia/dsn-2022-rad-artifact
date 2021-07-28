@@ -103,8 +103,13 @@ if __name__ == "__main__":
 
             with open(output_filename, 'a' ) as csv_file:
                 writer = csv.writer(csv_file)
+                header = []
+                data = []
                 for key, value in all_data_dictionary.items():
-                    writer.writerow([key, value])
+                    header.append(key)
+                    data.append(value)
+                writer.writerow(header)
+                writer.writerow(data)
 
             print("end of excution ##########\t##########\t##########\t##########")
 
