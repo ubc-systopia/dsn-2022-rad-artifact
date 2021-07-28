@@ -101,6 +101,9 @@ if __name__ == "__main__":
             collection_traces=db["command_traces"]
             collection_traces.insert_one(all_data_dictionary)
 
+            
+            isOutPutFileEsist=os.path.isfile(output_filename)
+
             with open(output_filename, 'a' ) as csv_file:
                 writer = csv.writer(csv_file)
                 header = []
@@ -108,7 +111,8 @@ if __name__ == "__main__":
                 for key, value in all_data_dictionary.items():
                     header.append(key)
                     data.append(value)
-                writer.writerow(header)
+                if(isOutPutFileEsist == False):
+                    writer.writerow(header)
                 writer.writerow(data)
 
             print("end of excution ##########\t##########\t##########\t##########")
