@@ -120,7 +120,7 @@ if __name__ == "__main__":
 
             
             
-            with open(output_filename, 'a' ) as csv_file:
+            with open(output_filename, 'a' ,newline='') as csv_file:
                 writer = csv.writer(csv_file)
                 header = []
                 data = []
