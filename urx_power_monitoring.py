@@ -52,6 +52,8 @@ frequency=args.frequency
 data_base_client=args.data_base_client
 output_filename=args.output_filename
 
+isFirstTimeToRun=1
+
 
 #old code to get arg from command line
 
@@ -113,11 +115,13 @@ if __name__ == "__main__":
             dt_string=dt_string.replace("/","-")
             
             #the following 4 lines of code are to add data and time to file name, and they can be commented out if not needed
-            output_filename+=dt_string
+            if(isFirstTimeToRun==1):
+                output_filename+=dt_string
             
-            output_filename=output_filename.replace(".csv","")
-            output_filename=output_filename.replace(".CSV","")
-            output_filename+='.csv'
+                output_filename=output_filename.replace(".csv","")
+                output_filename=output_filename.replace(".CSV","")
+                output_filename+='.csv'
+                isFirstTimeToRun=0
 
             isOutPutFileEsist=os.path.isfile(output_filename)
 
@@ -128,8 +132,8 @@ if __name__ == "__main__":
                 header = []
                 data = []
                 
-                header.append(dt_string)
-                data.append(" ")# empty space, to align with the headers
+                header.append('_id')
+                data.append(all_data_dictionary['_id'])
 
                 for key, value in all_data_dictionary.items():
                     header.append(key)
