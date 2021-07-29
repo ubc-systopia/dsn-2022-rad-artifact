@@ -99,6 +99,7 @@ if __name__ == "__main__":
                 
                 header.append('_id')
                 data.append(all_data_dictionary['_id'])
+                del all_data_dictionary['_id']
 
                 for key, value in all_data_dictionary.items():
                     header.append(key)
