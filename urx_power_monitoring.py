@@ -6,15 +6,9 @@ import json
 import csv
 import numpy
 from pymongo import MongoClient
-
-
-#sys.path.append(r"C:\Users\LBRY-SVC-Patron\Desktop\moduals\python-urx-master")# change the path to where the folder for urx is when start to run the code 
-#importing urx may require some special steps, unlike other imports
 import urx
-
 import getopt
 import sys
-
 import argparse
 from datetime import datetime
 
@@ -54,31 +48,6 @@ output_filename=args.output_filename
 
 isFirstTimeToRun=1
 
-
-#old code to get arg from command line
-
-# getting arg from command line
-#ip_address = "0.0.0.0"
-#frequency = 1
-#data_base_client="data_from_sim"
-#output_filename = "bookForData.csv"
-
-#options, remainder = getopt.gnu_getopt(sys.argv[1:], 'o:v',['ip_address=', 'frequency=','data_base_client=','output_filename=',])
-
-#for opt, arg in options:
-#    if opt == '--ip_address':
-#        ip_address = arg
-#    elif opt == '--frequency':
-#        frequency = arg
-#    elif opt == '--data_base_client':
-#        data_base_client = arg
-#    elif opt == '--output_filename':
-#        output_filename = arg
-# end of gettting arg from command line
-
-
-
-
 r = urx.Robot(ip_address, use_rt=True, urFirm=5.1)
 
 if __name__ == "__main__":
@@ -96,15 +65,13 @@ if __name__ == "__main__":
                 if(type(all_data_dictionary[value]) ==  numpy.ndarray):
                     all_data_dictionary[value]=str(all_data_dictionary[value])
 
-            #data_in_json = json.dumps(all_data_dictionary,indent = 4)
 
-            #working code for mongo DB
             client=MongoClient("localhost",27017)
             db=client[data_base_client]
             collection_traces=db["command_traces"]
             collection_traces.insert_one(all_data_dictionary)
 
-            
+           
 
             
             now = datetime.now()
@@ -114,10 +81,8 @@ if __name__ == "__main__":
             dt_string=dt_string.replace(":","-")
             dt_string=dt_string.replace("/","-")
             
-            #the following 4 lines of code are to add data and time to file name, and they can be commented out if not needed
             if(isFirstTimeToRun==1):
                 output_filename+=dt_string
-            
                 output_filename=output_filename.replace(".csv","")
                 output_filename=output_filename.replace(".CSV","")
                 output_filename+='.csv'
