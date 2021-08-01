@@ -46,6 +46,9 @@ frequency=args.frequency
 data_base_client=args.data_base_client
 output_filename=args.output_filename
 
+OUTOUT_FILENAME_CONST=output_filename
+last_time=""
+
 isFirstTimeToRun=1
 
 r = urx.Robot(ip_address, use_rt=True, urFirm=5.1)
@@ -61,10 +64,17 @@ if __name__ == "__main__":
 
             print(get_all_data)
 
-            for value in all_data_dictionary:
-                if(type(all_data_dictionary[value]) ==  numpy.ndarray):
-                    all_data_dictionary[value]=str(all_data_dictionary[value])
-
+            for key in all_data_dictionary:
+                if(type(all_data_dictionary[key]) ==  numpy.ndarray):
+                    indexCounter=0
+                    new_data_to_add_to_all_data_dictionary={}
+                    for x in all_data_dictionary[key]:
+                        newKeyToAdd=key+"-index-"+str(indexCounter)
+                        new_data_to_add_to_all_data_dictionary[newKeyToAdd]=x
+                        indexCounter+=1
+                        
+            all_data_dictionary=all_data_dictionary | new_data_to_add_to_all_data_dictionary
+            print(all_data_dictionary)
 
             client=MongoClient("localhost",27017)
             db=client[data_base_client]
@@ -80,6 +90,16 @@ if __name__ == "__main__":
             dt_string=dt_string.replace(" ","--")
             dt_string=dt_string.replace(":","-")
             dt_string=dt_string.replace("/","-")
+            
+            
+            
+            now = datetime.now()
+            date_string = now.strftime("%d/%m/%Y")
+            if(last_time != date_string): # a new day or run for first time, so create a new file
+                isFirstTimeToRun=1
+                output_filename=OUTOUT_FILENAME_CONST
+                last_time=date_string
+            
             
             if(isFirstTimeToRun==1):
                 output_filename+=dt_string
