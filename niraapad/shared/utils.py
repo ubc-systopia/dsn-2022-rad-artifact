@@ -1,8 +1,12 @@
 import os
 import sys
+import pickle
 import inspect
 
 from enum import Enum
+from copy import copy
+
+from ftdi_serial import FtdiDevice, SerialDeviceInfo
 
 FUNC_NAME = lambda: inspect.stack()[1].function
 CALLER_METHOD_NAME = lambda: inspect.stack()[2].function
@@ -15,6 +19,32 @@ def disable_print():
 # Restore print() output
 def enable_print():
     sys.stdout = sys.__stdout__
+
+def sanitize_resp(name, resp):
+    # TODO: Get rid of this!!!
+    # The following is a work around to circumvent the problem
+    # with pickling ctypes objects containing pointers,
+    # like instances of ftdi_serial.SerialDeviceInfo class.
+    # It seems the easiest way to get rid of this work around
+    # is to upgrade to the latest version of ftdi_serial.
+
+    # Parameter name refers to the method or the property name
+
+    new_resp = copy(resp)
+
+    try:
+        pickled_resp = pickle.dumps(new_resp)
+    except ValueError as e:
+        if name == "list_devices":
+            assert(type(new_resp) == list)
+            for i in range(0, len(new_resp)):
+                assert(type(new_resp[i]) == SerialDeviceInfo)
+                new_resp[i].handle = None
+        elif name == "device":
+            assert(type(new_resp) == FtdiDevice)
+            if hasattr(new_resp, 'ftdi'):
+                new_resp.ftdi = None
+    return new_resp
 
 # We define three different mode of operation (MOs)..
 #
@@ -38,21 +68,24 @@ def enable_print():
 
 class MO(Enum):
     DIRECT = 1
-    VIA_MIDDLEBOX = 2
-    DIRECT_PLUS_MIDDLEBOX = 3
+    DIRECT_PLUS_MIDDLEBOX = 2
+    VIA_MIDDLEBOX = 3
 
-# Currently, we support three types of backend classes
+# Currently, we support only selected types of backend classes
 class BACKENDS:
+    # DEVICE = "Directevice"
+    # MOCK_DEVICE = "DirectMockDevice"
+    # FTDI_DEVICE = "DirectFtdiDevice"
+    # PY_SERIAL_DEVICE = "DirectPySerialDevice"
     SERIAL = "DirectSerial"
     UR3_ARM = "DirectUR3Arm"
     ROBOT_ARM = "DirectRobotArm"
 
-    modules = {}
-
-    #modules[SERIAL] = "ftdi_serial"
-    #modules[UR3_ARM] = "hein_robots.universal_robots.ur3"
-    #modules[ROBOT_ARM] = "hein_robots.base.robot_arms"
-
-    modules[SERIAL] = "niraapad.backends"
-    modules[UR3_ARM] = "niraapad.backends"
-    modules[ROBOT_ARM] = "niraapad.backends"
+    # modules = {}
+    # modules[DEVICE] = "niraapad.backends"
+    # modules[MOCK_DEVICE] = "niraapad.backends"
+    # modules[FTDI_DEVICE] = "niraapad.backends"
+    # modules[PY_SERIAL_DEVICE] = "niraapad.backends"
+    # modules[SERIAL] = "niraapad.backends"
+    # modules[UR3_ARM] = "niraapad.backends"
+    # modules[ROBOT_ARM] = "niraapad.backends"

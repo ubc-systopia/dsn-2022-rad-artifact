@@ -2,10 +2,12 @@ import os
 import sys
 import grpc
 import time
+import types
 import pickle
 import unittest
 import argparse
 
+from typing import Optional
 from concurrent import futures
 
 # Path to this file test_niraapad.py
@@ -14,15 +16,40 @@ file_path = os.path.dirname(os.path.abspath(__file__))
 # Path to the cps-security-code (aka project niraapad) git repo
 niraapad_path = os.path.dirname(os.path.dirname(file_path))
 
-# THIS IMPORT IS IMPORTANT FOR MONKEY PATCHING
-import niraapad.backends
-from niraapad.backends import DirectSerial
-from niraapad.backends import DirectUR3Arm
+# This import is needed if we are not testing using the PyPI (or TestPyPI)
+# niraapad package but instead using the niraapad files from source
+sys.path.append(niraapad_path)
 
-from ftdi_serial import Serial
+# ===== THESE ARE IMPORTANT FOR MONKEY PATCHING =====
+import niraapad.backends
+
+# Ignoring class ftdi_serial.Serial because we have
+# decided to virtualize the Device classes instead,
+# which actually are closer to the network layer
+from niraapad.backends import DirectSerial, VirtualSerial
+
+# # Among all the Device subclasses,
+# # supporting classes FtdiDevice and PySerialDevice,
+# # but ignoring class ftdi_serial.MockDevice,
+# # because it is not supported in ftdi-serial v0.1.9
+# # from niraapad.backends import DirectMockDevice
+# from niraapad.backends import DirectFtdiDevice
+# from niraapad.backends import DirectPySerialDevice
+
+# The UR3Arm does not directly rely on the Device
+# classes (i.e., serial communication) but instead
+# communicates with the lab computer over LAN
+from niraapad.backends import DirectUR3Arm
+# ===================================================
+
+from ftdi_serial import Serial, SerialReadTimeoutException
+from ftdi_serial import Device, FtdiDevice, PySerialDevice #, MockDevice
 from hein_robots.universal_robots.ur3 import UR3Arm
-from hein_robots.robotics import Location,Units
+from hein_robots.robotics import Location, Units
 from hein_robots.base import robot_arms
+from north_c9.controller import C9Controller
+
+import serial as PySerialDriver
 
 import niraapad.protos.niraapad_pb2 as niraapad_pb2
 import niraapad.protos.niraapad_pb2_grpc as niraapad_pb2_grpc
@@ -31,6 +58,20 @@ from niraapad.shared.utils import *
 from niraapad.shared.tracing import Tracer
 from niraapad.middlebox.niraapad_server import NiraapadServer
 from niraapad.lab_computer.niraapad_client import NiraapadClient
+
+class C9ControllerWithEmptyPing(C9Controller):
+
+    def __init__(self, device_serial: str, connect: bool, use_joystick: bool) -> None:
+        super().__init__(device_serial=device_serial, connect=connect, use_joystick=use_joystick)
+
+    def ping(elf, timeout: float=1.0, retries: int=5):
+        pass
+
+    def disconnect(self):
+        self.connection.disconnect()
+        if hasattr(self, "joystick"):
+            if self.joystick.running:
+                self.joystick.stop()
 
 parser = argparse.ArgumentParser()
 parser.add_argument('-D', '--distributed',
@@ -58,6 +99,90 @@ parser.add_argument('-S', '--secure',
                     
 args=parser.parse_args()
 
+class TestC9Controller(unittest.TestCase):
+
+    def setUp(self):
+        if args.secure == False:
+            args.keysdir = None
+
+        if args.distributed == False:
+            self.niraapad_server = NiraapadServer(args.port, args.tracedir, args.keysdir)
+            self.niraapad_server.start()
+        
+        NiraapadClient.connect_to_middlebox(args.host, args.port, args.keysdir)
+
+    def tearDown(self):
+        if args.distributed == False:
+            self.niraapad_server.stop()
+            del self.niraapad_server
+
+    def test_instance_type(self):
+        for mo in MO:
+            NiraapadClient.niraapad_mo = mo
+            device_serial = 'AB0KPC1S'
+            c9 = C9Controller(device_serial=device_serial, use_joystick=False, connect=False)
+            if mo == MO.DIRECT:
+                self.assertIsInstance(c9.connection, Serial)
+            elif mo == MO.DIRECT_PLUS_MIDDLEBOX:
+                self.assertIsInstance(c9.connection, VirtualSerial)
+            elif mo == MO.VIA_MIDDLEBOX:
+                self.assertIsInstance(c9.connection, VirtualSerial)
+            else:
+                self.assertFalse(True)
+            
+    def test_device_methods(self):
+        for mo in MO:
+            NiraapadClient.niraapad_mo = mo
+            
+            device_serial = 'AB0KPC1S'
+            c9 = C9Controller(device_serial=device_serial, use_joystick=False, connect=False)
+            
+            self.assertEqual(c9.connection.device, None)
+            c9.connection.open_device()
+            self.assertNotEqual(c9.connection.device, None)
+            
+            c9.connection.device.clear()
+            c9.connection.device.reset()
+            c9.connection.device.set_baud_rate(115200)
+            c9.connection.device.set_parameters(Serial.DATA_BITS_8, Serial.STOP_BITS_1, Serial.PARITY_NONE)
+
+            read_timeouts_ms = [1, 10, 100, 1000, 2000]
+            for read_timeout_ms in read_timeouts_ms:
+                c9.connection.device.set_timeouts(read_timeout_ms, 0)
+                start = time.time()
+                c9.connection.device.read(1)
+                end = time.time()
+                self.assertGreater(end - start, read_timeout_ms / 1000.0)
+            
+            c9.connection.device.close()
+
+    def test_connection_methods(self):
+        for mo in MO:
+            NiraapadClient.niraapad_mo = mo
+         
+            device_serial = 'AB0KPC1S'
+
+            c9 = C9ControllerWithEmptyPing(device_serial=device_serial, use_joystick=False, connect=True)
+            
+            read_timeouts_ms = [1, 10, 100, 1000, 2000]
+            for read_timeout_ms in read_timeouts_ms:
+                c9.connection.read_timeout = read_timeout_ms / 1000.0
+                start = time.time()
+                with self.assertRaises(SerialReadTimeoutException):
+                    c9.connection.read(1)
+                end = time.time()
+                self.assertGreater(end - start, read_timeout_ms / 1000.0)
+            
+            c9.disconnect()
+
+    def test_py_serial_device(self):
+        for mo in MO:
+            self.assertEqual(PySerialDevice.PARITIES[0], PySerialDriver.PARITY_NONE)
+            self.assertEqual(PySerialDevice.PARITIES[1], PySerialDriver.PARITY_ODD)
+            self.assertEqual(PySerialDevice.PARITIES[2], PySerialDriver.PARITY_EVEN)
+            self.assertEqual(PySerialDevice.STOP_BITS[0], PySerialDriver.STOPBITS_ONE)
+            self.assertEqual(PySerialDevice.STOP_BITS[2], PySerialDriver.STOPBITS_TWO)            
+
 class TestN9Backend(unittest.TestCase):
     
     def setUp(self):
@@ -68,7 +193,7 @@ class TestN9Backend(unittest.TestCase):
             self.niraapad_server = NiraapadServer(args.port, args.tracedir, args.keysdir)
             self.niraapad_server.start()
         
-        Serial.connect_to_middlebox(args.host, args.port, args.keysdir)
+        NiraapadClient.connect_to_middlebox(args.host, args.port, args.keysdir)
 
     def tearDown(self):
         if args.distributed == False:
@@ -79,16 +204,16 @@ class TestN9Backend(unittest.TestCase):
         for mo in MO:
             NiraapadClient.niraapad_mo = mo
 
-            self.assertEqual(Serial.FT_OK, DirectSerial.FT_OK)
-            self.assertEqual(Serial.FT_PURGE_RX, DirectSerial.FT_PURGE_RX)
-            self.assertEqual(Serial.FT_PURGE_TX, DirectSerial.FT_PURGE_TX)
-            self.assertEqual(Serial.PARITY_NONE, DirectSerial.PARITY_NONE)
-            self.assertEqual(Serial.PARITY_ODD, DirectSerial.PARITY_ODD)
-            self.assertEqual(Serial.PARITY_EVEN, DirectSerial.PARITY_EVEN)
-            self.assertEqual(Serial.STOP_BITS_1, DirectSerial.STOP_BITS_1)
-            self.assertEqual(Serial.STOP_BITS_2, DirectSerial.STOP_BITS_2)
-            self.assertEqual(Serial.DATA_BITS_7, DirectSerial.DATA_BITS_7)
-            self.assertEqual(Serial.DATA_BITS_8, DirectSerial.DATA_BITS_8)
+    #         self.assertEqual(Serial.FT_OK, DirectSerial.FT_OK)
+    #         self.assertEqual(Serial.FT_PURGE_RX, DirectSerial.FT_PURGE_RX)
+    #         self.assertEqual(Serial.FT_PURGE_TX, DirectSerial.FT_PURGE_TX)
+    #         self.assertEqual(Serial.PARITY_NONE, DirectSerial.PARITY_NONE)
+    #         self.assertEqual(Serial.PARITY_ODD, DirectSerial.PARITY_ODD)
+    #         self.assertEqual(Serial.PARITY_EVEN, DirectSerial.PARITY_EVEN)
+    #         self.assertEqual(Serial.STOP_BITS_1, DirectSerial.STOP_BITS_1)
+    #         self.assertEqual(Serial.STOP_BITS_2, DirectSerial.STOP_BITS_2)
+    #         self.assertEqual(Serial.DATA_BITS_7, DirectSerial.DATA_BITS_7)
+    #         self.assertEqual(Serial.DATA_BITS_8, DirectSerial.DATA_BITS_8)
 
             self.assertEqual(Serial.FT_OK, 0)
             self.assertEqual(Serial.FT_PURGE_RX, 1)
@@ -101,38 +226,38 @@ class TestN9Backend(unittest.TestCase):
             self.assertEqual(Serial.DATA_BITS_7, 7)
             self.assertEqual(Serial.DATA_BITS_8, 8)
 
-            Serial.FT_OK += 1
-            Serial.FT_PURGE_RX += 1
-            Serial.FT_PURGE_TX += 1
-            Serial.PARITY_NONE += 1
-            Serial.PARITY_ODD += 1
-            Serial.PARITY_EVEN += 1
-            Serial.STOP_BITS_1 += 1
-            Serial.STOP_BITS_2 += 1
-            Serial.DATA_BITS_7 += 1
-            Serial.DATA_BITS_8 += 1
+    #         Serial.FT_OK += 1
+    #         Serial.FT_PURGE_RX += 1
+    #         Serial.FT_PURGE_TX += 1
+    #         Serial.PARITY_NONE += 1
+    #         Serial.PARITY_ODD += 1
+    #         Serial.PARITY_EVEN += 1
+    #         Serial.STOP_BITS_1 += 1
+    #         Serial.STOP_BITS_2 += 1
+    #         Serial.DATA_BITS_7 += 1
+    #         Serial.DATA_BITS_8 += 1
 
-            self.assertEqual(Serial.FT_OK, 1)
-            self.assertEqual(Serial.FT_PURGE_RX, 2)
-            self.assertEqual(Serial.FT_PURGE_TX, 3)
-            self.assertEqual(Serial.PARITY_NONE, 1)
-            self.assertEqual(Serial.PARITY_ODD, 2)
-            self.assertEqual(Serial.PARITY_EVEN, 3)
-            self.assertEqual(Serial.STOP_BITS_1, 1)
-            self.assertEqual(Serial.STOP_BITS_2, 3)
-            self.assertEqual(Serial.DATA_BITS_7, 8)
-            self.assertEqual(Serial.DATA_BITS_8, 9)
+    #         self.assertEqual(Serial.FT_OK, 1)
+    #         self.assertEqual(Serial.FT_PURGE_RX, 2)
+    #         self.assertEqual(Serial.FT_PURGE_TX, 3)
+    #         self.assertEqual(Serial.PARITY_NONE, 1)
+    #         self.assertEqual(Serial.PARITY_ODD, 2)
+    #         self.assertEqual(Serial.PARITY_EVEN, 3)
+    #         self.assertEqual(Serial.STOP_BITS_1, 1)
+    #         self.assertEqual(Serial.STOP_BITS_2, 3)
+    #         self.assertEqual(Serial.DATA_BITS_7, 8)
+    #         self.assertEqual(Serial.DATA_BITS_8, 9)
 
-            Serial.FT_OK -= 1
-            Serial.FT_PURGE_RX -= 1
-            Serial.FT_PURGE_TX -= 1
-            Serial.PARITY_NONE -= 1
-            Serial.PARITY_ODD -= 1
-            Serial.PARITY_EVEN -= 1
-            Serial.STOP_BITS_1 -= 1
-            Serial.STOP_BITS_2 -= 1
-            Serial.DATA_BITS_7 -= 1
-            Serial.DATA_BITS_8 -= 1
+    #         Serial.FT_OK -= 1
+    #         Serial.FT_PURGE_RX -= 1
+    #         Serial.FT_PURGE_TX -= 1
+    #         Serial.PARITY_NONE -= 1
+    #         Serial.PARITY_ODD -= 1
+    #         Serial.PARITY_EVEN -= 1
+    #         Serial.STOP_BITS_1 -= 1
+    #         Serial.STOP_BITS_2 -= 1
+    #         Serial.DATA_BITS_7 -= 1
+    #         Serial.DATA_BITS_8 -= 1
 
     def test_static_methods(self):
         for mo in MO:
@@ -734,7 +859,15 @@ class TestFaultTolerance(unittest.TestCase):
 
         enable_print()
 
-def suite_n9():
+def suite_c9():
+    suite = unittest.TestSuite()
+    suite.addTest(TestC9Controller('test_instance_type'))
+    suite.addTest(TestC9Controller('test_device_methods'))
+    suite.addTest(TestC9Controller('test_connection_methods'))
+    suite.addTest(TestC9Controller('test_py_serial_device'))
+    return suite
+
+def suite_serial():
     suite = unittest.TestSuite()
     suite.addTest(TestN9Backend('test_class_variables'))
     suite.addTest(TestN9Backend('test_static_methods'))
@@ -765,8 +898,8 @@ def suite_fault_tolerance():
 
 if __name__ == "__main__":
     runner = unittest.TextTestRunner()
-    runner.run(suite_n9())
+    runner.run(suite_c9())
+    runner.run(suite_serial())
     runner.run(suite_ur3arm())
     runner.run(suite_ika())
     runner.run(suite_fault_tolerance())
-    

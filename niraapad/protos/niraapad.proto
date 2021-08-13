@@ -32,6 +32,12 @@ service Niraapad {
   // Used for property getters
   rpc GenericGetterTrace(GenericGetterTraceMsg) returns (EmptyMsg) {}
 
+  // Used for specific device property getters
+  rpc GenericDeviceGetter(GenericDeviceGetterReq) returns (GenericDeviceGetterResp) {}
+
+  // Used for specific device property getters
+  rpc GenericDeviceGetterTrace(GenericDeviceGetterTraceMsg) returns (EmptyMsg) {}
+  
   // Used for property setters
   rpc GenericSetter(GenericSetterReq) returns (GenericSetterResp) {}
 
@@ -118,7 +124,8 @@ message InitializeTraceMsg {
 message GenericGetterReq {
   string backend_type = 1;
   int32 backend_instance_id = 2;
-  string property_name = 3;
+  string access_variable = 3;
+  string property_name = 4;
 }
 
 message GenericGetterResp {
@@ -134,8 +141,9 @@ message GenericGetterTraceMsg {
 message GenericSetterReq {
   string backend_type = 1;
   int32 backend_instance_id = 2;
-  string property_name = 3;
-  bytes value = 4;
+  string access_variable = 3;
+  string property_name = 4;
+  bytes value = 5;
 }
 
 message GenericSetterResp {
@@ -150,9 +158,10 @@ message GenericSetterTraceMsg {
 message GenericMethodReq {
   string backend_type = 1;
   int32 backend_instance_id = 2;
-  string method_name = 3;
-  bytes args = 4;
-  bytes kwargs = 5;
+  string access_variable = 3;
+  string method_name = 4;
+  bytes args = 5;
+  bytes kwargs = 6;
 }
 
 message GenericMethodResp {
@@ -163,6 +172,22 @@ message GenericMethodResp {
 message GenericMethodTraceMsg {
   GenericMethodReq req = 1;
   GenericMethodResp resp = 2;
+}
+
+message GenericDeviceGetterReq {
+  string backend_type = 1;
+  int32 backend_instance_id = 2;
+  string property_name = 3;
+}
+
+message GenericDeviceGetterResp {
+  bytes exception = 1;
+  bytes resp = 2;
+}
+
+message GenericDeviceGetterTraceMsg {
+  GenericDeviceGetterReq req = 1;
+  GenericDeviceGetterResp resp = 2;
 }
 
 // Trace header helps identify the trace length
