@@ -64,17 +64,20 @@ if __name__ == "__main__":
 
             print(get_all_data)
 
+
+            new_data_to_add_to_all_data_dictionary={}
             for key in all_data_dictionary:
                 if(type(all_data_dictionary[key]) ==  numpy.ndarray):
-                    indexCounter=0
-                    new_data_to_add_to_all_data_dictionary={}
-                    for x in all_data_dictionary[key]:
-                        newKeyToAdd=key+"-index-"+str(indexCounter)
-                        new_data_to_add_to_all_data_dictionary[newKeyToAdd]=x
-                        indexCounter+=1
-                        
-            all_data_dictionary=all_data_dictionary | new_data_to_add_to_all_data_dictionary
-            print(all_data_dictionary)
+                    if(all_data_dictionary[key].ndim != 0):
+                        indexCounter=0
+
+                        for x in all_data_dictionary[key]:
+                            newKeyToAdd=key+"-index-"+str(indexCounter)
+                            new_data_to_add_to_all_data_dictionary[newKeyToAdd]=x
+                            indexCounter+=1
+            all_data_dictionary.update(new_data_to_add_to_all_data_dictionary)
+
+
 
             client=MongoClient("localhost",27017)
             db=client[data_base_client]
