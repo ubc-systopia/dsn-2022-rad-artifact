@@ -78,7 +78,11 @@ if __name__ == "__main__":
             all_data_dictionary.update(new_data_to_add_to_all_data_dictionary)
 
 
+            for value in all_data_dictionary:
+                 if(type(all_data_dictionary[value]) ==  numpy.ndarray):
+                     all_data_dictionary[value]=str(all_data_dictionary[value])
 
+            
             client=MongoClient("localhost",27017)
             db=client[data_base_client]
             collection_traces=db["command_traces"]
