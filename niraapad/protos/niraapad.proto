@@ -124,8 +124,7 @@ message InitializeTraceMsg {
 message GenericGetterReq {
   string backend_type = 1;
   int32 backend_instance_id = 2;
-  string access_variable = 3;
-  string property_name = 4;
+  string property_name = 3;
 }
 
 message GenericGetterResp {
@@ -141,9 +140,8 @@ message GenericGetterTraceMsg {
 message GenericSetterReq {
   string backend_type = 1;
   int32 backend_instance_id = 2;
-  string access_variable = 3;
-  string property_name = 4;
-  bytes value = 5;
+  string property_name = 3;
+  bytes value = 4;
 }
 
 message GenericSetterResp {
@@ -158,10 +156,9 @@ message GenericSetterTraceMsg {
 message GenericMethodReq {
   string backend_type = 1;
   int32 backend_instance_id = 2;
-  string access_variable = 3;
-  string method_name = 4;
-  bytes args = 5;
-  bytes kwargs = 6;
+  string method_name = 3;
+  bytes args = 4;
+  bytes kwargs = 5;
 }
 
 message GenericMethodResp {

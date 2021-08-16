@@ -22,10 +22,11 @@ import niraapad.shared.utils as utils
 
 niraapad_backends_module = importlib.import_module("niraapad.backends")
 
+
 class NiraapadServicer(niraapad_pb2_grpc.NiraapadServicer):
     """Provides methods that implement functionality of n9 server."""
 
-    trace_metadata_length = 132 # bytes
+    trace_metadata_length = 132  # bytes
 
     def __init__(self, tracedir):
         self.backend_instances = {}
@@ -54,7 +55,8 @@ class NiraapadServicer(niraapad_pb2_grpc.NiraapadServicer):
         try:
             class_name = getattr(niraapad_backends_module, req.backend_type)
             resp = getattr(class_name, req.method_name)(*args, **kwargs)
-        except Exception as e: exception = e
+        except Exception as e:
+            exception = e
 
         resp = utils.sanitize_resp(req.method_name, resp)
 
@@ -67,7 +69,8 @@ class NiraapadServicer(niraapad_pb2_grpc.NiraapadServicer):
         return resp
 
     def StaticMethodTrace(self, trace_msg, context):
-        print("(trace) %s.%s" % (trace_msg.req.backend_type, trace_msg.req.method_name))
+        print("(trace) %s.%s" %
+              (trace_msg.req.backend_type, trace_msg.req.method_name))
 
         self.log_trace_msg(trace_msg)
         return niraapad_pb2.EmptyMsg()
@@ -81,8 +84,9 @@ class NiraapadServicer(niraapad_pb2_grpc.NiraapadServicer):
         try:
             class_name = getattr(niraapad_backends_module, req.backend_type)
             resp = getattr(class_name, req.property_name)
-        except Exception as e: exception = e
-            
+        except Exception as e:
+            exception = e
+
         resp = niraapad_pb2.StaticGetterResp(exception=pickle.dumps(exception),
                                              resp=pickle.dumps(resp))
 
@@ -92,7 +96,8 @@ class NiraapadServicer(niraapad_pb2_grpc.NiraapadServicer):
         return resp
 
     def StaticGetterTrace(self, trace_msg, context):
-        print("(trace) %s.get_%s" % (trace_msg.req.backend_type, trace_msg.req.property_name))
+        print("(trace) %s.get_%s" %
+              (trace_msg.req.backend_type, trace_msg.req.property_name))
 
         self.log_trace_msg(trace_msg)
         return niraapad_pb2.EmptyMsg()
@@ -108,8 +113,9 @@ class NiraapadServicer(niraapad_pb2_grpc.NiraapadServicer):
         try:
             class_name = getattr(niraapad_backends_module, req.backend_type)
             setattr(class_name, req.property_name, value)
-        except Exception as e: exception = e
-            
+        except Exception as e:
+            exception = e
+
         resp = niraapad_pb2.StaticSetterResp(exception=pickle.dumps(exception))
 
         trace_msg = niraapad_pb2.StaticSetterTraceMsg(req=req, resp=resp)
@@ -118,7 +124,8 @@ class NiraapadServicer(niraapad_pb2_grpc.NiraapadServicer):
         return resp
 
     def StaticSetterTrace(self, trace_msg, context):
-        print("(trace) %s.%s" % (trace_msg.req.backend_type, trace_msg.req.property_name))
+        print("(trace) %s.%s" %
+              (trace_msg.req.backend_type, trace_msg.req.property_name))
 
         self.log_trace_msg(trace_msg)
         return niraapad_pb2.EmptyMsg()
@@ -161,9 +168,7 @@ class NiraapadServicer(niraapad_pb2_grpc.NiraapadServicer):
         return niraapad_pb2.EmptyMsg()
 
     def GenericMethod(self, req, context):
-        access_variable = req.access_variable
-        if access_variable != "": access_variable = access_variable + "."
-        print("%s.%s%s" % (req.backend_type, access_variable, req.method_name))
+        print("%s.%s" % (req.backend_type, req.method_name))
 
         # For any generic class instance method, the logic is similar to that
         # of any generic static method, except that the method is invoked using
@@ -181,18 +186,12 @@ class NiraapadServicer(niraapad_pb2_grpc.NiraapadServicer):
         exception = None
 
         try:
-            if req.access_variable == "":
-                resp = getattr(
-                    self.backend_instances[req.backend_type][req.backend_instance_id],
-                    req.method_name)(*args, **kwargs)
-            else:
-                resp = getattr(
-                        getattr(
-                            self.backend_instances[req.backend_type][req.backend_instance_id],
-                            req.access_variable),
-                        req.method_name)(*args, **kwargs)
-        except Exception as e: exception = e
-            
+            resp = getattr(
+                self.backend_instances[req.backend_type][
+                    req.backend_instance_id], req.method_name)(*args, **kwargs)
+        except Exception as e:
+            exception = e
+
         resp = niraapad_pb2.GenericMethodResp(exception=pickle.dumps(exception),
                                               resp=pickle.dumps(resp))
 
@@ -202,9 +201,8 @@ class NiraapadServicer(niraapad_pb2_grpc.NiraapadServicer):
         return resp
 
     def GenericMethodTrace(self, trace_msg, context):
-        access_variable = trace_msg.req.access_variable
-        if access_variable != "": access_variable = access_variable + "."
-        print("(trace) %s.%s%s" % (trace_msg.req.backend_type, access_variable, trace_msg.req.method_name))
+        print("(trace) %s.%s" %
+              (trace_msg.req.backend_type, trace_msg.req.method_name))
 
         self.log_trace_msg(trace_msg)
         return niraapad_pb2.EmptyMsg()
@@ -221,17 +219,11 @@ class NiraapadServicer(niraapad_pb2_grpc.NiraapadServicer):
         exception = None
 
         try:
-            if req.access_variable == "":
-                resp = getattr(
-                    self.backend_instances[req.backend_type][req.backend_instance_id],
-                    req.property_name)
-            else:
-                resp = getattr(
-                        getattr(
-                            self.backend_instances[req.backend_type][req.backend_instance_id],
-                            req.access_variable),
-                        req.property_name)
-        except Exception as e: exception = e
+            resp = getattr(
+                self.backend_instances[req.backend_type][
+                    req.backend_instance_id], req.property_name)
+        except Exception as e:
+            exception = e
 
         resp = utils.sanitize_resp(req.property_name, resp)
 
@@ -244,9 +236,8 @@ class NiraapadServicer(niraapad_pb2_grpc.NiraapadServicer):
         return resp
 
     def GenericGetterTrace(self, trace_msg, context):
-        access_variable = trace_msg.req.access_variable
-        if access_variable != "": access_variable = access_variable + "."
-        print("(trace) %s.%sget_%s" % (trace_msg.req.backend_type, access_variable, trace_msg.req.property_name))
+        print("(trace) %s.get_%s" %
+              (trace_msg.req.backend_type, trace_msg.req.property_name))
 
         self.log_trace_msg(trace_msg)
         return niraapad_pb2.EmptyMsg()
@@ -263,18 +254,11 @@ class NiraapadServicer(niraapad_pb2_grpc.NiraapadServicer):
         exception = None
 
         try:
-            if req.access_variable == "":
-                setattr(
-                    self.backend_instances[req.backend_type][req.backend_instance_id],
-                    req.property_name, value)
-            else:
-                setattr(
-                    getattr(
-                        self.backend_instances[req.backend_type][req.backend_instance_id],
-                        req.access_variable),
-                    req.property_name,
-                    value)
-        except Exception as e: exception = e
+            setattr(
+                self.backend_instances[req.backend_type][
+                    req.backend_instance_id], req.property_name, value)
+        except Exception as e:
+            exception = e
 
         resp = niraapad_pb2.GenericSetterResp(exception=pickle.dumps(exception))
 
@@ -284,9 +268,8 @@ class NiraapadServicer(niraapad_pb2_grpc.NiraapadServicer):
         return resp
 
     def GenericSetterTrace(self, trace_msg, context):
-        access_variable = trace_msg.req.access_variable
-        if access_variable != "": access_variable = access_variable + "."
-        print("(trace) %s.%sset_%s" % (trace_msg.req.backend_type, access_variable, trace_msg.req.property_name))
+        print("(trace) %s.set_%s" %
+              (trace_msg.req.backend_type, trace_msg.req.property_name))
 
         self.log_trace_msg(trace_msg)
         return niraapad_pb2.EmptyMsg()
@@ -300,26 +283,30 @@ class NiraapadServicer(niraapad_pb2_grpc.NiraapadServicer):
 
         try:
             resp = getattr(
-                self.backend_instances[req.backend_type][req.backend_instance_id],
-                req.property_name)
+                self.backend_instances[req.backend_type][
+                    req.backend_instance_id], req.property_name)
             if resp != None:
                 device_class_name = resp.__class__.__name__
-        except Exception as e: exception = e
+        except Exception as e:
+            exception = e
 
         resp = niraapad_pb2.GenericDeviceGetterResp(
-            exception=pickle.dumps(exception), resp=pickle.dumps(device_class_name))
+            exception=pickle.dumps(exception),
+            resp=pickle.dumps(device_class_name))
 
         trace_msg = niraapad_pb2.GenericDeviceGetterTraceMsg(req=req, resp=resp)
         self.log_trace_msg(trace_msg)
 
         return resp
-    
+
     def GenericDeviceGetterTrace(self, trace_msg, context):
-        print("(trace) %s.get_%s" % (trace_msg.req.backend_type, trace_msg.req.property_name))
+        print("(trace) %s.get_%s" %
+              (trace_msg.req.backend_type, trace_msg.req.property_name))
 
         self.log_trace_msg(trace_msg)
         return niraapad_pb2.EmptyMsg()
- 
+
+
 class NiraapadServer:
 
     def __init__(self, port, tracedir, keysdir=None):
@@ -337,16 +324,18 @@ class NiraapadServer:
                 private_key = f.read()
             with open(server_crt_path, 'rb') as f:
                 certificate_chain = f.read()
-            server_credentials = grpc.ssl_server_credentials( ( (private_key, certificate_chain), ) )
+            server_credentials = grpc.ssl_server_credentials(
+                ((private_key, certificate_chain),))
             self.server.add_secure_port('[::]:' + str(port), server_credentials)
 
         self.niraapad_servicer = NiraapadServicer(tracedir=tracedir)
-        niraapad_pb2_grpc.add_NiraapadServicer_to_server(self.niraapad_servicer, self.server)
+        niraapad_pb2_grpc.add_NiraapadServicer_to_server(
+            self.niraapad_servicer, self.server)
 
     def start(self, wait=False):
         print("NiraapadServer::start")
         self.server.start()
-        
+
         # cleanly blocks the calling thread until the server terminates
         if wait:
             print("NiraapadServer::start waiting for termination")

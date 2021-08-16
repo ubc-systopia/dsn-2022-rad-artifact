@@ -12,13 +12,16 @@ FUNC_NAME = lambda: inspect.stack()[1].function
 CALLER_METHOD_NAME = lambda: inspect.stack()[2].function
 max_func_name_len = 100
 
+
 # Disable print() output
 def disable_print():
     sys.stdout = open(os.devnull, 'w')
 
+
 # Restore print() output
 def enable_print():
     sys.stdout = sys.__stdout__
+
 
 def sanitize_resp(name, resp):
     # TODO: Get rid of this!!!
@@ -36,15 +39,16 @@ def sanitize_resp(name, resp):
         pickled_resp = pickle.dumps(new_resp)
     except ValueError as e:
         if name == "list_devices":
-            assert(type(new_resp) == list)
+            assert (type(new_resp) == list)
             for i in range(0, len(new_resp)):
-                assert(type(new_resp[i]) == SerialDeviceInfo)
+                assert (type(new_resp[i]) == SerialDeviceInfo)
                 new_resp[i].handle = None
         elif name == "device":
-            assert(type(new_resp) == FtdiDevice)
+            assert (type(new_resp) == FtdiDevice)
             if hasattr(new_resp, 'ftdi'):
                 new_resp.ftdi = None
     return new_resp
+
 
 # We define three different mode of operation (MOs)..
 #
@@ -66,26 +70,18 @@ def sanitize_resp(name, resp):
 # "class Serial", which we define below, works seamlessely with the rest of the
 # experiment scripts from Hein Lab and NOrth Robotics.
 
+
 class MO(Enum):
     DIRECT = 1
     DIRECT_PLUS_MIDDLEBOX = 2
     VIA_MIDDLEBOX = 3
 
-# Currently, we support only selected types of backend classes
+
+# Currently, we support only the selected types of backend classes
 class BACKENDS:
-    # DEVICE = "Directevice"
-    # MOCK_DEVICE = "DirectMockDevice"
-    # FTDI_DEVICE = "DirectFtdiDevice"
-    # PY_SERIAL_DEVICE = "DirectPySerialDevice"
-    SERIAL = "DirectSerial"
+    DEVICE = "Directevice"
+    MOCK_DEVICE = "DirectMockDevice"
+    FTDI_DEVICE = "DirectFtdiDevice"
+    PY_SERIAL_DEVICE = "DirectPySerialDevice"
     UR3_ARM = "DirectUR3Arm"
     ROBOT_ARM = "DirectRobotArm"
-
-    # modules = {}
-    # modules[DEVICE] = "niraapad.backends"
-    # modules[MOCK_DEVICE] = "niraapad.backends"
-    # modules[FTDI_DEVICE] = "niraapad.backends"
-    # modules[PY_SERIAL_DEVICE] = "niraapad.backends"
-    # modules[SERIAL] = "niraapad.backends"
-    # modules[UR3_ARM] = "niraapad.backends"
-    # modules[ROBOT_ARM] = "niraapad.backends"

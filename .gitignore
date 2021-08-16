@@ -1,7 +1,5 @@
 *.swp
 *.pyc
-*pb2.py
-*pb2_grpc.py
 *__pycache__*
 *.log
 build/*

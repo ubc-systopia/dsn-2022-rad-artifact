@@ -11,6 +11,12 @@ Prototype for the CPS security project
 
 The package may work with earlier versions of these depenencies, but this has not been tested.
 
+## Styleguide
+
+* We try to follw the [Google Python Style Guide](https://google.github.io/styleguide/pyguide.html)
+* In order to use a tool like [YAPF](https://github.com/google/yapf) (Yet Another Python Formatter) for auto-formatting:
+    * Run `yapf --style google -i -r -vv files .` in the niraapad folder
+
 ## Build Steps
 
 * Generate the gRPC stubs using one of the following methods:

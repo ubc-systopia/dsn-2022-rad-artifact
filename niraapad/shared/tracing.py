@@ -5,6 +5,7 @@ import os
 import niraapad.protos.niraapad_pb2 as niraapad_pb2
 import niraapad.protos.niraapad_pb2_grpc as niraapad_pb2_grpc
 
+
 class Tracer:
 
     trace_file_counter = 1
@@ -16,7 +17,8 @@ class Tracer:
         self.tracing_day = datetime.now().date().day
 
     def write_to_file(self, trace_msg):
-        if self.tracing == False: return
+        if self.tracing == False:
+            return
 
         now = datetime.now()
         today = now.date().day
@@ -74,31 +76,36 @@ class Tracer:
 
             # Get the file size (no. of bytes) for termination
             f.seek(0, os.SEEK_END)
-            file_size = f.tell() 
+            file_size = f.tell()
             f.seek(0)
 
             while True:
                 # Read the constant-sized trace header first
                 trace_header_str_length = Tracer.get_trace_header_str_length()
-                if f.tell() + trace_header_str_length > file_size: break
+                if f.tell() + trace_header_str_length > file_size:
+                    break
                 trace_header = niraapad_pb2.TraceHeader()
                 trace_header.ParseFromString(f.read(trace_header_str_length))
 
                 # Read the trace metadata next
                 trace_metadata_str_length = trace_header.metadata_size
-                if f.tell() + trace_metadata_str_length > file_size: break
+                if f.tell() + trace_metadata_str_length > file_size:
+                    break
                 trace_metadata = niraapad_pb2.TraceMetadata()
-                trace_metadata.ParseFromString(f.read(trace_metadata_str_length))
+                trace_metadata.ParseFromString(
+                    f.read(trace_metadata_str_length))
 
                 # Read the trace message next
                 trace_msg_str_length = trace_metadata.trace_msg_size
-                if f.tell() + trace_msg_str_length > file_size: break
-                trace_msg = getattr(niraapad_pb2, trace_metadata.trace_msg_type)()
+                if f.tell() + trace_msg_str_length > file_size:
+                    break
+                trace_msg = getattr(niraapad_pb2,
+                                    trace_metadata.trace_msg_type)()
                 trace_msg.ParseFromString(f.read(trace_msg_str_length))
 
                 # Return msg type and msg for this iteration
                 yield trace_metadata.trace_msg_type, trace_msg
-            
+
             f.close()
 
         except Exception as e:
