@@ -34,6 +34,25 @@ class NiraapadClientHelper:
         self.stub = niraapad_pb2_grpc.NiraapadStub(channel)
         self.backend_instance_count = 0
 
+        resp = self.stub.DeleteConnection(
+            niraapad_pb2.DeleteConnectionReq())
+        exception = pickle.loads(resp.exception)
+        if exception != None:
+            raise exception
+
+        resp = self.stub.InitializeConnection(
+            niraapad_pb2.InitializeConnectionReq())
+        exception = pickle.loads(resp.exception)
+        if exception != None:
+            raise exception
+
+    def __del__(self):
+        resp = self.stub.DeleteConnection(
+            niraapad_pb2.DeleteConnectionReq())
+        exception = pickle.loads(resp.exception)
+        if exception != None:
+            raise exception
+
     def static_method(self, backend_type, method_name, args_pickled,
                       kwargs_pickled):
         resp = self.stub.StaticMethod(
@@ -389,8 +408,6 @@ class NiraapadClient:
         may be used in an expression; in this case, we simply return the
         variable value.
         """
-        # if self.niraapad_backend_type == utils.BACKENDS.SERIAL and property_name == 'device':
-        #     return self.generic_device_getter(property_name)
 
         if NiraapadClient.niraapad_mo == utils.MO.DIRECT:
             return getattr(self.niraapad_backend_instance, property_name)

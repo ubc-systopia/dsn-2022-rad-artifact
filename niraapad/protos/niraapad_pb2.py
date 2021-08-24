@@ -19,7 +19,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   syntax='proto3',
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_pb=b'\n\x1eniraapad/protos/niraapad.proto\"\x15\n\x13StartServerTraceMsg\"\x14\n\x12StopServerTraceMsg\"Z\n\x0fStaticMethodReq\x12\x14\n\x0c\x62\x61\x63kend_type\x18\x01 \x01(\t\x12\x13\n\x0bmethod_name\x18\x02 \x01(\t\x12\x0c\n\x04\x61rgs\x18\x03 \x01(\x0c\x12\x0e\n\x06kwargs\x18\x04 \x01(\x0c\"3\n\x10StaticMethodResp\x12\x11\n\texception\x18\x01 \x01(\x0c\x12\x0c\n\x04resp\x18\x02 \x01(\x0c\"V\n\x14StaticMethodTraceMsg\x12\x1d\n\x03req\x18\x01 \x01(\x0b\x32\x10.StaticMethodReq\x12\x1f\n\x04resp\x18\x02 \x01(\x0b\x32\x11.StaticMethodResp\">\n\x0fStaticGetterReq\x12\x14\n\x0c\x62\x61\x63kend_type\x18\x01 \x01(\t\x12\x15\n\rproperty_name\x18\x02 \x01(\t\"3\n\x10StaticGetterResp\x12\x11\n\texception\x18\x01 \x01(\x0c\x12\x0c\n\x04resp\x18\x02 \x01(\x0c\"V\n\x14StaticGetterTraceMsg\x12\x1d\n\x03req\x18\x01 \x01(\x0b\x32\x10.StaticGetterReq\x12\x1f\n\x04resp\x18\x02 \x01(\x0b\x32\x11.StaticGetterResp\"M\n\x0fStaticSetterReq\x12\x14\n\x0c\x62\x61\x63kend_type\x18\x01 \x01(\t\x12\x15\n\rproperty_name\x18\x02 \x01(\t\x12\r\n\x05value\x18\x03 \x01(\x0c\"%\n\x10StaticSetterResp\x12\x11\n\texception\x18\x01 \x01(\x0c\"V\n\x14StaticSetterTraceMsg\x12\x1d\n\x03req\x18\x01 \x01(\x0b\x32\x10.StaticSetterReq\x12\x1f\n\x04resp\x18\x02 \x01(\x0b\x32\x11.StaticSetterResp\"t\n\rInitializeReq\x12\x14\n\x0c\x62\x61\x63kend_type\x18\x01 \x01(\t\x12\x1b\n\x13\x62\x61\x63kend_instance_id\x18\x02 \x01(\x05\x12\x0c\n\x04\x61rgs\x18\x03 \x01(\x0c\x12\x0e\n\x06kwargs\x18\x04 \x01(\x0c\x12\x12\n\nstacktrace\x18\x05 \x01(\x0c\"#\n\x0eInitializeResp\x12\x11\n\texception\x18\x01 \x01(\x0c\"P\n\x12InitializeTraceMsg\x12\x1b\n\x03req\x18\x01 \x01(\x0b\x32\x0e.InitializeReq\x12\x1d\n\x04resp\x18\x02 \x01(\x0b\x32\x0f.InitializeResp\"\\\n\x10GenericGetterReq\x12\x14\n\x0c\x62\x61\x63kend_type\x18\x01 \x01(\t\x12\x1b\n\x13\x62\x61\x63kend_instance_id\x18\x02 \x01(\x05\x12\x15\n\rproperty_name\x18\x03 \x01(\t\"4\n\x11GenericGetterResp\x12\x11\n\texception\x18\x01 \x01(\x0c\x12\x0c\n\x04resp\x18\x02 \x01(\x0c\"Y\n\x15GenericGetterTraceMsg\x12\x1e\n\x03req\x18\x01 \x01(\x0b\x32\x11.GenericGetterReq\x12 \n\x04resp\x18\x02 \x01(\x0b\x32\x12.GenericGetterResp\"k\n\x10GenericSetterReq\x12\x14\n\x0c\x62\x61\x63kend_type\x18\x01 \x01(\t\x12\x1b\n\x13\x62\x61\x63kend_instance_id\x18\x02 \x01(\x05\x12\x15\n\rproperty_name\x18\x03 \x01(\t\x12\r\n\x05value\x18\x04 \x01(\x0c\"&\n\x11GenericSetterResp\x12\x11\n\texception\x18\x01 \x01(\x0c\"Y\n\x15GenericSetterTraceMsg\x12\x1e\n\x03req\x18\x01 \x01(\x0b\x32\x11.GenericSetterReq\x12 \n\x04resp\x18\x02 \x01(\x0b\x32\x12.GenericSetterResp\"x\n\x10GenericMethodReq\x12\x14\n\x0c\x62\x61\x63kend_type\x18\x01 \x01(\t\x12\x1b\n\x13\x62\x61\x63kend_instance_id\x18\x02 \x01(\x05\x12\x13\n\x0bmethod_name\x18\x03 \x01(\t\x12\x0c\n\x04\x61rgs\x18\x04 \x01(\x0c\x12\x0e\n\x06kwargs\x18\x05 \x01(\x0c\"4\n\x11GenericMethodResp\x12\x11\n\texception\x18\x01 \x01(\x0c\x12\x0c\n\x04resp\x18\x02 \x01(\x0c\"Y\n\x15GenericMethodTraceMsg\x12\x1e\n\x03req\x18\x01 \x01(\x0b\x32\x11.GenericMethodReq\x12 \n\x04resp\x18\x02 \x01(\x0b\x32\x12.GenericMethodResp\"b\n\x16GenericDeviceGetterReq\x12\x14\n\x0c\x62\x61\x63kend_type\x18\x01 \x01(\t\x12\x1b\n\x13\x62\x61\x63kend_instance_id\x18\x02 \x01(\x05\x12\x15\n\rproperty_name\x18\x03 \x01(\t\":\n\x17GenericDeviceGetterResp\x12\x11\n\texception\x18\x01 \x01(\x0c\x12\x0c\n\x04resp\x18\x02 \x01(\x0c\"k\n\x1bGenericDeviceGetterTraceMsg\x12$\n\x03req\x18\x01 \x01(\x0b\x32\x17.GenericDeviceGetterReq\x12&\n\x04resp\x18\x02 \x01(\x0b\x32\x18.GenericDeviceGetterResp\"$\n\x0bTraceHeader\x12\x15\n\rmetadata_size\x18\x01 \x01(\x05\"R\n\rTraceMetadata\x12\x11\n\ttimestamp\x18\x01 \x01(\t\x12\x16\n\x0etrace_msg_type\x18\x02 \x01(\t\x12\x16\n\x0etrace_msg_size\x18\x03 \x01(\x05\"\n\n\x08\x45mptyMsg2\xb2\x07\n\x08Niraapad\x12\x35\n\x0cStaticMethod\x12\x10.StaticMethodReq\x1a\x11.StaticMethodResp\"\x00\x12\x37\n\x11StaticMethodTrace\x12\x15.StaticMethodTraceMsg\x1a\t.EmptyMsg\"\x00\x12\x35\n\x0cStaticGetter\x12\x10.StaticGetterReq\x1a\x11.StaticGetterResp\"\x00\x12\x37\n\x11StaticGetterTrace\x12\x15.StaticGetterTraceMsg\x1a\t.EmptyMsg\"\x00\x12\x35\n\x0cStaticSetter\x12\x10.StaticSetterReq\x1a\x11.StaticSetterResp\"\x00\x12\x37\n\x11StaticSetterTrace\x12\x15.StaticSetterTraceMsg\x1a\t.EmptyMsg\"\x00\x12/\n\nInitialize\x12\x0e.InitializeReq\x1a\x0f.InitializeResp\"\x00\x12\x33\n\x0fInitializeTrace\x12\x13.InitializeTraceMsg\x1a\t.EmptyMsg\"\x00\x12\x38\n\rGenericGetter\x12\x11.GenericGetterReq\x1a\x12.GenericGetterResp\"\x00\x12\x39\n\x12GenericGetterTrace\x12\x16.GenericGetterTraceMsg\x1a\t.EmptyMsg\"\x00\x12J\n\x13GenericDeviceGetter\x12\x17.GenericDeviceGetterReq\x1a\x18.GenericDeviceGetterResp\"\x00\x12\x45\n\x18GenericDeviceGetterTrace\x12\x1c.GenericDeviceGetterTraceMsg\x1a\t.EmptyMsg\"\x00\x12\x38\n\rGenericSetter\x12\x11.GenericSetterReq\x1a\x12.GenericSetterResp\"\x00\x12\x39\n\x12GenericSetterTrace\x12\x16.GenericSetterTraceMsg\x1a\t.EmptyMsg\"\x00\x12\x38\n\rGenericMethod\x12\x11.GenericMethodReq\x1a\x12.GenericMethodResp\"\x00\x12\x39\n\x12GenericMethodTrace\x12\x16.GenericMethodTraceMsg\x1a\t.EmptyMsg\"\x00\x62\x06proto3'
+  serialized_pb=b'\n\x1eniraapad/protos/niraapad.proto\"\x15\n\x13StartServerTraceMsg\"\x14\n\x12StopServerTraceMsg\"\x19\n\x17InitializeConnectionReq\"-\n\x18InitializeConnectionResp\x12\x11\n\texception\x18\x01 \x01(\x0c\"n\n\x1cInitializeConnectionTraceMsg\x12%\n\x03req\x18\x01 \x01(\x0b\x32\x18.InitializeConnectionReq\x12\'\n\x04resp\x18\x02 \x01(\x0b\x32\x19.InitializeConnectionResp\"\x15\n\x13\x44\x65leteConnectionReq\")\n\x14\x44\x65leteConnectionResp\x12\x11\n\texception\x18\x01 \x01(\x0c\"b\n\x18\x44\x65leteConnectionTraceMsg\x12!\n\x03req\x18\x01 \x01(\x0b\x32\x14.DeleteConnectionReq\x12#\n\x04resp\x18\x02 \x01(\x0b\x32\x15.DeleteConnectionResp\"Z\n\x0fStaticMethodReq\x12\x14\n\x0c\x62\x61\x63kend_type\x18\x01 \x01(\t\x12\x13\n\x0bmethod_name\x18\x02 \x01(\t\x12\x0c\n\x04\x61rgs\x18\x03 \x01(\x0c\x12\x0e\n\x06kwargs\x18\x04 \x01(\x0c\"3\n\x10StaticMethodResp\x12\x11\n\texception\x18\x01 \x01(\x0c\x12\x0c\n\x04resp\x18\x02 \x01(\x0c\"V\n\x14StaticMethodTraceMsg\x12\x1d\n\x03req\x18\x01 \x01(\x0b\x32\x10.StaticMethodReq\x12\x1f\n\x04resp\x18\x02 \x01(\x0b\x32\x11.StaticMethodResp\">\n\x0fStaticGetterReq\x12\x14\n\x0c\x62\x61\x63kend_type\x18\x01 \x01(\t\x12\x15\n\rproperty_name\x18\x02 \x01(\t\"3\n\x10StaticGetterResp\x12\x11\n\texception\x18\x01 \x01(\x0c\x12\x0c\n\x04resp\x18\x02 \x01(\x0c\"V\n\x14StaticGetterTraceMsg\x12\x1d\n\x03req\x18\x01 \x01(\x0b\x32\x10.StaticGetterReq\x12\x1f\n\x04resp\x18\x02 \x01(\x0b\x32\x11.StaticGetterResp\"M\n\x0fStaticSetterReq\x12\x14\n\x0c\x62\x61\x63kend_type\x18\x01 \x01(\t\x12\x15\n\rproperty_name\x18\x02 \x01(\t\x12\r\n\x05value\x18\x03 \x01(\x0c\"%\n\x10StaticSetterResp\x12\x11\n\texception\x18\x01 \x01(\x0c\"V\n\x14StaticSetterTraceMsg\x12\x1d\n\x03req\x18\x01 \x01(\x0b\x32\x10.StaticSetterReq\x12\x1f\n\x04resp\x18\x02 \x01(\x0b\x32\x11.StaticSetterResp\"t\n\rInitializeReq\x12\x14\n\x0c\x62\x61\x63kend_type\x18\x01 \x01(\t\x12\x1b\n\x13\x62\x61\x63kend_instance_id\x18\x02 \x01(\x05\x12\x0c\n\x04\x61rgs\x18\x03 \x01(\x0c\x12\x0e\n\x06kwargs\x18\x04 \x01(\x0c\x12\x12\n\nstacktrace\x18\x05 \x01(\x0c\"#\n\x0eInitializeResp\x12\x11\n\texception\x18\x01 \x01(\x0c\"P\n\x12InitializeTraceMsg\x12\x1b\n\x03req\x18\x01 \x01(\x0b\x32\x0e.InitializeReq\x12\x1d\n\x04resp\x18\x02 \x01(\x0b\x32\x0f.InitializeResp\"\\\n\x10GenericGetterReq\x12\x14\n\x0c\x62\x61\x63kend_type\x18\x01 \x01(\t\x12\x1b\n\x13\x62\x61\x63kend_instance_id\x18\x02 \x01(\x05\x12\x15\n\rproperty_name\x18\x03 \x01(\t\"4\n\x11GenericGetterResp\x12\x11\n\texception\x18\x01 \x01(\x0c\x12\x0c\n\x04resp\x18\x02 \x01(\x0c\"Y\n\x15GenericGetterTraceMsg\x12\x1e\n\x03req\x18\x01 \x01(\x0b\x32\x11.GenericGetterReq\x12 \n\x04resp\x18\x02 \x01(\x0b\x32\x12.GenericGetterResp\"k\n\x10GenericSetterReq\x12\x14\n\x0c\x62\x61\x63kend_type\x18\x01 \x01(\t\x12\x1b\n\x13\x62\x61\x63kend_instance_id\x18\x02 \x01(\x05\x12\x15\n\rproperty_name\x18\x03 \x01(\t\x12\r\n\x05value\x18\x04 \x01(\x0c\"&\n\x11GenericSetterResp\x12\x11\n\texception\x18\x01 \x01(\x0c\"Y\n\x15GenericSetterTraceMsg\x12\x1e\n\x03req\x18\x01 \x01(\x0b\x32\x11.GenericSetterReq\x12 \n\x04resp\x18\x02 \x01(\x0b\x32\x12.GenericSetterResp\"x\n\x10GenericMethodReq\x12\x14\n\x0c\x62\x61\x63kend_type\x18\x01 \x01(\t\x12\x1b\n\x13\x62\x61\x63kend_instance_id\x18\x02 \x01(\x05\x12\x13\n\x0bmethod_name\x18\x03 \x01(\t\x12\x0c\n\x04\x61rgs\x18\x04 \x01(\x0c\x12\x0e\n\x06kwargs\x18\x05 \x01(\x0c\"4\n\x11GenericMethodResp\x12\x11\n\texception\x18\x01 \x01(\x0c\x12\x0c\n\x04resp\x18\x02 \x01(\x0c\"Y\n\x15GenericMethodTraceMsg\x12\x1e\n\x03req\x18\x01 \x01(\x0b\x32\x11.GenericMethodReq\x12 \n\x04resp\x18\x02 \x01(\x0b\x32\x12.GenericMethodResp\"b\n\x16GenericDeviceGetterReq\x12\x14\n\x0c\x62\x61\x63kend_type\x18\x01 \x01(\t\x12\x1b\n\x13\x62\x61\x63kend_instance_id\x18\x02 \x01(\x05\x12\x15\n\rproperty_name\x18\x03 \x01(\t\":\n\x17GenericDeviceGetterResp\x12\x11\n\texception\x18\x01 \x01(\x0c\x12\x0c\n\x04resp\x18\x02 \x01(\x0c\"k\n\x1bGenericDeviceGetterTraceMsg\x12$\n\x03req\x18\x01 \x01(\x0b\x32\x17.GenericDeviceGetterReq\x12&\n\x04resp\x18\x02 \x01(\x0b\x32\x18.GenericDeviceGetterResp\"$\n\x0bTraceHeader\x12\x15\n\rmetadata_size\x18\x01 \x01(\x05\"R\n\rTraceMetadata\x12\x11\n\ttimestamp\x18\x01 \x01(\t\x12\x16\n\x0etrace_msg_type\x18\x02 \x01(\t\x12\x16\n\x0etrace_msg_size\x18\x03 \x01(\x05\"\n\n\x08\x45mptyMsg2\xc4\x08\n\x08Niraapad\x12M\n\x14InitializeConnection\x12\x18.InitializeConnectionReq\x1a\x19.InitializeConnectionResp\"\x00\x12\x41\n\x10\x44\x65leteConnection\x12\x14.DeleteConnectionReq\x1a\x15.DeleteConnectionResp\"\x00\x12\x35\n\x0cStaticMethod\x12\x10.StaticMethodReq\x1a\x11.StaticMethodResp\"\x00\x12\x37\n\x11StaticMethodTrace\x12\x15.StaticMethodTraceMsg\x1a\t.EmptyMsg\"\x00\x12\x35\n\x0cStaticGetter\x12\x10.StaticGetterReq\x1a\x11.StaticGetterResp\"\x00\x12\x37\n\x11StaticGetterTrace\x12\x15.StaticGetterTraceMsg\x1a\t.EmptyMsg\"\x00\x12\x35\n\x0cStaticSetter\x12\x10.StaticSetterReq\x1a\x11.StaticSetterResp\"\x00\x12\x37\n\x11StaticSetterTrace\x12\x15.StaticSetterTraceMsg\x1a\t.EmptyMsg\"\x00\x12/\n\nInitialize\x12\x0e.InitializeReq\x1a\x0f.InitializeResp\"\x00\x12\x33\n\x0fInitializeTrace\x12\x13.InitializeTraceMsg\x1a\t.EmptyMsg\"\x00\x12\x38\n\rGenericGetter\x12\x11.GenericGetterReq\x1a\x12.GenericGetterResp\"\x00\x12\x39\n\x12GenericGetterTrace\x12\x16.GenericGetterTraceMsg\x1a\t.EmptyMsg\"\x00\x12J\n\x13GenericDeviceGetter\x12\x17.GenericDeviceGetterReq\x1a\x18.GenericDeviceGetterResp\"\x00\x12\x45\n\x18GenericDeviceGetterTrace\x12\x1c.GenericDeviceGetterTraceMsg\x1a\t.EmptyMsg\"\x00\x12\x38\n\rGenericSetter\x12\x11.GenericSetterReq\x1a\x12.GenericSetterResp\"\x00\x12\x39\n\x12GenericSetterTrace\x12\x16.GenericSetterTraceMsg\x1a\t.EmptyMsg\"\x00\x12\x38\n\rGenericMethod\x12\x11.GenericMethodReq\x1a\x12.GenericMethodResp\"\x00\x12\x39\n\x12GenericMethodTrace\x12\x16.GenericMethodTraceMsg\x1a\t.EmptyMsg\"\x00\x62\x06proto3'
 )
 
 
@@ -75,6 +75,198 @@ _STOPSERVERTRACEMSG = _descriptor.Descriptor(
 )
 
 
+_INITIALIZECONNECTIONREQ = _descriptor.Descriptor(
+  name='InitializeConnectionReq',
+  full_name='InitializeConnectionReq',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  create_key=_descriptor._internal_create_key,
+  fields=[
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=79,
+  serialized_end=104,
+)
+
+
+_INITIALIZECONNECTIONRESP = _descriptor.Descriptor(
+  name='InitializeConnectionResp',
+  full_name='InitializeConnectionResp',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  create_key=_descriptor._internal_create_key,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='exception', full_name='InitializeConnectionResp.exception', index=0,
+      number=1, type=12, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"",
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=106,
+  serialized_end=151,
+)
+
+
+_INITIALIZECONNECTIONTRACEMSG = _descriptor.Descriptor(
+  name='InitializeConnectionTraceMsg',
+  full_name='InitializeConnectionTraceMsg',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  create_key=_descriptor._internal_create_key,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='req', full_name='InitializeConnectionTraceMsg.req', index=0,
+      number=1, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='resp', full_name='InitializeConnectionTraceMsg.resp', index=1,
+      number=2, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=153,
+  serialized_end=263,
+)
+
+
+_DELETECONNECTIONREQ = _descriptor.Descriptor(
+  name='DeleteConnectionReq',
+  full_name='DeleteConnectionReq',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  create_key=_descriptor._internal_create_key,
+  fields=[
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=265,
+  serialized_end=286,
+)
+
+
+_DELETECONNECTIONRESP = _descriptor.Descriptor(
+  name='DeleteConnectionResp',
+  full_name='DeleteConnectionResp',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  create_key=_descriptor._internal_create_key,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='exception', full_name='DeleteConnectionResp.exception', index=0,
+      number=1, type=12, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"",
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=288,
+  serialized_end=329,
+)
+
+
+_DELETECONNECTIONTRACEMSG = _descriptor.Descriptor(
+  name='DeleteConnectionTraceMsg',
+  full_name='DeleteConnectionTraceMsg',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  create_key=_descriptor._internal_create_key,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='req', full_name='DeleteConnectionTraceMsg.req', index=0,
+      number=1, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='resp', full_name='DeleteConnectionTraceMsg.resp', index=1,
+      number=2, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=331,
+  serialized_end=429,
+)
+
+
 _STATICMETHODREQ = _descriptor.Descriptor(
   name='StaticMethodReq',
   full_name='StaticMethodReq',
@@ -123,8 +315,8 @@ _STATICMETHODREQ = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=79,
-  serialized_end=169,
+  serialized_start=431,
+  serialized_end=521,
 )
 
 
@@ -162,8 +354,8 @@ _STATICMETHODRESP = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=171,
-  serialized_end=222,
+  serialized_start=523,
+  serialized_end=574,
 )
 
 
@@ -201,8 +393,8 @@ _STATICMETHODTRACEMSG = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=224,
-  serialized_end=310,
+  serialized_start=576,
+  serialized_end=662,
 )
 
 
@@ -240,8 +432,8 @@ _STATICGETTERREQ = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=312,
-  serialized_end=374,
+  serialized_start=664,
+  serialized_end=726,
 )
 
 
@@ -279,8 +471,8 @@ _STATICGETTERRESP = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=376,
-  serialized_end=427,
+  serialized_start=728,
+  serialized_end=779,
 )
 
 
@@ -318,8 +510,8 @@ _STATICGETTERTRACEMSG = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=429,
-  serialized_end=515,
+  serialized_start=781,
+  serialized_end=867,
 )
 
 
@@ -364,8 +556,8 @@ _STATICSETTERREQ = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=517,
-  serialized_end=594,
+  serialized_start=869,
+  serialized_end=946,
 )
 
 
@@ -396,8 +588,8 @@ _STATICSETTERRESP = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=596,
-  serialized_end=633,
+  serialized_start=948,
+  serialized_end=985,
 )
 
 
@@ -435,8 +627,8 @@ _STATICSETTERTRACEMSG = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=635,
-  serialized_end=721,
+  serialized_start=987,
+  serialized_end=1073,
 )
 
 
@@ -495,8 +687,8 @@ _INITIALIZEREQ = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=723,
-  serialized_end=839,
+  serialized_start=1075,
+  serialized_end=1191,
 )
 
 
@@ -527,8 +719,8 @@ _INITIALIZERESP = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=841,
-  serialized_end=876,
+  serialized_start=1193,
+  serialized_end=1228,
 )
 
 
@@ -566,8 +758,8 @@ _INITIALIZETRACEMSG = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=878,
-  serialized_end=958,
+  serialized_start=1230,
+  serialized_end=1310,
 )
 
 
@@ -612,8 +804,8 @@ _GENERICGETTERREQ = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=960,
-  serialized_end=1052,
+  serialized_start=1312,
+  serialized_end=1404,
 )
 
 
@@ -651,8 +843,8 @@ _GENERICGETTERRESP = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1054,
-  serialized_end=1106,
+  serialized_start=1406,
+  serialized_end=1458,
 )
 
 
@@ -690,8 +882,8 @@ _GENERICGETTERTRACEMSG = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1108,
-  serialized_end=1197,
+  serialized_start=1460,
+  serialized_end=1549,
 )
 
 
@@ -743,8 +935,8 @@ _GENERICSETTERREQ = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1199,
-  serialized_end=1306,
+  serialized_start=1551,
+  serialized_end=1658,
 )
 
 
@@ -775,8 +967,8 @@ _GENERICSETTERRESP = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1308,
-  serialized_end=1346,
+  serialized_start=1660,
+  serialized_end=1698,
 )
 
 
@@ -814,8 +1006,8 @@ _GENERICSETTERTRACEMSG = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1348,
-  serialized_end=1437,
+  serialized_start=1700,
+  serialized_end=1789,
 )
 
 
@@ -874,8 +1066,8 @@ _GENERICMETHODREQ = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1439,
-  serialized_end=1559,
+  serialized_start=1791,
+  serialized_end=1911,
 )
 
 
@@ -913,8 +1105,8 @@ _GENERICMETHODRESP = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1561,
-  serialized_end=1613,
+  serialized_start=1913,
+  serialized_end=1965,
 )
 
 
@@ -952,8 +1144,8 @@ _GENERICMETHODTRACEMSG = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1615,
-  serialized_end=1704,
+  serialized_start=1967,
+  serialized_end=2056,
 )
 
 
@@ -998,8 +1190,8 @@ _GENERICDEVICEGETTERREQ = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1706,
-  serialized_end=1804,
+  serialized_start=2058,
+  serialized_end=2156,
 )
 
 
@@ -1037,8 +1229,8 @@ _GENERICDEVICEGETTERRESP = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1806,
-  serialized_end=1864,
+  serialized_start=2158,
+  serialized_end=2216,
 )
 
 
@@ -1076,8 +1268,8 @@ _GENERICDEVICEGETTERTRACEMSG = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1866,
-  serialized_end=1973,
+  serialized_start=2218,
+  serialized_end=2325,
 )
 
 
@@ -1108,8 +1300,8 @@ _TRACEHEADER = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1975,
-  serialized_end=2011,
+  serialized_start=2327,
+  serialized_end=2363,
 )
 
 
@@ -1154,8 +1346,8 @@ _TRACEMETADATA = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=2013,
-  serialized_end=2095,
+  serialized_start=2365,
+  serialized_end=2447,
 )
 
 
@@ -1179,10 +1371,14 @@ _EMPTYMSG = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=2097,
-  serialized_end=2107,
+  serialized_start=2449,
+  serialized_end=2459,
 )
 
+_INITIALIZECONNECTIONTRACEMSG.fields_by_name['req'].message_type = _INITIALIZECONNECTIONREQ
+_INITIALIZECONNECTIONTRACEMSG.fields_by_name['resp'].message_type = _INITIALIZECONNECTIONRESP
+_DELETECONNECTIONTRACEMSG.fields_by_name['req'].message_type = _DELETECONNECTIONREQ
+_DELETECONNECTIONTRACEMSG.fields_by_name['resp'].message_type = _DELETECONNECTIONRESP
 _STATICMETHODTRACEMSG.fields_by_name['req'].message_type = _STATICMETHODREQ
 _STATICMETHODTRACEMSG.fields_by_name['resp'].message_type = _STATICMETHODRESP
 _STATICGETTERTRACEMSG.fields_by_name['req'].message_type = _STATICGETTERREQ
@@ -1201,6 +1397,12 @@ _GENERICDEVICEGETTERTRACEMSG.fields_by_name['req'].message_type = _GENERICDEVICE
 _GENERICDEVICEGETTERTRACEMSG.fields_by_name['resp'].message_type = _GENERICDEVICEGETTERRESP
 DESCRIPTOR.message_types_by_name['StartServerTraceMsg'] = _STARTSERVERTRACEMSG
 DESCRIPTOR.message_types_by_name['StopServerTraceMsg'] = _STOPSERVERTRACEMSG
+DESCRIPTOR.message_types_by_name['InitializeConnectionReq'] = _INITIALIZECONNECTIONREQ
+DESCRIPTOR.message_types_by_name['InitializeConnectionResp'] = _INITIALIZECONNECTIONRESP
+DESCRIPTOR.message_types_by_name['InitializeConnectionTraceMsg'] = _INITIALIZECONNECTIONTRACEMSG
+DESCRIPTOR.message_types_by_name['DeleteConnectionReq'] = _DELETECONNECTIONREQ
+DESCRIPTOR.message_types_by_name['DeleteConnectionResp'] = _DELETECONNECTIONRESP
+DESCRIPTOR.message_types_by_name['DeleteConnectionTraceMsg'] = _DELETECONNECTIONTRACEMSG
 DESCRIPTOR.message_types_by_name['StaticMethodReq'] = _STATICMETHODREQ
 DESCRIPTOR.message_types_by_name['StaticMethodResp'] = _STATICMETHODRESP
 DESCRIPTOR.message_types_by_name['StaticMethodTraceMsg'] = _STATICMETHODTRACEMSG
@@ -1243,6 +1445,48 @@ StopServerTraceMsg = _reflection.GeneratedProtocolMessageType('StopServerTraceMs
   # @@protoc_insertion_point(class_scope:StopServerTraceMsg)
   })
 _sym_db.RegisterMessage(StopServerTraceMsg)
+
+InitializeConnectionReq = _reflection.GeneratedProtocolMessageType('InitializeConnectionReq', (_message.Message,), {
+  'DESCRIPTOR' : _INITIALIZECONNECTIONREQ,
+  '__module__' : 'niraapad.protos.niraapad_pb2'
+  # @@protoc_insertion_point(class_scope:InitializeConnectionReq)
+  })
+_sym_db.RegisterMessage(InitializeConnectionReq)
+
+InitializeConnectionResp = _reflection.GeneratedProtocolMessageType('InitializeConnectionResp', (_message.Message,), {
+  'DESCRIPTOR' : _INITIALIZECONNECTIONRESP,
+  '__module__' : 'niraapad.protos.niraapad_pb2'
+  # @@protoc_insertion_point(class_scope:InitializeConnectionResp)
+  })
+_sym_db.RegisterMessage(InitializeConnectionResp)
+
+InitializeConnectionTraceMsg = _reflection.GeneratedProtocolMessageType('InitializeConnectionTraceMsg', (_message.Message,), {
+  'DESCRIPTOR' : _INITIALIZECONNECTIONTRACEMSG,
+  '__module__' : 'niraapad.protos.niraapad_pb2'
+  # @@protoc_insertion_point(class_scope:InitializeConnectionTraceMsg)
+  })
+_sym_db.RegisterMessage(InitializeConnectionTraceMsg)
+
+DeleteConnectionReq = _reflection.GeneratedProtocolMessageType('DeleteConnectionReq', (_message.Message,), {
+  'DESCRIPTOR' : _DELETECONNECTIONREQ,
+  '__module__' : 'niraapad.protos.niraapad_pb2'
+  # @@protoc_insertion_point(class_scope:DeleteConnectionReq)
+  })
+_sym_db.RegisterMessage(DeleteConnectionReq)
+
+DeleteConnectionResp = _reflection.GeneratedProtocolMessageType('DeleteConnectionResp', (_message.Message,), {
+  'DESCRIPTOR' : _DELETECONNECTIONRESP,
+  '__module__' : 'niraapad.protos.niraapad_pb2'
+  # @@protoc_insertion_point(class_scope:DeleteConnectionResp)
+  })
+_sym_db.RegisterMessage(DeleteConnectionResp)
+
+DeleteConnectionTraceMsg = _reflection.GeneratedProtocolMessageType('DeleteConnectionTraceMsg', (_message.Message,), {
+  'DESCRIPTOR' : _DELETECONNECTIONTRACEMSG,
+  '__module__' : 'niraapad.protos.niraapad_pb2'
+  # @@protoc_insertion_point(class_scope:DeleteConnectionTraceMsg)
+  })
+_sym_db.RegisterMessage(DeleteConnectionTraceMsg)
 
 StaticMethodReq = _reflection.GeneratedProtocolMessageType('StaticMethodReq', (_message.Message,), {
   'DESCRIPTOR' : _STATICMETHODREQ,
@@ -1442,13 +1686,33 @@ _NIRAAPAD = _descriptor.ServiceDescriptor(
   index=0,
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_start=2110,
-  serialized_end=3056,
+  serialized_start=2462,
+  serialized_end=3554,
   methods=[
+  _descriptor.MethodDescriptor(
+    name='InitializeConnection',
+    full_name='Niraapad.InitializeConnection',
+    index=0,
+    containing_service=None,
+    input_type=_INITIALIZECONNECTIONREQ,
+    output_type=_INITIALIZECONNECTIONRESP,
+    serialized_options=None,
+    create_key=_descriptor._internal_create_key,
+  ),
+  _descriptor.MethodDescriptor(
+    name='DeleteConnection',
+    full_name='Niraapad.DeleteConnection',
+    index=1,
+    containing_service=None,
+    input_type=_DELETECONNECTIONREQ,
+    output_type=_DELETECONNECTIONRESP,
+    serialized_options=None,
+    create_key=_descriptor._internal_create_key,
+  ),
   _descriptor.MethodDescriptor(
     name='StaticMethod',
     full_name='Niraapad.StaticMethod',
-    index=0,
+    index=2,
     containing_service=None,
     input_type=_STATICMETHODREQ,
     output_type=_STATICMETHODRESP,
@@ -1458,7 +1722,7 @@ _NIRAAPAD = _descriptor.ServiceDescriptor(
   _descriptor.MethodDescriptor(
     name='StaticMethodTrace',
     full_name='Niraapad.StaticMethodTrace',
-    index=1,
+    index=3,
     containing_service=None,
     input_type=_STATICMETHODTRACEMSG,
     output_type=_EMPTYMSG,
@@ -1468,7 +1732,7 @@ _NIRAAPAD = _descriptor.ServiceDescriptor(
   _descriptor.MethodDescriptor(
     name='StaticGetter',
     full_name='Niraapad.StaticGetter',
-    index=2,
+    index=4,
     containing_service=None,
     input_type=_STATICGETTERREQ,
     output_type=_STATICGETTERRESP,
@@ -1478,7 +1742,7 @@ _NIRAAPAD = _descriptor.ServiceDescriptor(
   _descriptor.MethodDescriptor(
     name='StaticGetterTrace',
     full_name='Niraapad.StaticGetterTrace',
-    index=3,
+    index=5,
     containing_service=None,
     input_type=_STATICGETTERTRACEMSG,
     output_type=_EMPTYMSG,
@@ -1488,7 +1752,7 @@ _NIRAAPAD = _descriptor.ServiceDescriptor(
   _descriptor.MethodDescriptor(
     name='StaticSetter',
     full_name='Niraapad.StaticSetter',
-    index=4,
+    index=6,
     containing_service=None,
     input_type=_STATICSETTERREQ,
     output_type=_STATICSETTERRESP,
@@ -1498,7 +1762,7 @@ _NIRAAPAD = _descriptor.ServiceDescriptor(
   _descriptor.MethodDescriptor(
     name='StaticSetterTrace',
     full_name='Niraapad.StaticSetterTrace',
-    index=5,
+    index=7,
     containing_service=None,
     input_type=_STATICSETTERTRACEMSG,
     output_type=_EMPTYMSG,
@@ -1508,7 +1772,7 @@ _NIRAAPAD = _descriptor.ServiceDescriptor(
   _descriptor.MethodDescriptor(
     name='Initialize',
     full_name='Niraapad.Initialize',
-    index=6,
+    index=8,
     containing_service=None,
     input_type=_INITIALIZEREQ,
     output_type=_INITIALIZERESP,
@@ -1518,7 +1782,7 @@ _NIRAAPAD = _descriptor.ServiceDescriptor(
   _descriptor.MethodDescriptor(
     name='InitializeTrace',
     full_name='Niraapad.InitializeTrace',
-    index=7,
+    index=9,
     containing_service=None,
     input_type=_INITIALIZETRACEMSG,
     output_type=_EMPTYMSG,
@@ -1528,7 +1792,7 @@ _NIRAAPAD = _descriptor.ServiceDescriptor(
   _descriptor.MethodDescriptor(
     name='GenericGetter',
     full_name='Niraapad.GenericGetter',
-    index=8,
+    index=10,
     containing_service=None,
     input_type=_GENERICGETTERREQ,
     output_type=_GENERICGETTERRESP,
@@ -1538,7 +1802,7 @@ _NIRAAPAD = _descriptor.ServiceDescriptor(
   _descriptor.MethodDescriptor(
     name='GenericGetterTrace',
     full_name='Niraapad.GenericGetterTrace',
-    index=9,
+    index=11,
     containing_service=None,
     input_type=_GENERICGETTERTRACEMSG,
     output_type=_EMPTYMSG,
@@ -1548,7 +1812,7 @@ _NIRAAPAD = _descriptor.ServiceDescriptor(
   _descriptor.MethodDescriptor(
     name='GenericDeviceGetter',
     full_name='Niraapad.GenericDeviceGetter',
-    index=10,
+    index=12,
     containing_service=None,
     input_type=_GENERICDEVICEGETTERREQ,
     output_type=_GENERICDEVICEGETTERRESP,
@@ -1558,7 +1822,7 @@ _NIRAAPAD = _descriptor.ServiceDescriptor(
   _descriptor.MethodDescriptor(
     name='GenericDeviceGetterTrace',
     full_name='Niraapad.GenericDeviceGetterTrace',
-    index=11,
+    index=13,
     containing_service=None,
     input_type=_GENERICDEVICEGETTERTRACEMSG,
     output_type=_EMPTYMSG,
@@ -1568,7 +1832,7 @@ _NIRAAPAD = _descriptor.ServiceDescriptor(
   _descriptor.MethodDescriptor(
     name='GenericSetter',
     full_name='Niraapad.GenericSetter',
-    index=12,
+    index=14,
     containing_service=None,
     input_type=_GENERICSETTERREQ,
     output_type=_GENERICSETTERRESP,
@@ -1578,7 +1842,7 @@ _NIRAAPAD = _descriptor.ServiceDescriptor(
   _descriptor.MethodDescriptor(
     name='GenericSetterTrace',
     full_name='Niraapad.GenericSetterTrace',
-    index=13,
+    index=15,
     containing_service=None,
     input_type=_GENERICSETTERTRACEMSG,
     output_type=_EMPTYMSG,
@@ -1588,7 +1852,7 @@ _NIRAAPAD = _descriptor.ServiceDescriptor(
   _descriptor.MethodDescriptor(
     name='GenericMethod',
     full_name='Niraapad.GenericMethod',
-    index=14,
+    index=16,
     containing_service=None,
     input_type=_GENERICMETHODREQ,
     output_type=_GENERICMETHODRESP,
@@ -1598,7 +1862,7 @@ _NIRAAPAD = _descriptor.ServiceDescriptor(
   _descriptor.MethodDescriptor(
     name='GenericMethodTrace',
     full_name='Niraapad.GenericMethodTrace',
-    index=15,
+    index=17,
     containing_service=None,
     input_type=_GENERICMETHODTRACEMSG,
     output_type=_EMPTYMSG,

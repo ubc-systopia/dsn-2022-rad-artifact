@@ -42,6 +42,47 @@ class NiraapadServicer(niraapad_pb2_grpc.NiraapadServicer):
 
     def log_trace_msg(self, trace_msg):
         self.tracer.write_to_file(trace_msg)
+    
+    def InitializeConnection(self, req, context):
+        print("NiraapadClientHelper.__init__")
+
+        resp = None
+        exception = None
+
+        resp = niraapad_pb2.InitializeConnectionResp(exception=pickle.dumps(exception))
+
+        trace_msg = niraapad_pb2.InitializeConnectionTraceMsg(req=req, resp=resp)
+        self.log_trace_msg(trace_msg)
+
+        return resp
+
+    def DeleteConnection(self, req, context):
+        print("NiraapadClientHelper.__del__")
+
+        exception = None
+
+        try:
+            for backend_type in self.backend_instances:
+                for backend_instance_id in self.backend_instances[backend_type]:
+                    if backend_type == utils.BACKENDS.DEVICE \
+                        or backend_type == utils.BACKENDS.MOCK_DEVICE \
+                        or backend_type == utils.BACKENDS.FTDI_DEVICE \
+                        or backend_type == utils.BACKENDS.PY_SERIAL_DEVICE:
+                      self.backend_instances[backend_type][backend_instance_id].close() 
+                    elif backend_type == utils.BACKENDS.ROBOT_ARM \
+                        or backend_type == utils.BACKENDS.UR3_ARM:
+                        pass # TODO: Figure out if we need to do anything here
+            del self.backend_instances
+            self.backend_instances = {}
+        except Exception as e:
+            exception = e
+
+        resp = niraapad_pb2.DeleteConnectionResp(exception=pickle.dumps(exception))
+
+        trace_msg = niraapad_pb2.DeleteConnectionTraceMsg(req=req, resp=resp)
+        self.log_trace_msg(trace_msg)
+
+        return resp  
 
     def StaticMethod(self, req, context):
         print("%s.%s" % (req.backend_type, req.method_name))

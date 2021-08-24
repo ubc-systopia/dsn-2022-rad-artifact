@@ -575,9 +575,10 @@ class TestN9Backend(unittest.TestCase):
 
         backend_instance_id = 0
         for trace_msg_type, trace_msg in Tracer.parse_file(trace_file):
-            if trace_msg_type == "StartServerTraceMsg":
-                continue
-            if trace_msg_type == "StopServerTraceMsg":
+            if trace_msg_type == "StartServerTraceMsg" \
+                or trace_msg_type == "StopServerTraceMsg" \
+                or trace_msg_type == "DeleteTraceMsg" \
+                or trace_msg_type == "DeleteConnectionTraceMsg":
                 continue
             backend_instance_id += 1
             self.assertEqual(trace_msg.req.backend_instance_id,
@@ -615,9 +616,10 @@ class TestN9Backend(unittest.TestCase):
         trace_file = self.niraapad_server.get_trace_file()
         counter = 0
         for trace_msg_type, trace_msg in Tracer.parse_file(trace_file):
-            if trace_msg_type == "StartServerTraceMsg":
-                continue
-            if trace_msg_type == "StopServerTraceMsg":
+            if trace_msg_type == "StartServerTraceMsg" \
+                or trace_msg_type == "StopServerTraceMsg" \
+                or trace_msg_type == "DeleteTraceMsg" \
+                or trace_msg_type == "DeleteConnectionTraceMsg":
                 continue
             if counter == 0:
                 self.assertEqual(trace_msg_type, "StaticMethodTraceMsg")
@@ -1038,36 +1040,43 @@ class TestProductionEnvironment(unittest.TestCase):
 
     def test_init(self):
         for mo in MO:
-            NiraapadClient.niraapad_mo = mo
-            c9 = MyC9Controller(device_serial='FT2FT5C1',
-                                use_joystick=False,
-                                connect=True)
-            n9 = N9Robot(c9)
-            n9.home()
+            if mo != MO.VIA_MIDDLEBOX: continue
+            print("Mode:", mo)
+            # c9 = MyC9Controller(device_serial='FT2FT5C1',
+            #                     use_joystick=True,
+            #                     connect=True)
+            # n9 = N9Robot(c9)
+            # n9.home()
 
-            sum = 0
-            for i in range(10):
-                sum += c9.axis_current(0)
-            avg = sum / 10.0
+            # sum = 0
+            # for i in range(10):
+            #     sum += c9.axis_current(0)
+            # avg = sum / 10.0
             # print("Gripper base current is", avg)
 
-            serial_cavro = c9.com(0, baudrate=9600)
-            dosing_pump = TecanCavro(serial_cavro,
-                                     address=1,
-                                     syringe_volume_ml=1)
-
-            # print("Initializing ika heater")
-            # heater_stirrer_port = 'COM8'
-            # heater_stirrer = MagneticStirrer(device_port=heater_stirrer_port)
+            # print("Initializing TecanCAvro")
+            # serial_cavro = c9.com(0, baudrate=9600)
+            # dosing_pump = TecanCavro(serial_cavro,
+            #                          address=1,
+            #                          syringe_volume_ml=1)
 
             # print("Initializing mini IKA")
-            # mini_heater_stirrer_port = 'COM17'
+            # mini_heater_stirrer_port = 'COM6'
             # mini_heater_stirrer = MagneticStirrer(device_port=mini_heater_stirrer_port)
 
-            # print("Iniitializing Quantos")
-            # quan = ArduinoAugmentedQuantos('192.168.254.2:8004', 13, logging_level=10)
+            # print("Initializing Quantos")
+            # quan = ArduinoAugmentedQuantos('192.168.254.2', 7, logging_level=10)
+            # quan.set_home_direction(0)
 
-            c9.disconnect()
+            # print("Initializing centrifuge")
+            # from ur.components.ur3_centrifuge.ur3_centrifuge import UR3Centrifuge
+            # ur3_centrifuge = UR3Centrifuge(arm)
+
+            # print("Disconnecting C9")
+            # c9.disconnect()
+            # print("Done")
+
+            # time.sleep(1)
 
 
 def suite_c9():

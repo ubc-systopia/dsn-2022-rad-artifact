@@ -2,6 +2,14 @@ syntax = "proto3";
 
 service Niraapad {
 
+  // Used when the client-server connection starts
+  // i.e., when the NiraapadClientHelper class is initialized
+  rpc InitializeConnection(InitializeConnectionReq) returns (InitializeConnectionResp) {}
+
+  // Used when the client-server connection stops
+  // i.e., when the NiraapadClientHelper class is deleted
+  rpc DeleteConnection(DeleteConnectionReq) returns (DeleteConnectionResp) {}
+
   // Used for all static and class methods
   rpc StaticMethod(StaticMethodReq) returns (StaticMethodResp) {}
 
@@ -20,10 +28,10 @@ service Niraapad {
   // Used for all static and class variable write access
   rpc StaticSetterTrace(StaticSetterTraceMsg) returns (EmptyMsg) {}
 
-  // Used for the __init__ method of class Serial
+  // Used for the __init__ method
   rpc Initialize(InitializeReq) returns (InitializeResp) {}
 
-  // Used for the __init__ method of class Serial
+  // Used for the __init__ method
   rpc InitializeTrace(InitializeTraceMsg) returns (EmptyMsg) {}
 
   // Used for property getters
@@ -55,6 +63,30 @@ message StartServerTraceMsg {
 }
 
 message StopServerTraceMsg {
+}
+
+message InitializeConnectionReq {
+}
+
+message InitializeConnectionResp {
+  bytes exception = 1;
+}
+
+message InitializeConnectionTraceMsg {
+  InitializeConnectionReq req = 1;
+  InitializeConnectionResp resp = 2;
+}
+
+message DeleteConnectionReq {
+}
+
+message DeleteConnectionResp {
+  bytes exception = 1;  
+}
+
+message DeleteConnectionTraceMsg {
+  DeleteConnectionReq req = 1;
+  DeleteConnectionResp resp = 2;
 }
 
 message StaticMethodReq {
