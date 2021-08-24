@@ -14,6 +14,16 @@ class NiraapadStub(object):
         Args:
             channel: A grpc.Channel.
         """
+        self.InitializeConnection = channel.unary_unary(
+                '/Niraapad/InitializeConnection',
+                request_serializer=niraapad_dot_protos_dot_niraapad__pb2.InitializeConnectionReq.SerializeToString,
+                response_deserializer=niraapad_dot_protos_dot_niraapad__pb2.InitializeConnectionResp.FromString,
+                )
+        self.DeleteConnection = channel.unary_unary(
+                '/Niraapad/DeleteConnection',
+                request_serializer=niraapad_dot_protos_dot_niraapad__pb2.DeleteConnectionReq.SerializeToString,
+                response_deserializer=niraapad_dot_protos_dot_niraapad__pb2.DeleteConnectionResp.FromString,
+                )
         self.StaticMethod = channel.unary_unary(
                 '/Niraapad/StaticMethod',
                 request_serializer=niraapad_dot_protos_dot_niraapad__pb2.StaticMethodReq.SerializeToString,
@@ -99,6 +109,22 @@ class NiraapadStub(object):
 class NiraapadServicer(object):
     """Missing associated documentation comment in .proto file."""
 
+    def InitializeConnection(self, request, context):
+        """Used when the client-server connection starts
+        i.e., when the NiraapadClientHelper class is initialized
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def DeleteConnection(self, request, context):
+        """Used when the client-server connection stops
+        i.e., when the NiraapadClientHelper class is deleted
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
     def StaticMethod(self, request, context):
         """Used for all static and class methods
         """
@@ -142,14 +168,14 @@ class NiraapadServicer(object):
         raise NotImplementedError('Method not implemented!')
 
     def Initialize(self, request, context):
-        """Used for the __init__ method of class Serial
+        """Used for the __init__ method
         """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def InitializeTrace(self, request, context):
-        """Used for the __init__ method of class Serial
+        """Used for the __init__ method
         """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -214,6 +240,16 @@ class NiraapadServicer(object):
 
 def add_NiraapadServicer_to_server(servicer, server):
     rpc_method_handlers = {
+            'InitializeConnection': grpc.unary_unary_rpc_method_handler(
+                    servicer.InitializeConnection,
+                    request_deserializer=niraapad_dot_protos_dot_niraapad__pb2.InitializeConnectionReq.FromString,
+                    response_serializer=niraapad_dot_protos_dot_niraapad__pb2.InitializeConnectionResp.SerializeToString,
+            ),
+            'DeleteConnection': grpc.unary_unary_rpc_method_handler(
+                    servicer.DeleteConnection,
+                    request_deserializer=niraapad_dot_protos_dot_niraapad__pb2.DeleteConnectionReq.FromString,
+                    response_serializer=niraapad_dot_protos_dot_niraapad__pb2.DeleteConnectionResp.SerializeToString,
+            ),
             'StaticMethod': grpc.unary_unary_rpc_method_handler(
                     servicer.StaticMethod,
                     request_deserializer=niraapad_dot_protos_dot_niraapad__pb2.StaticMethodReq.FromString,
@@ -303,6 +339,40 @@ def add_NiraapadServicer_to_server(servicer, server):
  # This class is part of an EXPERIMENTAL API.
 class Niraapad(object):
     """Missing associated documentation comment in .proto file."""
+
+    @staticmethod
+    def InitializeConnection(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/Niraapad/InitializeConnection',
+            niraapad_dot_protos_dot_niraapad__pb2.InitializeConnectionReq.SerializeToString,
+            niraapad_dot_protos_dot_niraapad__pb2.InitializeConnectionResp.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def DeleteConnection(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/Niraapad/DeleteConnection',
+            niraapad_dot_protos_dot_niraapad__pb2.DeleteConnectionReq.SerializeToString,
+            niraapad_dot_protos_dot_niraapad__pb2.DeleteConnectionResp.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
     @staticmethod
     def StaticMethod(request,
