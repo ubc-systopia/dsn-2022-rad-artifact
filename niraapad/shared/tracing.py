@@ -104,7 +104,7 @@ class Tracer:
                 trace_msg.ParseFromString(f.read(trace_msg_str_length))
 
                 # Return msg type and msg for this iteration
-                yield trace_metadata.trace_msg_type, trace_msg
+                yield trace_metadata.timestamp,trace_metadata.trace_msg_type, trace_msg
 
             f.close()
 
