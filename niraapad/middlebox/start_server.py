@@ -13,6 +13,7 @@ niraapad_path = os.path.dirname(os.path.dirname(file_path))
 # niraapad package but instead using the niraapad files from source
 sys.path.append(niraapad_path)
 
+import niraapad.backends
 from niraapad.middlebox.niraapad_server import NiraapadServer
 
 server = None
