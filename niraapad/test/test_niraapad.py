@@ -986,13 +986,21 @@ class TestQuantosBackend(unittest.TestCase):
     def test_simple_init(self):
         for mo in MO:
             NiraapadClient.niraapad_mo = mo
-            if mo != MO.VIA_MIDDLEBOX: continue
-            try: stepper = ArduinoStepper(200, 100, 9600)
-            except: pass
-            try: quantos = ArduinoAugmentedQuantos('127.0.0.0', 100)
-            except: pass
-            try: stepper = ArduinoStepper(200, 100, 9600)
-            except: pass
+            if mo != MO.VIA_MIDDLEBOX:
+                continue
+            try:
+                stepper = ArduinoStepper(200, 100, 9600)
+            except:
+                pass
+            try:
+                quantos = ArduinoAugmentedQuantos('127.0.0.0', 100)
+            except:
+                pass
+            try:
+                stepper = ArduinoStepper(200, 100, 9600)
+            except:
+                pass
+
 
 class TestKinovaBackend(unittest.TestCase):
 
@@ -1109,7 +1117,8 @@ class TestProductionEnvironment(unittest.TestCase):
 
     def test_init(self):
         for mo in MO:
-            if mo != MO.VIA_MIDDLEBOX: continue
+            if mo != MO.VIA_MIDDLEBOX:
+                continue
             print("Mode:", mo)
             # c9 = MyC9Controller(device_serial='FT2FT5C1',
             #                     use_joystick=True,

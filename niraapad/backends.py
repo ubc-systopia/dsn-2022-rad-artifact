@@ -4,6 +4,7 @@ import sys
 import niraapad.shared.utils as utils
 from niraapad.lab_computer.niraapad_client import NiraapadClient
 
+
 class AttributeMeta(type):
 
     def __getattribute__(cls, key):
@@ -612,15 +613,18 @@ class VirtualBalance(NiraapadClient, metaclass=AttributeMeta):
 
     @staticmethod
     def package_and_encode(*args, **kwargs):
-        return NiraapadClient.static_method(VirtualBalance.niraapad_backend_type, *args, **kwargs)
+        return NiraapadClient.static_method(
+            VirtualBalance.niraapad_backend_type, *args, **kwargs)
 
     @staticmethod
     def _string_command_parse(*args, **kwargs):
-        return NiraapadClient.static_method(VirtualBalance.niraapad_backend_type, *args, **kwargs)
+        return NiraapadClient.static_method(
+            VirtualBalance.niraapad_backend_type, *args, **kwargs)
 
     @staticmethod
     def _string_response_parse(*args, **kwargs):
-        return NiraapadClient.static_method(VirtualBalance.niraapad_backend_type, *args, **kwargs)
+        return NiraapadClient.static_method(
+            VirtualBalance.niraapad_backend_type, *args, **kwargs)
 
     def _send_command(self, *args, **kwargs):
         return self.generic_method(*args, **kwargs)
@@ -677,7 +681,7 @@ class VirtualQuantos(VirtualBalance, metaclass=AttributeMeta):
 
     def __init__(self, *args, **kwargs):
         return self.initialize(*args, **kwargs)
-    
+
     def __repr__(self, *args, **kwargs):
         return self.generic_method(*args, **kwargs)
 
@@ -686,11 +690,13 @@ class VirtualQuantos(VirtualBalance, metaclass=AttributeMeta):
 
     @staticmethod
     def _string_command_parse(*args, **kwargs):
-        return NiraapadClient.static_method(VirtualQuantos.niraapad_backend_type, *args, **kwargs)
+        return NiraapadClient.static_method(
+            VirtualQuantos.niraapad_backend_type, *args, **kwargs)
 
     @staticmethod
     def _string_response_parse(*args, **kwargs):
-        return NiraapadClient.static_method(VirtualQuantos.niraapad_backend_type, *args, **kwargs)
+        return NiraapadClient.static_method(
+            VirtualQuantos.niraapad_backend_type, *args, **kwargs)
 
     def _handle_response(self, *args, **kwargs):
         return self.generic_method(*args, **kwargs)
@@ -749,7 +755,7 @@ class VirtualArduinoAugment(NiraapadClient, metaclass=AttributeMeta):
     """
 
     niraapad_backend_type = utils.BACKENDS.ARDUINO_AUGMENT
-    niraapad_access_variable = ""    
+    niraapad_access_variable = ""
 
     def __init__(self, *args, **kwargs):
         return self.initialize(*args, **kwargs)
@@ -764,7 +770,9 @@ class VirtualArduinoAugment(NiraapadClient, metaclass=AttributeMeta):
         return self.generic_method(*args, **kwargs)
 
 
-class VirtualArduinoAugmentedQuantos(VirtualQuantos, VirtualArduinoAugment, metaclass=AttributeMeta):
+class VirtualArduinoAugmentedQuantos(VirtualQuantos,
+                                     VirtualArduinoAugment,
+                                     metaclass=AttributeMeta):
     """
     This class is just a facade. It's objective is to provide the same
     interface to all Hein Lab experiment scripts as the erstwhile "class
@@ -831,7 +839,7 @@ kortex.KortexConnection = VirtualKortexConnection
 
 from arduino_stepper import api
 
-DirectArduinoStepper =api.ArduinoStepper
+DirectArduinoStepper = api.ArduinoStepper
 api.ArduinoStepper = VirtualArduinoStepper
 
 # The ArduinoAugmentedQuantos class extends the ArduinoAugment

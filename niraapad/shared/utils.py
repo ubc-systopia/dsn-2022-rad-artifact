@@ -85,7 +85,7 @@ class BACKENDS:
     MOCK_DEVICE = "DirectMockDevice"
     FTDI_DEVICE = "DirectFtdiDevice"
     PY_SERIAL_DEVICE = "DirectPySerialDevice"
-    
+
     # UR3
     ROBOT_ARM = "DirectRobotArm"
     UR3_ARM = "DirectUR3Arm"

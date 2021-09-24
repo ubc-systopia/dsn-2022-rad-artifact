@@ -42,16 +42,18 @@ class NiraapadServicer(niraapad_pb2_grpc.NiraapadServicer):
 
     def log_trace_msg(self, trace_msg):
         self.tracer.write_to_file(trace_msg)
-    
+
     def InitializeConnection(self, req, context):
         print("NiraapadClientHelper.__init__", flush=True)
 
         resp = None
         exception = None
 
-        resp = niraapad_pb2.InitializeConnectionResp(exception=pickle.dumps(exception))
+        resp = niraapad_pb2.InitializeConnectionResp(
+            exception=pickle.dumps(exception))
 
-        trace_msg = niraapad_pb2.InitializeConnectionTraceMsg(req=req, resp=resp)
+        trace_msg = niraapad_pb2.InitializeConnectionTraceMsg(req=req,
+                                                              resp=resp)
         self.log_trace_msg(trace_msg)
 
         return resp
@@ -68,22 +70,24 @@ class NiraapadServicer(niraapad_pb2_grpc.NiraapadServicer):
                         or backend_type == utils.BACKENDS.MOCK_DEVICE \
                         or backend_type == utils.BACKENDS.FTDI_DEVICE \
                         or backend_type == utils.BACKENDS.PY_SERIAL_DEVICE:
-                      self.backend_instances[backend_type][backend_instance_id].close() 
+                        self.backend_instances[backend_type][
+                            backend_instance_id].close()
                     elif backend_type == utils.BACKENDS.ROBOT_ARM \
                         or backend_type == utils.BACKENDS.UR3_ARM:
-                        pass # TODO: Figure out if we need to do anything here
+                        pass  # TODO: Figure out if we need to do anything here
             del self.backend_instances
             self.backend_instances = {}
         except Exception as e:
             NiraapadServicer.print_exception(e)
             exception = e
 
-        resp = niraapad_pb2.DeleteConnectionResp(exception=pickle.dumps(exception))
+        resp = niraapad_pb2.DeleteConnectionResp(
+            exception=pickle.dumps(exception))
 
         trace_msg = niraapad_pb2.DeleteConnectionTraceMsg(req=req, resp=resp)
         self.log_trace_msg(trace_msg)
 
-        return resp  
+        return resp
 
     def StaticMethod(self, req, context):
         print("%s.%s" % (req.backend_type, req.method_name), flush=True)
@@ -113,7 +117,8 @@ class NiraapadServicer(niraapad_pb2_grpc.NiraapadServicer):
 
     def StaticMethodTrace(self, trace_msg, context):
         print("(trace) %s.%s" %
-              (trace_msg.req.backend_type, trace_msg.req.method_name), flush=True)
+              (trace_msg.req.backend_type, trace_msg.req.method_name),
+              flush=True)
 
         self.log_trace_msg(trace_msg)
         return niraapad_pb2.EmptyMsg()
@@ -141,7 +146,8 @@ class NiraapadServicer(niraapad_pb2_grpc.NiraapadServicer):
 
     def StaticGetterTrace(self, trace_msg, context):
         print("(trace) %s.get_%s" %
-              (trace_msg.req.backend_type, trace_msg.req.property_name), flush=True)
+              (trace_msg.req.backend_type, trace_msg.req.property_name),
+              flush=True)
 
         self.log_trace_msg(trace_msg)
         return niraapad_pb2.EmptyMsg()
@@ -170,7 +176,8 @@ class NiraapadServicer(niraapad_pb2_grpc.NiraapadServicer):
 
     def StaticSetterTrace(self, trace_msg, context):
         print("(trace) %s.%s" %
-              (trace_msg.req.backend_type, trace_msg.req.property_name), flush=True)
+              (trace_msg.req.backend_type, trace_msg.req.property_name),
+              flush=True)
 
         self.log_trace_msg(trace_msg)
         return niraapad_pb2.EmptyMsg()
@@ -249,7 +256,8 @@ class NiraapadServicer(niraapad_pb2_grpc.NiraapadServicer):
 
     def GenericMethodTrace(self, trace_msg, context):
         print("(trace) %s.%s" %
-              (trace_msg.req.backend_type, trace_msg.req.method_name), flush=True)
+              (trace_msg.req.backend_type, trace_msg.req.method_name),
+              flush=True)
 
         self.log_trace_msg(trace_msg)
         return niraapad_pb2.EmptyMsg()
@@ -285,7 +293,8 @@ class NiraapadServicer(niraapad_pb2_grpc.NiraapadServicer):
 
     def GenericGetterTrace(self, trace_msg, context):
         print("(trace) %s.get_%s" %
-              (trace_msg.req.backend_type, trace_msg.req.property_name), flush=True)
+              (trace_msg.req.backend_type, trace_msg.req.property_name),
+              flush=True)
 
         self.log_trace_msg(trace_msg)
         return niraapad_pb2.EmptyMsg()
@@ -318,7 +327,8 @@ class NiraapadServicer(niraapad_pb2_grpc.NiraapadServicer):
 
     def GenericSetterTrace(self, trace_msg, context):
         print("(trace) %s.set_%s" %
-              (trace_msg.req.backend_type, trace_msg.req.property_name), flush=True)
+              (trace_msg.req.backend_type, trace_msg.req.property_name),
+              flush=True)
 
         self.log_trace_msg(trace_msg)
         return niraapad_pb2.EmptyMsg()
@@ -351,11 +361,12 @@ class NiraapadServicer(niraapad_pb2_grpc.NiraapadServicer):
 
     def GenericDeviceGetterTrace(self, trace_msg, context):
         print("(trace) %s.get_%s" %
-              (trace_msg.req.backend_type, trace_msg.req.property_name), flush=True)
+              (trace_msg.req.backend_type, trace_msg.req.property_name),
+              flush=True)
 
         self.log_trace_msg(trace_msg)
         return niraapad_pb2.EmptyMsg()
-    
+
     @staticmethod
     def print_exception(e):
         print(">>>>>")

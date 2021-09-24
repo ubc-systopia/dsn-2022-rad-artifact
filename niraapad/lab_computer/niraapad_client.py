@@ -34,8 +34,7 @@ class NiraapadClientHelper:
         self.stub = niraapad_pb2_grpc.NiraapadStub(channel)
         self.backend_instance_count = 0
 
-        resp = self.stub.DeleteConnection(
-            niraapad_pb2.DeleteConnectionReq())
+        resp = self.stub.DeleteConnection(niraapad_pb2.DeleteConnectionReq())
         exception = pickle.loads(resp.exception)
         if exception != None:
             raise exception
@@ -47,8 +46,7 @@ class NiraapadClientHelper:
             raise exception
 
     def __del__(self):
-        resp = self.stub.DeleteConnection(
-            niraapad_pb2.DeleteConnectionReq())
+        resp = self.stub.DeleteConnection(niraapad_pb2.DeleteConnectionReq())
         exception = pickle.loads(resp.exception)
         if exception != None:
             raise exception
@@ -253,7 +251,8 @@ class NiraapadClient:
                     backend_type, method_name, pickle.dumps(args),
                     pickle.dumps(kwargs))
             except Exception as e:
-                NiraapadClient.handle_any_exception(backend_type, method_name, e, True)
+                NiraapadClient.handle_any_exception(backend_type, method_name,
+                                                    e, True)
 
         resp = getattr(class_name, method_name)(*args, **kwargs)
 
@@ -263,7 +262,8 @@ class NiraapadClient:
                 backend_type, method_name, pickle.dumps(args),
                 pickle.dumps(kwargs), pickle.dumps(trace_resp))
         except Exception as e:
-            NiraapadClient.handle_any_exception(backend_type, "%s_trace" % method_name, e)
+            NiraapadClient.handle_any_exception(backend_type,
+                                                "%s_trace" % method_name, e)
 
         return resp
 
@@ -279,7 +279,8 @@ class NiraapadClient:
                 return NiraapadClient.niraapad_client_helper.static_getter(
                     backend_type, property_name)
             except Exception as e:
-                NiraapadClient.handle_any_exception(backend_type, "get_%s_trace" % property_name, e, True)            
+                NiraapadClient.handle_any_exception(
+                    backend_type, "get_%s_trace" % property_name, e, True)
 
         resp = getattr(class_name, property_name)
 
@@ -287,7 +288,9 @@ class NiraapadClient:
             NiraapadClient.niraapad_client_helper.static_getter_trace(
                 backend_type, property_name, pickle.dumps(resp))
         except Exception as e:
-            NiraapadClient.handle_any_exception(backend_type, "get_%s_trace" % property_name, e)
+            NiraapadClient.handle_any_exception(backend_type,
+                                                "get_%s_trace" % property_name,
+                                                e)
 
         return resp
 
@@ -303,7 +306,9 @@ class NiraapadClient:
                 return NiraapadClient.niraapad_client_helper.static_setter(
                     backend_type, property_name, pickle.dumps(value))
             except Exception as e:
-                NiraapadClient.handle_any_exception(backend_type, "set_%s" % property_name, e, True)
+                NiraapadClient.handle_any_exception(backend_type,
+                                                    "set_%s" % property_name, e,
+                                                    True)
 
         setattr(class_name, property_name, value)
 
@@ -311,7 +316,9 @@ class NiraapadClient:
             NiraapadClient.niraapad_client_helper.static_setter_trace(
                 backend_type, property_name, pickle.dumps(value))
         except Exception as e:
-            NiraapadClient.handle_any_exception(backend_type, "set_%s_trace" % property_name, e)
+            NiraapadClient.handle_any_exception(backend_type,
+                                                "set_%s_trace" % property_name,
+                                                e)
 
     def initialize(self, *args, **kwargs):
         """
@@ -366,15 +373,16 @@ class NiraapadClient:
         if NiraapadClient.niraapad_mo == utils.MO.DIRECT:
             return getattr(self.niraapad_backend_instance,
                            method_name)(*args, **kwargs)
-        
+
         if self.niraapad_backend_instance_id == 0:
             return
 
         if NiraapadClient.niraapad_mo == utils.MO.VIA_MIDDLEBOX:
             try:
                 return NiraapadClient.niraapad_client_helper.generic_method(
-                    self.niraapad_backend_type, self.niraapad_backend_instance_id,
-                    method_name, pickle.dumps(args), pickle.dumps(kwargs))
+                    self.niraapad_backend_type,
+                    self.niraapad_backend_instance_id, method_name,
+                    pickle.dumps(args), pickle.dumps(kwargs))
             except Exception as e:
                 self.handle_exception(method_name, e, True)
 
@@ -408,11 +416,11 @@ class NiraapadClient:
         if NiraapadClient.niraapad_mo == utils.MO.VIA_MIDDLEBOX:
             try:
                 return NiraapadClient.niraapad_client_helper.generic_getter(
-                    self.niraapad_backend_type, self.niraapad_backend_instance_id,
-                    property_name)
+                    self.niraapad_backend_type,
+                    self.niraapad_backend_instance_id, property_name)
             except Exception as e:
                 self.handle_exception("get_%s" % property_name, e, True)
-            
+
         resp = getattr(self.niraapad_backend_instance, property_name)
 
         try:
@@ -440,8 +448,9 @@ class NiraapadClient:
         if NiraapadClient.niraapad_mo == utils.MO.VIA_MIDDLEBOX:
             try:
                 NiraapadClient.niraapad_client_helper.generic_setter(
-                    self.niraapad_backend_type, self.niraapad_backend_instance_id,
-                    property_name, pickle.dumps(value))
+                    self.niraapad_backend_type,
+                    self.niraapad_backend_instance_id, property_name,
+                    pickle.dumps(value))
                 return
             except Exception as e:
                 self.handle_exception("set_%s" % property_name, e, True)
@@ -486,14 +495,20 @@ class NiraapadClient:
             return object.__setattr__(self, key, value)
 
         self.generic_setter(key, value)
-    
+
     def handle_exception(self, function_name, exception, raise_exception=False):
-        NiraapadClient.handle_any_exception(self.niraapad_backend_type, function_name, exception, raise_exception)
+        NiraapadClient.handle_any_exception(self.niraapad_backend_type,
+                                            function_name, exception,
+                                            raise_exception)
 
     @staticmethod
-    def handle_any_exception(backend_type, function_name, exception, raise_exception=False):
+    def handle_any_exception(backend_type,
+                             function_name,
+                             exception,
+                             raise_exception=False):
         print(">>>>>")
-        print("Call to middlebox (%s.%s) failed with exception:" % (backend_type, function_name))
+        print("Call to middlebox (%s.%s) failed with exception:" %
+              (backend_type, function_name))
         print(exception)
         print("<<<<<", flush=True)
         if raise_exception:
