@@ -10,8 +10,6 @@ import argparse
 from typing import Optional
 from concurrent import futures
 
-from ika.magnetic_stirrer import MagneticStirrer
-
 # Path to this file test_niraapad.py
 file_path = os.path.dirname(os.path.abspath(__file__))
 
@@ -37,23 +35,41 @@ import niraapad.backends
 # from niraapad.backends import DirectMockDevice
 from niraapad.backends import DirectFtdiDevice
 from niraapad.backends import DirectPySerialDevice
-# from niraapad.backends import DirectC9SerialDevice
+from ftdi_serial import Device, FtdiDevice, PySerialDevice  #, MockDevice
 
 # The UR3Arm does not directly rely on the Device
 # classes (i.e., serial communication) but instead
 # communicates with the lab computer over LAN
 from niraapad.backends import DirectUR3Arm
+from hein_robots.universal_robots.ur3 import UR3Arm
+
+# The ArduinoStepper class is controlled by serial,
+# but it uses the third-party (Python's) serial.Serial
+# as opposed to our ftdi_serial.Serial. Therefore, we
+# also virtualize this class.
+from niraapad.backends import DirectArduinoStepper
+from arduino_stepper.api import ArduinoStepper
+
+# The ArduinoAugmentedQuantos class extends the ArduinoAugment
+# and the Quantos class. The Quantos class uses a TCP
+# connection. We thus virtualize this class.
+from niraapad.backends import DirectArduinoAugmentedQuantos
+from mtbalance.arduino import ArduinoAugmentedQuantos
+
+# The KinovaGen3Arm relies on the KortexConnection class,
+# which in turn relies on a third-party kortex_api project.
+# We therefore virtualize KortexConnection in our project.
+from niraapad.backends import DirectKortexConnection
+from hein_robots.kinova.kortex import KortexConnection
 # ===================================================
 
 from ftdi_serial import Serial, SerialReadTimeoutException
-from ftdi_serial import Device, FtdiDevice, PySerialDevice  #, MockDevice
-from hein_robots.universal_robots.ur3 import UR3Arm
 from hein_robots.robotics import Location, Units
 from hein_robots.base import robot_arms
+from hein_robots.kinova.kinova_gen3 import KinovaGen3Arm
 from north_c9.controller import C9Controller
 from north_c9.serial import C9SerialDevice
 from north_robots.n9 import N9Robot
-from mtbalance import ArduinoAugmentedQuantos
 from north_devices.pumps.tecan_cavro import TecanCavro
 
 import serial as PySerialDriver
@@ -949,6 +965,59 @@ class TestIKABackend(unittest.TestCase):
                 magnetic_stirrer = MagneticStirrer(device_port='COM16')
 
 
+class TestQuantosBackend(unittest.TestCase):
+
+    def setUp(self):
+        if args.secure == False:
+            args.keysdir = None
+
+        if args.distributed == False:
+            self.niraapad_server = NiraapadServer(args.port, args.tracedir,
+                                                  args.keysdir)
+            self.niraapad_server.start()
+
+        NiraapadClient.connect_to_middlebox(args.host, args.port, args.keysdir)
+
+    def tearDown(self):
+        if args.distributed == False:
+            self.niraapad_server.stop()
+            del self.niraapad_server
+
+    def test_simple_init(self):
+        for mo in MO:
+            NiraapadClient.niraapad_mo = mo
+            if mo != MO.VIA_MIDDLEBOX: continue
+            try: stepper = ArduinoStepper(200, 100, 9600)
+            except: pass
+            try: quantos = ArduinoAugmentedQuantos('127.0.0.0', 100)
+            except: pass
+            try: stepper = ArduinoStepper(200, 100, 9600)
+            except: pass
+
+class TestKinovaBackend(unittest.TestCase):
+
+    def setUp(self):
+        if args.secure == False:
+            args.keysdir = None
+
+        if args.distributed == False:
+            self.niraapad_server = NiraapadServer(args.port, args.tracedir,
+                                                  args.keysdir)
+            self.niraapad_server.start()
+
+        NiraapadClient.connect_to_middlebox(args.host, args.port, args.keysdir)
+
+    def tearDown(self):
+        if args.distributed == False:
+            self.niraapad_server.stop()
+            del self.niraapad_server
+
+    def test_simple_init(self):
+        for mo in MO:
+            NiraapadClient.niraapad_mo = mo
+            kinova_arm = KinovaGen3Arm(connect=False)
+
+
 class TestFaultTolerance(unittest.TestCase):
 
     def setUp(self):
@@ -1081,9 +1150,9 @@ class TestProductionEnvironment(unittest.TestCase):
 
 def suite_c9():
     suite = unittest.TestSuite()
-    suite.addTest(TestC9Controller('test_instance_type'))
-    suite.addTest(TestC9Controller('test_device_methods'))
-    suite.addTest(TestC9Controller('test_connection_methods'))
+    # suite.addTest(TestC9Controller('test_instance_type'))
+    # suite.addTest(TestC9Controller('test_device_methods'))
+    # suite.addTest(TestC9Controller('test_connection_methods'))
     suite.addTest(TestC9Controller('test_py_serial_device'))
     return suite
 
@@ -1115,6 +1184,18 @@ def suite_ika():
     return suite
 
 
+def suite_quantos():
+    suite = unittest.TestSuite()
+    suite.addTest(TestQuantosBackend('test_simple_init'))
+    return suite
+
+
+def suite_kinova():
+    suite = unittest.TestSuite()
+    suite.addTest(TestKinovaBackend('test_simple_init'))
+    return suite
+
+
 def suite_fault_tolerance():
     suite = unittest.TestSuite()
     suite.addTest(TestFaultTolerance('test_ur3_arm_init'))
@@ -1133,5 +1214,7 @@ if __name__ == "__main__":
     runner.run(suite_serial())
     runner.run(suite_ur3arm())
     runner.run(suite_ika())
-    # runner.run(suite_fault_tolerance())
-    runner.run(suite_production_environment())
+    runner.run(suite_quantos())
+    runner.run(suite_kinova())
+    # # runner.run(suite_fault_tolerance())
+    # runner.run(suite_production_environment())

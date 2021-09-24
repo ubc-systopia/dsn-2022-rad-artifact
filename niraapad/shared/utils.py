@@ -79,9 +79,25 @@ class MO(Enum):
 
 # Currently, we support only the selected types of backend classes
 class BACKENDS:
+
+    # Serial
     DEVICE = "Directevice"
     MOCK_DEVICE = "DirectMockDevice"
     FTDI_DEVICE = "DirectFtdiDevice"
     PY_SERIAL_DEVICE = "DirectPySerialDevice"
-    UR3_ARM = "DirectUR3Arm"
+    
+    # UR3
     ROBOT_ARM = "DirectRobotArm"
+    UR3_ARM = "DirectUR3Arm"
+
+    # Kinova
+    KORTEX_CONNECTION = "DirectKortexConnection"
+
+    # Stepper
+    ARDUINO_STEPPER = "DirectArduinoStepper"
+
+    # Quantos
+    BALANCE = "DirectBalance"
+    QUANTOS = "DirectQuantos"
+    ARDUINO_AUGMENT = "DirectArduinoAugment"
+    ARDUINO_AUGMENTED_QUANTOS = "DirectArduinoAugmentedQuantos"
