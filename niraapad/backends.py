@@ -846,8 +846,8 @@ kortex.KortexConnection = VirtualKortexConnection
 # and the Quantos class. The Quantos class uses a TCP
 # connection. We thus virtualize this class.
 
-from mtbalance import arduino
+# from mtbalance import arduino
 
-DirectArduinoAugmentedQuantos = arduino.ArduinoAugmentedQuantos
-arduino.ArduinoAugmentedQuantos = VirtualArduinoAugmentedQuantos
+# DirectArduinoAugmentedQuantos = arduino.ArduinoAugmentedQuantos
+# arduino.ArduinoAugmentedQuantos = VirtualArduinoAugmentedQuantos
 # ===================================================

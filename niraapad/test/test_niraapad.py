@@ -53,8 +53,8 @@ from hein_robots.universal_robots.ur3 import UR3Arm
 # The ArduinoAugmentedQuantos class extends the ArduinoAugment
 # and the Quantos class. The Quantos class uses a TCP
 # connection. We thus virtualize this class.
-from niraapad.backends import DirectArduinoAugmentedQuantos
-from mtbalance.arduino import ArduinoAugmentedQuantos
+# from niraapad.backends import DirectArduinoAugmentedQuantos
+# from mtbalance.arduino import ArduinoAugmentedQuantos
 
 # The KinovaGen3Arm relies on the KortexConnection class,
 # which in turn relies on a third-party kortex_api project.
@@ -992,10 +992,10 @@ class TestQuantosBackend(unittest.TestCase):
             #     stepper = ArduinoStepper(200, 100, 9600)
             # except:
             #     pass
-            try:
-                quantos = ArduinoAugmentedQuantos('127.0.0.0', 100)
-            except:
-                pass
+            # try:
+            #     quantos = ArduinoAugmentedQuantos('127.0.0.0', 100)
+            # except:
+            #     pass
             # try:
             #     stepper = ArduinoStepper(200, 100, 9600)
             # except:
