@@ -837,10 +837,10 @@ kortex.KortexConnection = VirtualKortexConnection
 # as opposed to our ftdi_serial.Serial. Therefore, we
 # also virtualize this class.
 
-from arduino_stepper import api
+# from arduino_stepper import api
 
-DirectArduinoStepper = api.ArduinoStepper
-api.ArduinoStepper = VirtualArduinoStepper
+# DirectArduinoStepper = api.ArduinoStepper
+# api.ArduinoStepper = VirtualArduinoStepper
 
 # The ArduinoAugmentedQuantos class extends the ArduinoAugment
 # and the Quantos class. The Quantos class uses a TCP

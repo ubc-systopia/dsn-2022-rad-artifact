@@ -47,8 +47,8 @@ from hein_robots.universal_robots.ur3 import UR3Arm
 # but it uses the third-party (Python's) serial.Serial
 # as opposed to our ftdi_serial.Serial. Therefore, we
 # also virtualize this class.
-from niraapad.backends import DirectArduinoStepper
-from arduino_stepper.api import ArduinoStepper
+# from niraapad.backends import DirectArduinoStepper
+# from arduino_stepper.api import ArduinoStepper
 
 # The ArduinoAugmentedQuantos class extends the ArduinoAugment
 # and the Quantos class. The Quantos class uses a TCP
@@ -988,18 +988,18 @@ class TestQuantosBackend(unittest.TestCase):
             NiraapadClient.niraapad_mo = mo
             if mo != MO.VIA_MIDDLEBOX:
                 continue
-            try:
-                stepper = ArduinoStepper(200, 100, 9600)
-            except:
-                pass
+            # try:
+            #     stepper = ArduinoStepper(200, 100, 9600)
+            # except:
+            #     pass
             try:
                 quantos = ArduinoAugmentedQuantos('127.0.0.0', 100)
             except:
                 pass
-            try:
-                stepper = ArduinoStepper(200, 100, 9600)
-            except:
-                pass
+            # try:
+            #     stepper = ArduinoStepper(200, 100, 9600)
+            # except:
+            #     pass
 
 
 class TestKinovaBackend(unittest.TestCase):
