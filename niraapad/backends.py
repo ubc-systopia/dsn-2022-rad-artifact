@@ -512,66 +512,66 @@ class VirtualKortexConnection(NiraapadClient, metaclass=AttributeMeta):
         return self.generic_method(*args, **kwargs)
 
 
-class VirtualArduinoStepper(NiraapadClient, metaclass=AttributeMeta):
-    """
-    This class is just a facade. It's objective is to provide the same
-    interface to all Hein Lab experiment scripts as the erstwhile "class
-    ArduinoStepper". In addition, the class maintains three operation modes as
-    summarized above along in "class MO". In order to do so, this class simply
-    forwards each function call to the respective function call in the
-    respective original ArduinoStepper class object (class objects are not involved in
-    the case of static functions), or to the respective function call in the
-    global object of type "class NiraapadClientHelper" (which in turn invokes
-    an RPC to the middlebox), or both.
-    """
+# class VirtualArduinoStepper(NiraapadClient, metaclass=AttributeMeta):
+#     """
+#     This class is just a facade. It's objective is to provide the same
+#     interface to all Hein Lab experiment scripts as the erstwhile "class
+#     ArduinoStepper". In addition, the class maintains three operation modes as
+#     summarized above along in "class MO". In order to do so, this class simply
+#     forwards each function call to the respective function call in the
+#     respective original ArduinoStepper class object (class objects are not involved in
+#     the case of static functions), or to the respective function call in the
+#     global object of type "class NiraapadClientHelper" (which in turn invokes
+#     an RPC to the middlebox), or both.
+#     """
 
-    niraapad_backend_type = utils.BACKENDS.ARDUINO_STEPPER
-    niraapad_access_variable = ""
+#     niraapad_backend_type = utils.BACKENDS.ARDUINO_STEPPER
+#     niraapad_access_variable = ""
 
-    def __init__(self, *args, **kwargs):
-        return self.initialize(*args, **kwargs)
+#     def __init__(self, *args, **kwargs):
+#         return self.initialize(*args, **kwargs)
 
-    def _connect(self, *args, **kwargs):
-        return self.generic_method(*args, **kwargs)
+#     def _connect(self, *args, **kwargs):
+#         return self.generic_method(*args, **kwargs)
 
-    def check_value(self, *args, **kwargs):
-        return self.generic_method(*args, **kwargs)
+#     def check_value(self, *args, **kwargs):
+#         return self.generic_method(*args, **kwargs)
 
-    def calc_travel_time(self, *args, **kwargs):
-        return self.generic_method(*args, **kwargs)
+#     def calc_travel_time(self, *args, **kwargs):
+#         return self.generic_method(*args, **kwargs)
 
-    def send_string(self, *args, **kwargs):
-        return self.generic_method(*args, **kwargs)
+#     def send_string(self, *args, **kwargs):
+#         return self.generic_method(*args, **kwargs)
 
-    def rotate_steps(self, *args, **kwargs):
-        return self.generic_method(*args, **kwargs)
+#     def rotate_steps(self, *args, **kwargs):
+#         return self.generic_method(*args, **kwargs)
 
-    def rotate_revolution(self, *args, **kwargs):
-        return self.generic_method(*args, **kwargs)
+#     def rotate_revolution(self, *args, **kwargs):
+#         return self.generic_method(*args, **kwargs)
 
-    def home(self, *args, **kwargs):
-        return self.generic_method(*args, **kwargs)
+#     def home(self, *args, **kwargs):
+#         return self.generic_method(*args, **kwargs)
 
-    def home_direction(self, *args, **kwargs):
-        return self.generic_method(*args, **kwargs)
+#     def home_direction(self, *args, **kwargs):
+#         return self.generic_method(*args, **kwargs)
 
-    def current_position(self, *args, **kwargs):
-        return self.generic_method(*args, **kwargs)
+#     def current_position(self, *args, **kwargs):
+#         return self.generic_method(*args, **kwargs)
 
-    def target_position(self, *args, **kwargs):
-        return self.generic_method(*args, **kwargs)
+#     def target_position(self, *args, **kwargs):
+#         return self.generic_method(*args, **kwargs)
 
-    def busy(self, *args, **kwargs):
-        return self.generic_method(*args, **kwargs)
+#     def busy(self, *args, **kwargs):
+#         return self.generic_method(*args, **kwargs)
 
-    def stop_motor(self, *args, **kwargs):
-        return self.generic_method(*args, **kwargs)
+#     def stop_motor(self, *args, **kwargs):
+#         return self.generic_method(*args, **kwargs)
 
-    def ping_accel_regsiter(self, *args, **kwargs):
-        return self.generic_method(*args, **kwargs)
+#     def ping_accel_regsiter(self, *args, **kwargs):
+#         return self.generic_method(*args, **kwargs)
 
-    def ping_comp_register(self, *args, **kwargs):
-        return self.generic_method(*args, **kwargs)
+#     def ping_comp_register(self, *args, **kwargs):
+#         return self.generic_method(*args, **kwargs)
 
 
 class VirtualBalance(NiraapadClient, metaclass=AttributeMeta):

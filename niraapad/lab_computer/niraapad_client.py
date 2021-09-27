@@ -21,8 +21,10 @@ class NiraapadClientHelper:
 
     def __init__(self, host, port, keysdir=None):
         if keysdir == None:
+            print("NiraapadClientHelper: Initialize an insecure GRPC channel")
             channel = grpc.insecure_channel(host + ':' + port)
         else:
+            print("NiraapadClientHelper: Initialize a secure GRPC channel")
             self.keysdir = keysdir
             server_crt_path = os.path.join(self.keysdir, "server.crt")
             with open(server_crt_path, 'rb') as f:
@@ -34,11 +36,15 @@ class NiraapadClientHelper:
         self.stub = niraapad_pb2_grpc.NiraapadStub(channel)
         self.backend_instance_count = 0
 
+        print(
+            "NiraapadClientHelper: Send DeleteConnection RPC (for deleting old srever state)"
+        )
         resp = self.stub.DeleteConnection(niraapad_pb2.DeleteConnectionReq())
         exception = pickle.loads(resp.exception)
         if exception != None:
             raise exception
 
+        print("NiraapadClientHelper: Send InitializeConnection RPC ")
         resp = self.stub.InitializeConnection(
             niraapad_pb2.InitializeConnectionReq())
         exception = pickle.loads(resp.exception)
@@ -217,8 +223,9 @@ class NiraapadClientHelper:
 
 
 class NiraapadClient:
-    niraapad_mo = utils.MO.DIRECT_PLUS_MIDDLEBOX
+    # niraapad_mo = utils.MO.VIA_MIDDLEBOX
     niraapad_client_helper = None
+    niraapad_mos = {}
 
     def __init__(self):
         if type(self) == SuperClass:
@@ -231,10 +238,49 @@ class NiraapadClient:
 
     @staticmethod
     def connect_to_middlebox(host, port, keysdir=None):
-        if NiraapadClient.niraapad_client_helper != None:
-            del NiraapadClient.niraapad_client_helper
-        NiraapadClient.niraapad_client_helper = NiraapadClientHelper(
-            host, port, keysdir)
+        print("NiraapadClient: Connect to middlebox at %s:%s" % (host, port))
+        try:
+            if NiraapadClient.niraapad_client_helper != None:
+                del NiraapadClient.niraapad_client_helper
+            NiraapadClient.niraapad_client_helper = NiraapadClientHelper(
+                host, port, keysdir)
+            print("NiraapadClient: Middlebox successfully connected")
+        except Exception as e:
+            NiraapadClient.handle_any_exception("NiraapadClient",
+                                                "connect_to_middlebox", e)
+            print(
+                "EXITING. Please try again. If error persists, please try without Niraapad."
+            )
+            exit()
+
+        for backend in utils.BACKENDS:
+            NiraapadClient.niraapad_mos[backend] = utils.MO.VIA_MIDDLEBOX
+            print("NiraapadClient: Initial mode of operation",
+                  utils.MO.VIA_MIDDLEBOX,
+                  flush=True)
+
+    @staticmethod
+    def update_mos(default_mo=utils.MO.VIA_MIDDLEBOX, exceptions={}):
+        print("NiraapadClient: Updating mode of operation")
+        for backend in utils.BACKENDS:
+            NiraapadClient.niraapad_mos[backend] = default_mo
+        for backend, mo in exceptions.items():
+            # print("NiraapadClient: EXCEPTION: %s --> %s" % (backend, mo))
+            assert (backend in utils.BACKENDS)
+            assert (mo in utils.MO)
+            NiraapadClient.niraapad_mos[backend] = mo
+            NiraapadClient.update_group_mos(backend, mo)
+        for backend, mo in NiraapadClient.niraapad_mos.items():
+            print("  NiraapadClinet: %s --> %s" % (backend, mo))
+
+    @staticmethod
+    def update_group_mos(backend, mo):
+        for key, group in utils.backend_groups.items():
+            if backend not in group:
+                continue
+            for member in group:
+                assert (member in utils.BACKENDS)
+                NiraapadClient.niraapad_mos[member] = mo
 
     @staticmethod
     def static_method(backend_type, *args, **kwargs):
@@ -242,10 +288,10 @@ class NiraapadClient:
 
         class_name = getattr(niraapad_backends_module, backend_type)
 
-        if NiraapadClient.niraapad_mo == utils.MO.DIRECT:
+        if NiraapadClient.niraapad_mos[backend_type] == utils.MO.DIRECT:
             return getattr(class_name, method_name)(*args, **kwargs)
 
-        if NiraapadClient.niraapad_mo == utils.MO.VIA_MIDDLEBOX:
+        if NiraapadClient.niraapad_mos[backend_type] == utils.MO.VIA_MIDDLEBOX:
             try:
                 return NiraapadClient.niraapad_client_helper.static_method(
                     backend_type, method_name, pickle.dumps(args),
@@ -271,10 +317,11 @@ class NiraapadClient:
     def static_getter(backend_type, property_name):
         class_name = getattr(niraapad_backends_module, backend_type)
 
-        if NiraapadClient.niraapad_mo == utils.MO.DIRECT:
+        print("backend_type", backend_type, flush=True)
+        if NiraapadClient.niraapad_mos[backend_type] == utils.MO.DIRECT:
             return getattr(class_name, property_name)
 
-        if NiraapadClient.niraapad_mo == utils.MO.VIA_MIDDLEBOX:
+        if NiraapadClient.niraapad_mos[backend_type] == utils.MO.VIA_MIDDLEBOX:
             try:
                 return NiraapadClient.niraapad_client_helper.static_getter(
                     backend_type, property_name)
@@ -298,10 +345,10 @@ class NiraapadClient:
     def static_setter(backend_type, property_name, value):
         class_name = getattr(niraapad_backends_module, backend_type)
 
-        if NiraapadClient.niraapad_mo == utils.MO.DIRECT:
+        if NiraapadClient.niraapad_mos[backend_type] == utils.MO.DIRECT:
             return setattr(class_name, property_name, value)
 
-        if NiraapadClient.niraapad_mo == utils.MO.VIA_MIDDLEBOX:
+        if NiraapadClient.niraapad_mos[backend_type] == utils.MO.VIA_MIDDLEBOX:
             try:
                 return NiraapadClient.niraapad_client_helper.static_setter(
                     backend_type, property_name, pickle.dumps(value))
@@ -333,11 +380,12 @@ class NiraapadClient:
         class_name = getattr(niraapad_backends_module,
                              self.niraapad_backend_type)
 
-        if NiraapadClient.niraapad_mo == utils.MO.DIRECT or \
-           NiraapadClient.niraapad_mo == utils.MO.DIRECT_PLUS_MIDDLEBOX:
+        if NiraapadClient.niraapad_mos[self.niraapad_backend_type] == utils.MO.DIRECT or \
+           NiraapadClient.niraapad_mos[self.niraapad_backend_type] == utils.MO.DIRECT_PLUS_MIDDLEBOX:
             self.niraapad_backend_instance = class_name(*args, **kwargs)
 
-        if NiraapadClient.niraapad_mo == utils.MO.VIA_MIDDLEBOX:
+        if NiraapadClient.niraapad_mos[
+                self.niraapad_backend_type] == utils.MO.VIA_MIDDLEBOX:
             try:
                 self.niraapad_backend_instance_id = \
                     NiraapadClient.niraapad_client_helper.initialize(
@@ -347,7 +395,8 @@ class NiraapadClient:
                 self.niraapad_backend_instance_id = 0
                 self.handle_exception("initialize", e, True)
 
-        if NiraapadClient.niraapad_mo == utils.MO.DIRECT_PLUS_MIDDLEBOX:
+        if NiraapadClient.niraapad_mos[
+                self.niraapad_backend_type] == utils.MO.DIRECT_PLUS_MIDDLEBOX:
             try:
                 self.niraapad_backend_instance_id = \
                     NiraapadClient.niraapad_client_helper.initialize_trace(
@@ -370,14 +419,16 @@ class NiraapadClient:
         """
         method_name = utils.CALLER_METHOD_NAME()
 
-        if NiraapadClient.niraapad_mo == utils.MO.DIRECT:
+        if NiraapadClient.niraapad_mos[
+                self.niraapad_backend_type] == utils.MO.DIRECT:
             return getattr(self.niraapad_backend_instance,
                            method_name)(*args, **kwargs)
 
         if self.niraapad_backend_instance_id == 0:
             return
 
-        if NiraapadClient.niraapad_mo == utils.MO.VIA_MIDDLEBOX:
+        if NiraapadClient.niraapad_mos[
+                self.niraapad_backend_type] == utils.MO.VIA_MIDDLEBOX:
             try:
                 return NiraapadClient.niraapad_client_helper.generic_method(
                     self.niraapad_backend_type,
@@ -407,13 +458,15 @@ class NiraapadClient:
         variable value.
         """
 
-        if NiraapadClient.niraapad_mo == utils.MO.DIRECT:
+        if NiraapadClient.niraapad_mos[
+                self.niraapad_backend_type] == utils.MO.DIRECT:
             return getattr(self.niraapad_backend_instance, property_name)
 
         if self.niraapad_backend_instance_id == 0:
             return
 
-        if NiraapadClient.niraapad_mo == utils.MO.VIA_MIDDLEBOX:
+        if NiraapadClient.niraapad_mos[
+                self.niraapad_backend_type] == utils.MO.VIA_MIDDLEBOX:
             try:
                 return NiraapadClient.niraapad_client_helper.generic_getter(
                     self.niraapad_backend_type,
@@ -438,14 +491,16 @@ class NiraapadClient:
         assign the provided value to the specified property.
         """
 
-        if NiraapadClient.niraapad_mo == utils.MO.DIRECT:
+        if NiraapadClient.niraapad_mos[
+                self.niraapad_backend_type] == utils.MO.DIRECT:
             setattr(self.niraapad_backend_instance, property_name, value)
             return
 
         if self.niraapad_backend_instance_id == 0:
             return
 
-        if NiraapadClient.niraapad_mo == utils.MO.VIA_MIDDLEBOX:
+        if NiraapadClient.niraapad_mos[
+                self.niraapad_backend_type] == utils.MO.VIA_MIDDLEBOX:
             try:
                 NiraapadClient.niraapad_client_helper.generic_setter(
                     self.niraapad_backend_type,
