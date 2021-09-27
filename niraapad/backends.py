@@ -848,6 +848,6 @@ kortex.KortexConnection = VirtualKortexConnection
 
 # from mtbalance import arduino
 
-# DirectArduinoAugmentedQuantos = arduino.ArduinoAugmentedQuantos
-# arduino.ArduinoAugmentedQuantos = VirtualArduinoAugmentedQuantos
+DirectArduinoAugmentedQuantos = arduino.ArduinoAugmentedQuantos
+arduino.ArduinoAugmentedQuantos = VirtualArduinoAugmentedQuantos
 # ===================================================
