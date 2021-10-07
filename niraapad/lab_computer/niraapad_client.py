@@ -147,6 +147,24 @@ class NiraapadClientHelper:
                 resp=niraapad_pb2.InitializeResp(exception=pickle.dumps(None))))
         return self.backend_instance_count
 
+    def uninitialize(self, backend_type, backend_instance_id):
+        resp = self.stub.Unintialize(
+            niraapad_pb2.UnintializeReq(
+                backend_type=backend_type,
+                backend_instance_id=backend_instance_id))
+        exception = pickle.loads(resp.exception)
+        if exception != None:
+            raise exception
+
+    def uninitialize_trace(self, backend_type, backend_instance_id):
+        self.stub.UnintializeTrace(
+            niraapad_pb2.UnintializeTraceMsg(
+                req=niraapad_pb2.UnintializeReq(
+                    backend_type=backend_type,
+                    backend_instance_id=backend_instance_id),
+                resp=niraapad_pb2.GenericSetterResp(
+                    exception=pickle.dumps(None))))
+
     def generic_method(self, backend_type, backend_instance_id, method_name,
                        args_pickled, kwargs_pickled):
         resp = self.stub.GenericMethod(
@@ -230,6 +248,9 @@ class NiraapadClient:
     def __init__(self):
         if type(self) == SuperClass:
             raise Exception("NiraapadClient must be subclassed.")
+
+    def __del__(self):
+        pass
 
     #def __new__(cls, *args, **kwargs):
     #    if cls == NiraapadClient:
@@ -405,6 +426,42 @@ class NiraapadClient:
             except Exception as e:
                 self.niraapad_backend_instance_id = 0
                 self.handle_exception("initialize_trace", e)
+
+    def uninitialize(self, *args, **kwargs):
+        """
+        For the __del__ method, the method is invoked using
+        the class instance name and not directly using the class name.
+        Thus, the following set of statements is analogous to the function
+        definition of the static_methods function above, except that we deal
+        with specific class instances identified using their unique
+        identifiers ("niraapad_backend_instance_id"), which were set during
+        initialization.
+        """
+
+        if NiraapadClient.niraapad_mos[
+                self.niraapad_backend_type] == utils.MO.DIRECT:
+            del self.niraapad_backend_instance
+            return
+
+        if self.niraapad_backend_instance_id == 0:
+            return
+
+        if NiraapadClient.niraapad_mos[
+                self.niraapad_backend_type] == utils.MO.VIA_MIDDLEBOX:
+            try:
+                return NiraapadClient.niraapad_client_helper.uninitialize(
+                    self.niraapad_backend_type,
+                    self.niraapad_backend_instance_id)
+            except Exception as e:
+                self.handle_exception("uninitialize", e, True)
+
+        del self.niraapad_backend_instance
+
+        try:
+            NiraapadClient.niraapad_client_helper.unintialize_trace(
+                self.niraapad_backend_type, self.niraapad_backend_instance_id)
+        except Exception as e:
+            self.handle_exception("unintialize_trace" % e)
 
     def generic_method(self, *args, **kwargs):
         """

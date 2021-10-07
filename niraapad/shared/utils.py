@@ -25,6 +25,15 @@ def enable_print():
     sys.stdout = sys.__stdout__
 
 
+# Return the memory usage in MB
+def memory_usage_psutil():
+    import psutil
+    process = psutil.Process(os.getpid())
+    mem = process.memory_info()[0] / float(2 ** 20)
+    print("Memory usage: %s MB" % mem)
+    return mem
+
+
 def sanitize_resp(name, resp):
     # TODO: Get rid of this!!!
     # The following is a work around to circumvent the problem
@@ -93,7 +102,7 @@ class BACKENDS(str, Enum):
     UR3_ARM = "DirectUR3Arm"
 
     # Kinova
-    KORTEX_CONNECTION = "DirectKortexConnection"
+    # KORTEX_CONNECTION = "DirectKortexConnection"
 
     # Quantos
     BALANCE = "DirectBalance"
@@ -111,7 +120,7 @@ backend_groups["Serial"] = [
     BACKENDS.PY_SERIAL_DEVICE
 ]
 backend_groups["UR3"] = [BACKENDS.ROBOT_ARM, BACKENDS.UR3_ARM]
-backend_groups["Kinova"] = [BACKENDS.KORTEX_CONNECTION]
+# backend_groups["Kinova"] = [BACKENDS.KORTEX_CONNECTION]
 backend_groups["Quantos"] = [
     BACKENDS.BALANCE, BACKENDS.QUANTOS, BACKENDS.ARDUINO_AUGMENT,
     BACKENDS.ARDUINO_AUGMENTED_QUANTOS

@@ -6,7 +6,7 @@
         {
             "label": "stubs",
             "type": "shell",
-            "command": "py -m grpc_tools.protoc -I. --python_out=. --grpc_python_out=. ./niraapad/protos/niraapad.proto"
+            "command": "python -m grpc_tools.protoc -I. --python_out=. --grpc_python_out=. ./niraapad/protos/niraapad.proto"
         },
         {
             "label": "build",

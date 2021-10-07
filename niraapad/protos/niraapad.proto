@@ -33,6 +33,12 @@ service Niraapad {
 
   // Used for the __init__ method
   rpc InitializeTrace(InitializeTraceMsg) returns (EmptyMsg) {}
+  
+  // Used for the __del__ method
+  rpc Uninitialize(UninitializeReq) returns (UninitializeResp) {}
+
+  // Used for the __del__ method
+  rpc UninitializeTrace(UninitializeTraceMsg) returns (EmptyMsg) {}
 
   // Used for property getters
   rpc GenericGetter(GenericGetterReq) returns (GenericGetterResp) {}
@@ -149,6 +155,20 @@ message InitializeResp {
 }
 
 message InitializeTraceMsg {
+  InitializeReq req = 1;
+  InitializeResp resp = 2;
+}
+
+message UninitializeReq {
+  string backend_type = 1;
+  int32 backend_instance_id = 2;
+}
+
+message UninitializeResp {
+  bytes exception = 1;
+}
+
+message UninitializeTraceMsg {
   InitializeReq req = 1;
   InitializeResp resp = 2;
 }
