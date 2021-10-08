@@ -223,8 +223,9 @@ class VirtualPySerialDevice(VirtualDevice, metaclass=AttributeMeta):
     def __init__(self, *args, **kwargs):
         return self.initialize(*args, **kwargs)
 
+    # TODO: See reason in VirtualFtdiDevice
     def __del__(self):
-        self.close()
+        pass # self.close()
 
     def close(self, *args, **kwargs):
         return self.generic_method(*args, **kwargs)
