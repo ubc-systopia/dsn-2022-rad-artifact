@@ -181,22 +181,17 @@ class TestC9Controller(unittest.TestCase):
 
     def test_instance_type(self):
         for mo in utils.MO:
+            if mo != utils.MO.VIA_MIDDLEBOX: continue
             NiraapadClient.update_mos(default_mo=mo)
             device_serial = 'AB0KPC1S'
             c9 = C9Controller(device_serial=device_serial,
                               use_joystick=False,
                               connect=False)
-            if mo == utils.MO.DIRECT:
-                self.assertIsInstance(c9.connection, Serial)
-            elif mo == utils.MO.DIRECT_PLUS_MIDDLEBOX:
-                self.assertIsInstance(c9.connection, Serial)
-            elif mo == utils.MO.VIA_MIDDLEBOX:
-                self.assertIsInstance(c9.connection, Serial)
-            else:
-                self.assertFalse(True)
+            self.assertIsInstance(c9.connection, Serial)
 
     def test_device_methods(self):
         for mo in utils.MO:
+            if mo != utils.MO.VIA_MIDDLEBOX: continue
             NiraapadClient.update_mos(default_mo=mo)
 
             device_serial = 'AB0KPC1S'
@@ -227,6 +222,7 @@ class TestC9Controller(unittest.TestCase):
 
     def test_connection_methods(self):
         for mo in utils.MO:
+            if mo != utils.MO.VIA_MIDDLEBOX: continue
             NiraapadClient.update_mos(default_mo=mo)
 
             device_serial = 'AB0KPC1S'
@@ -739,6 +735,7 @@ class TestUR3ArmBackend(unittest.TestCase):
 
     def test_init_vm(self):
         for mo in utils.MO:
+            if mo != utils.MO.VIA_MIDDLEBOX: continue
             NiraapadClient.update_mos(default_mo=mo)
             ur3_arm = UR3Arm("192.168.63.128", gripper_base_port=30002)
             jointpositions = [-54.36, -60.60, -85.60, -52.12, 121.92, 50.02]
@@ -1213,7 +1210,7 @@ class TestFaultTolerance(unittest.TestCase):
 
         if args.distributed == False:
             self.niraapad_server.stop()
-        disable_print()
+        utils.disable_print()
 
         ur3_arm = UR3Arm(host='localhost',
                          default_velocity=1,
@@ -1240,7 +1237,7 @@ class TestFaultTolerance(unittest.TestCase):
         self.assertEqual(ur3_arm.gripper_default_force, 0.5)
         self.assertEqual(ur3_arm.connected, False)
 
-        enable_print()
+        utils.enable_print()
 
 
 class TestProductionEnvironment(unittest.TestCase):
@@ -1305,9 +1302,9 @@ class TestProductionEnvironment(unittest.TestCase):
 
 def suite_c9():
     suite = unittest.TestSuite()
-    # suite.addTest(TestC9Controller('test_instance_type'))
-    # suite.addTest(TestC9Controller('test_device_methods'))
-    # suite.addTest(TestC9Controller('test_connection_methods'))
+    suite.addTest(TestC9Controller('test_instance_type'))
+    suite.addTest(TestC9Controller('test_device_methods'))
+    suite.addTest(TestC9Controller('test_connection_methods'))
     suite.addTest(TestC9Controller('test_py_serial_device'))
     return suite
 
@@ -1387,3 +1384,4 @@ if __name__ == "__main__":
     # runner.run(suite_performance())
     # # runner.run(suite_fault_tolerance())
     # runner.run(suite_production_environment())
+    

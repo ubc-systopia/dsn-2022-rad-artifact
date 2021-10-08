@@ -161,8 +161,15 @@ class VirtualFtdiDevice(VirtualDevice, metaclass=AttributeMeta):
     def __init__(self, *args, **kwargs):
         return self.initialize(*args, **kwargs)
 
+    # TODO: __del__ has unclear semantics w.r.t. when it is called.
+    # In one of the tests, __del__ is called after the connection is
+    # terminated and reconnected back.
+    # Obviously, there would be no state on the server side w.r.t.
+    # the FtdiDevice class from the previous connection.
+    # I donot want to add a command specific exception in the server
+    # as a workaround.
     def __del__(self):
-        self.close()
+        pass # self.close()
 
     def close(self, *args, **kwargs):
         return self.generic_method(*args, **kwargs)
