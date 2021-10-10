@@ -13,7 +13,7 @@ from niraapad.backends import DirectFtdiDevice, DirectPySerialDevice, DirectArdu
 import niraapad.protos.niraapad_pb2 as niraapad_pb2
 import niraapad.protos.niraapad_pb2_grpc as niraapad_pb2_grpc
 from niraapad.shared.tracing import Tracer
-from niraapad.shared.commands import magneticstirrer_commands
+from niraapad.data_preprocessing.commands import magneticstirrer_commands
 
 # Path to this file test_niraapad.py
 file_path = os.path.dirname(os.path.abspath(__file__))
