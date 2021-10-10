@@ -37,6 +37,8 @@ The package may work with earlier versions of these depenencies, but this has no
 
 #### Running UR simulator
 
+* Details on setting up UR simulator and connecting it with python script: https://github.com/ubc-systopia/cps-security-code/blob/main/docs/URsim_Setup.pdf
+
 * Test on a single machine as follows:
     * Turn on the VMware Player and run the UR simulator virtual machine
     * Run the UR3 robot simulator and turn on the robot from the button on the bottom left

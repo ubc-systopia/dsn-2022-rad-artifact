@@ -7,6 +7,8 @@ from enum import Enum
 from copy import copy
 
 from ftdi_serial import FtdiDevice, SerialDeviceInfo
+from hein_robots.base.robot_arms import RobotArm
+from hein_robots.universal_robots.ur3 import UR3Arm
 
 FUNC_NAME = lambda: inspect.stack()[1].function
 CALLER_METHOD_NAME = lambda: inspect.stack()[2].function
@@ -21,6 +23,15 @@ def disable_print():
 # Restore print() output
 def enable_print():
     sys.stdout = sys.__stdout__
+
+
+# Return the memory usage in MB
+def memory_usage_psutil():
+    import psutil
+    process = psutil.Process(os.getpid())
+    mem = process.memory_info()[0] / float(2 ** 20)
+    print("Memory usage: %s MB" % mem)
+    return mem
 
 
 def sanitize_resp(name, resp):
@@ -78,10 +89,10 @@ class MO(Enum):
 
 
 # Currently, we support only the selected types of backend classes
-class BACKENDS:
+class BACKENDS(str, Enum):
 
     # Serial
-    DEVICE = "Directevice"
+    DEVICE = "DirectDevice"
     MOCK_DEVICE = "DirectMockDevice"
     FTDI_DEVICE = "DirectFtdiDevice"
     PY_SERIAL_DEVICE = "DirectPySerialDevice"
@@ -91,13 +102,27 @@ class BACKENDS:
     UR3_ARM = "DirectUR3Arm"
 
     # Kinova
-    KORTEX_CONNECTION = "DirectKortexConnection"
-
-    # Stepper
-    ARDUINO_STEPPER = "DirectArduinoStepper"
+    # KORTEX_CONNECTION = "DirectKortexConnection"
 
     # Quantos
     BALANCE = "DirectBalance"
     QUANTOS = "DirectQuantos"
     ARDUINO_AUGMENT = "DirectArduinoAugment"
     ARDUINO_AUGMENTED_QUANTOS = "DirectArduinoAugmentedQuantos"
+
+    # # Stepper
+    # ARDUINO_STEPPER = "DirectArduinoStepper"
+
+
+backend_groups = {}
+backend_groups["Serial"] = [
+    BACKENDS.DEVICE, BACKENDS.MOCK_DEVICE, BACKENDS.FTDI_DEVICE,
+    BACKENDS.PY_SERIAL_DEVICE
+]
+backend_groups["UR3"] = [BACKENDS.ROBOT_ARM, BACKENDS.UR3_ARM]
+# backend_groups["Kinova"] = [BACKENDS.KORTEX_CONNECTION]
+backend_groups["Quantos"] = [
+    BACKENDS.BALANCE, BACKENDS.QUANTOS, BACKENDS.ARDUINO_AUGMENT,
+    BACKENDS.ARDUINO_AUGMENTED_QUANTOS
+]
+# backend_groups["Stepper"] = [BACKENDS.ARDUINO_STEPPER]

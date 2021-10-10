@@ -74,7 +74,15 @@ class NiraapadServicer(niraapad_pb2_grpc.NiraapadServicer):
                             backend_instance_id].close()
                     elif backend_type == utils.BACKENDS.ROBOT_ARM \
                         or backend_type == utils.BACKENDS.UR3_ARM:
-                        pass  # TODO: Figure out if we need to do anything here
+                        if self.backend_instances[backend_type][
+                            backend_instance_id].connected:
+                            self.backend_instances[backend_type][
+                            backend_instance_id].disconnect()
+                    elif backend_type == utils.BACKENDS.BALANCE \
+                        or backend_type == utils.BACKENDS.QUANTOS \
+                        or backend_type == utils.BACKENDS.ARDUINO_AUGMENT \
+                        or backend_type == utils.BACKENDS.ARDUINO_AUGMENTED_QUANTOS:
+                            pass
             del self.backend_instances
             self.backend_instances = {}
         except Exception as e:
@@ -216,6 +224,36 @@ class NiraapadServicer(niraapad_pb2_grpc.NiraapadServicer):
 
     def InitializeTrace(self, trace_msg, context):
         print("(trace) %s.__init__" % (trace_msg.req.backend_type), flush=True)
+
+        self.log_trace_msg(trace_msg)
+        return niraapad_pb2.EmptyMsg()
+
+    def Uninitialize(self, req, context):
+        print("%s.__del__" % (req.backend_type), flush=True)
+
+        exception = None
+
+        backend_type = req.backend_type
+        backend_instance_id = req.backend_instance_id
+
+        try:
+            if backend_type in self.backend_instances:
+                if backend_instance_id in self.backend_instances[backend_type]:
+                    del self.backend_instances[backend_type][backend_instance_id]
+
+        except Exception as e:
+            NiraapadServicer.print_exception(e)
+            exception = e
+
+        resp = niraapad_pb2.UninitializeResp(exception=pickle.dumps(exception))
+
+        trace_msg = niraapad_pb2.UninitializeTraceMsg(req=req, resp=resp)
+        self.log_trace_msg(trace_msg)
+
+        return resp
+
+    def UninitializeTrace(self, trace_msg, context):
+        print("(trace) %s.__del__" % (trace_msg.req.backend_type), flush=True)
 
         self.log_trace_msg(trace_msg)
         return niraapad_pb2.EmptyMsg()
