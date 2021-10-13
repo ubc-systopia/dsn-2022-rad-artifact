@@ -29,7 +29,7 @@ def enable_print():
 def memory_usage_psutil():
     import psutil
     process = psutil.Process(os.getpid())
-    mem = process.memory_info()[0] / float(2 ** 20)
+    mem = process.memory_info()[0] / float(2**20)
     print("Memory usage: %s MB" % mem)
     return mem
 
@@ -86,6 +86,9 @@ class MO(Enum):
     DIRECT = 1
     DIRECT_PLUS_MIDDLEBOX = 2
     VIA_MIDDLEBOX = 3
+
+    def __int__(self):
+        return self.value
 
 
 # Currently, we support only the selected types of backend classes

@@ -46,12 +46,6 @@ service Niraapad {
   // Used for property getters
   rpc GenericGetterTrace(GenericGetterTraceMsg) returns (EmptyMsg) {}
 
-  // Used for specific device property getters
-  rpc GenericDeviceGetter(GenericDeviceGetterReq) returns (GenericDeviceGetterResp) {}
-
-  // Used for specific device property getters
-  rpc GenericDeviceGetterTrace(GenericDeviceGetterTraceMsg) returns (EmptyMsg) {}
-  
   // Used for property setters
   rpc GenericSetter(GenericSetterReq) returns (GenericSetterResp) {}
 
@@ -63,6 +57,11 @@ service Niraapad {
 
   // Used for the remaining methods
   rpc GenericMethodTrace(GenericMethodTraceMsg) returns (EmptyMsg) {}
+}
+
+message CommandProfile {
+  int32 mo = 1;
+  float exec_time_sec = 2; 
 }
 
 message StartServerTraceMsg {
@@ -96,10 +95,11 @@ message DeleteConnectionTraceMsg {
 }
 
 message StaticMethodReq {
-  string backend_type = 1;
-  string method_name = 2;
-  bytes args = 3;
-  bytes kwargs = 4;
+  string arrival_time = 1;
+  string backend_type = 2;
+  string method_name = 3;
+  bytes args = 4;
+  bytes kwargs = 5;
 }
 
 message StaticMethodResp {
@@ -110,11 +110,13 @@ message StaticMethodResp {
 message StaticMethodTraceMsg {
   StaticMethodReq req = 1;
   StaticMethodResp resp = 2;
+  CommandProfile profile = 3;
 }
 
 message StaticGetterReq {
-  string backend_type = 1;
-  string property_name = 2;
+  string arrival_time = 1;
+  string backend_type = 2;
+  string property_name = 3;
 }
 
 message StaticGetterResp {
@@ -125,12 +127,14 @@ message StaticGetterResp {
 message StaticGetterTraceMsg {
   StaticGetterReq req = 1;
   StaticGetterResp resp = 2;
+  CommandProfile profile = 3;
 }
 
 message StaticSetterReq {
-  string backend_type = 1;
-  string property_name = 2;
-  bytes value = 3;
+  string arrival_time = 1;
+  string backend_type = 2;
+  string property_name = 3;
+  bytes value = 4;
 }
 
 message StaticSetterResp {
@@ -140,14 +144,16 @@ message StaticSetterResp {
 message StaticSetterTraceMsg {
   StaticSetterReq req = 1;
   StaticSetterResp resp = 2;
+  CommandProfile profile = 3;
 }
 
 message InitializeReq {
-  string backend_type = 1;
-  int32 backend_instance_id = 2;
-  bytes args = 3;
-  bytes kwargs = 4;
-  bytes stacktrace = 5;
+  string arrival_time = 1;
+  string backend_type = 2;
+  int32 backend_instance_id = 3;
+  bytes args = 4;
+  bytes kwargs = 5;
+  bytes stacktrace = 6;
 }
 
 message InitializeResp {
@@ -157,11 +163,13 @@ message InitializeResp {
 message InitializeTraceMsg {
   InitializeReq req = 1;
   InitializeResp resp = 2;
+  CommandProfile profile = 3;
 }
 
 message UninitializeReq {
-  string backend_type = 1;
-  int32 backend_instance_id = 2;
+  string arrival_time = 1;
+  string backend_type = 2;
+  int32 backend_instance_id = 3;
 }
 
 message UninitializeResp {
@@ -171,12 +179,14 @@ message UninitializeResp {
 message UninitializeTraceMsg {
   InitializeReq req = 1;
   InitializeResp resp = 2;
+  CommandProfile profile = 3;
 }
 
 message GenericGetterReq {
-  string backend_type = 1;
-  int32 backend_instance_id = 2;
-  string property_name = 3;
+  string arrival_time = 1;
+  string backend_type = 2;
+  int32 backend_instance_id = 3;
+  string property_name = 4;
 }
 
 message GenericGetterResp {
@@ -187,13 +197,15 @@ message GenericGetterResp {
 message GenericGetterTraceMsg {
   GenericGetterReq req = 1;
   GenericGetterResp resp = 2;
+  CommandProfile profile = 3;
 }
 
 message GenericSetterReq {
-  string backend_type = 1;
-  int32 backend_instance_id = 2;
-  string property_name = 3;
-  bytes value = 4;
+  string arrival_time = 1;
+  string backend_type = 2;
+  int32 backend_instance_id = 3;
+  string property_name = 4;
+  bytes value = 5;
 }
 
 message GenericSetterResp {
@@ -203,14 +215,16 @@ message GenericSetterResp {
 message GenericSetterTraceMsg {
   GenericSetterReq req = 1;
   GenericSetterResp resp = 2;
+  CommandProfile profile = 3;
 }
 
 message GenericMethodReq {
-  string backend_type = 1;
-  int32 backend_instance_id = 2;
-  string method_name = 3;
-  bytes args = 4;
-  bytes kwargs = 5;
+  string arrival_time = 1;
+  string backend_type = 2;
+  int32 backend_instance_id = 3;
+  string method_name = 4;
+  bytes args = 5;
+  bytes kwargs = 6;
 }
 
 message GenericMethodResp {
@@ -221,22 +235,7 @@ message GenericMethodResp {
 message GenericMethodTraceMsg {
   GenericMethodReq req = 1;
   GenericMethodResp resp = 2;
-}
-
-message GenericDeviceGetterReq {
-  string backend_type = 1;
-  int32 backend_instance_id = 2;
-  string property_name = 3;
-}
-
-message GenericDeviceGetterResp {
-  bytes exception = 1;
-  bytes resp = 2;
-}
-
-message GenericDeviceGetterTraceMsg {
-  GenericDeviceGetterReq req = 1;
-  GenericDeviceGetterResp resp = 2;
+  CommandProfile profile = 3;
 }
 
 // Trace header helps identify the trace length
