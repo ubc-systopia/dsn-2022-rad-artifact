@@ -169,7 +169,7 @@ class VirtualFtdiDevice(VirtualDevice, metaclass=AttributeMeta):
     # I donot want to add a command specific exception in the server
     # as a workaround.
     def __del__(self):
-        pass # self.close()
+        pass  # self.close()
 
     def close(self, *args, **kwargs):
         return self.generic_method(*args, **kwargs)
@@ -225,7 +225,7 @@ class VirtualPySerialDevice(VirtualDevice, metaclass=AttributeMeta):
 
     # TODO: See reason in VirtualFtdiDevice
     def __del__(self):
-        pass # self.close()
+        pass  # self.close()
 
     def close(self, *args, **kwargs):
         return self.generic_method(*args, **kwargs)
@@ -275,7 +275,7 @@ class VirtualRobotArm(NiraapadClient, metaclass=AttributeMeta):
 
     def __init__(self, *args, **kwargs):
         return self.initialize(*args, **kwargs)
-    
+
     def __del__(self):
         return super().__del__()
 
@@ -363,12 +363,12 @@ class VirtualUR3Arm(VirtualRobotArm, metaclass=AttributeMeta):
 
     def __init__(self, *args, **kwargs):
         return self.initialize(*args, **kwargs)
-    
+
     def __del__(self):
         # if self.connected: self.disconnect()
         return super().__del__()
 
-    def connect(self, *args, **kwargs): 
+    def connect(self, *args, **kwargs):
         return self.generic_method(*args, **kwargs)
 
     def disconnect(self, *args, **kwargs):

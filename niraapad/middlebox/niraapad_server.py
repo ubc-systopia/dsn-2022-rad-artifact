@@ -9,6 +9,7 @@ import importlib
 
 from concurrent import futures
 from datetime import datetime
+from timeit import default_timer
 
 from ftdi_serial import Device
 from ftdi_serial import FtdiDevice
@@ -40,7 +41,7 @@ class NiraapadServicer(niraapad_pb2_grpc.NiraapadServicer):
         self.tracer.write_to_file(trace_msg)
         self.tracer.stop_tracing()
 
-    def log_trace_msg(self, trace_msg):
+    def log_trace_msg(self, trace_msg, elapsed=0):
         self.tracer.write_to_file(trace_msg)
 
     def InitializeConnection(self, req, context):
@@ -75,14 +76,14 @@ class NiraapadServicer(niraapad_pb2_grpc.NiraapadServicer):
                     elif backend_type == utils.BACKENDS.ROBOT_ARM \
                         or backend_type == utils.BACKENDS.UR3_ARM:
                         if self.backend_instances[backend_type][
-                            backend_instance_id].connected:
+                                backend_instance_id].connected:
                             self.backend_instances[backend_type][
-                            backend_instance_id].disconnect()
+                                backend_instance_id].disconnect()
                     elif backend_type == utils.BACKENDS.BALANCE \
                         or backend_type == utils.BACKENDS.QUANTOS \
                         or backend_type == utils.BACKENDS.ARDUINO_AUGMENT \
                         or backend_type == utils.BACKENDS.ARDUINO_AUGMENTED_QUANTOS:
-                            pass
+                        pass
             del self.backend_instances
             self.backend_instances = {}
         except Exception as e:
@@ -106,19 +107,26 @@ class NiraapadServicer(niraapad_pb2_grpc.NiraapadServicer):
         resp = None
         exception = None
 
+        start = default_timer()
         try:
             class_name = getattr(niraapad_backends_module, req.backend_type)
             resp = getattr(class_name, req.method_name)(*args, **kwargs)
         except Exception as e:
             NiraapadServicer.print_exception(e)
             exception = e
+        end = default_timer()
 
         resp = utils.sanitize_resp(req.method_name, resp)
 
         resp = niraapad_pb2.StaticMethodResp(exception=pickle.dumps(exception),
                                              resp=pickle.dumps(resp))
 
-        trace_msg = niraapad_pb2.StaticMethodTraceMsg(req=req, resp=resp)
+        profile = niraapad_pb2.CommandProfile(mo=int(utils.MO.VIA_MIDDLEBOX),
+                                              exec_time_sec=(end - start))
+
+        trace_msg = niraapad_pb2.StaticMethodTraceMsg(req=req,
+                                                      resp=resp,
+                                                      profile=profile)
         self.log_trace_msg(trace_msg)
 
         return resp
@@ -137,17 +145,24 @@ class NiraapadServicer(niraapad_pb2_grpc.NiraapadServicer):
         resp = None
         exception = None
 
+        start = default_timer()
         try:
             class_name = getattr(niraapad_backends_module, req.backend_type)
             resp = getattr(class_name, req.property_name)
         except Exception as e:
             NiraapadServicer.print_exception(e)
             exception = e
+        end = default_timer()
 
         resp = niraapad_pb2.StaticGetterResp(exception=pickle.dumps(exception),
                                              resp=pickle.dumps(resp))
 
-        trace_msg = niraapad_pb2.StaticGetterTraceMsg(req=req, resp=resp)
+        profile = niraapad_pb2.CommandProfile(mo=int(utils.MO.VIA_MIDDLEBOX),
+                                              exec_time_sec=(end - start))
+
+        trace_msg = niraapad_pb2.StaticGetterTraceMsg(req=req,
+                                                      resp=resp,
+                                                      profile=profile)
         self.log_trace_msg(trace_msg)
 
         return resp
@@ -168,16 +183,23 @@ class NiraapadServicer(niraapad_pb2_grpc.NiraapadServicer):
         resp = None
         exception = None
 
+        start = default_timer()
         try:
             class_name = getattr(niraapad_backends_module, req.backend_type)
             setattr(class_name, req.property_name, value)
         except Exception as e:
             NiraapadServicer.print_exception(e)
             exception = e
+        end = default_timer()
 
         resp = niraapad_pb2.StaticSetterResp(exception=pickle.dumps(exception))
 
-        trace_msg = niraapad_pb2.StaticSetterTraceMsg(req=req, resp=resp)
+        profile = niraapad_pb2.CommandProfile(mo=int(utils.MO.VIA_MIDDLEBOX),
+                                              exec_time_sec=(end - start))
+
+        trace_msg = niraapad_pb2.StaticSetterTraceMsg(req=req,
+                                                      resp=resp,
+                                                      profile=profile)
         self.log_trace_msg(trace_msg)
 
         return resp
@@ -207,6 +229,7 @@ class NiraapadServicer(niraapad_pb2_grpc.NiraapadServicer):
 
         exception = None
 
+        start = default_timer()
         try:
             class_name = getattr(niraapad_backends_module, req.backend_type)
             self.backend_instances[req.backend_type][req.backend_instance_id] = \
@@ -214,10 +237,16 @@ class NiraapadServicer(niraapad_pb2_grpc.NiraapadServicer):
         except Exception as e:
             NiraapadServicer.print_exception(e)
             exception = e
+        end = default_timer()
 
         resp = niraapad_pb2.InitializeResp(exception=pickle.dumps(exception))
 
-        trace_msg = niraapad_pb2.InitializeTraceMsg(req=req, resp=resp)
+        profile = niraapad_pb2.CommandProfile(mo=int(utils.MO.VIA_MIDDLEBOX),
+                                              exec_time_sec=(end - start))
+
+        trace_msg = niraapad_pb2.InitializeTraceMsg(req=req,
+                                                    resp=resp,
+                                                    profile=profile)
         self.log_trace_msg(trace_msg)
 
         return resp
@@ -236,18 +265,26 @@ class NiraapadServicer(niraapad_pb2_grpc.NiraapadServicer):
         backend_type = req.backend_type
         backend_instance_id = req.backend_instance_id
 
+        start = default_timer()
         try:
             if backend_type in self.backend_instances:
                 if backend_instance_id in self.backend_instances[backend_type]:
-                    del self.backend_instances[backend_type][backend_instance_id]
+                    del self.backend_instances[backend_type][
+                        backend_instance_id]
 
         except Exception as e:
             NiraapadServicer.print_exception(e)
             exception = e
+        end = default_timer()
 
         resp = niraapad_pb2.UninitializeResp(exception=pickle.dumps(exception))
 
-        trace_msg = niraapad_pb2.UninitializeTraceMsg(req=req, resp=resp)
+        profile = niraapad_pb2.CommandProfile(mo=int(utils.MO.VIA_MIDDLEBOX),
+                                              exec_time_sec=(end - start))
+
+        trace_msg = niraapad_pb2.UninitializeTraceMsg(req=req,
+                                                      resp=resp,
+                                                      profile=profile)
         self.log_trace_msg(trace_msg)
 
         return resp
@@ -276,6 +313,7 @@ class NiraapadServicer(niraapad_pb2_grpc.NiraapadServicer):
         resp = None
         exception = None
 
+        start = default_timer()
         try:
             resp = getattr(
                 self.backend_instances[req.backend_type][
@@ -283,11 +321,17 @@ class NiraapadServicer(niraapad_pb2_grpc.NiraapadServicer):
         except Exception as e:
             NiraapadServicer.print_exception(e)
             exception = e
+        end = default_timer()
 
         resp = niraapad_pb2.GenericMethodResp(exception=pickle.dumps(exception),
                                               resp=pickle.dumps(resp))
 
-        trace_msg = niraapad_pb2.GenericMethodTraceMsg(req=req, resp=resp)
+        profile = niraapad_pb2.CommandProfile(mo=int(utils.MO.VIA_MIDDLEBOX),
+                                              exec_time_sec=(end - start))
+
+        trace_msg = niraapad_pb2.GenericMethodTraceMsg(req=req,
+                                                       resp=resp,
+                                                       profile=profile)
         self.log_trace_msg(trace_msg)
 
         return resp
@@ -311,6 +355,7 @@ class NiraapadServicer(niraapad_pb2_grpc.NiraapadServicer):
         resp = None
         exception = None
 
+        start = default_timer()
         try:
             resp = getattr(
                 self.backend_instances[req.backend_type][
@@ -318,13 +363,19 @@ class NiraapadServicer(niraapad_pb2_grpc.NiraapadServicer):
         except Exception as e:
             NiraapadServicer.print_exception(e)
             exception = e
+        end = default_timer()
 
         resp = utils.sanitize_resp(req.property_name, resp)
 
         resp = niraapad_pb2.GenericGetterResp(exception=pickle.dumps(exception),
                                               resp=pickle.dumps(resp))
 
-        trace_msg = niraapad_pb2.GenericGetterTraceMsg(req=req, resp=resp)
+        profile = niraapad_pb2.CommandProfile(mo=int(utils.MO.VIA_MIDDLEBOX),
+                                              exec_time_sec=(end - start))
+
+        trace_msg = niraapad_pb2.GenericGetterTraceMsg(req=req,
+                                                       resp=resp,
+                                                       profile=profile)
         self.log_trace_msg(trace_msg)
 
         return resp
@@ -348,6 +399,7 @@ class NiraapadServicer(niraapad_pb2_grpc.NiraapadServicer):
         resp = None
         exception = None
 
+        start = default_timer()
         try:
             setattr(
                 self.backend_instances[req.backend_type][
@@ -355,50 +407,22 @@ class NiraapadServicer(niraapad_pb2_grpc.NiraapadServicer):
         except Exception as e:
             NiraapadServicer.print_exception(e)
             exception = e
+        end = default_timer()
 
         resp = niraapad_pb2.GenericSetterResp(exception=pickle.dumps(exception))
 
-        trace_msg = niraapad_pb2.GenericSetterTraceMsg(req=req, resp=resp)
+        profile = niraapad_pb2.CommandProfile(mo=int(utils.MO.VIA_MIDDLEBOX),
+                                              exec_time_sec=(end - start))
+
+        trace_msg = niraapad_pb2.GenericSetterTraceMsg(req=req,
+                                                       resp=resp,
+                                                       profile=profile)
         self.log_trace_msg(trace_msg)
 
         return resp
 
     def GenericSetterTrace(self, trace_msg, context):
         print("(trace) %s.set_%s" %
-              (trace_msg.req.backend_type, trace_msg.req.property_name),
-              flush=True)
-
-        self.log_trace_msg(trace_msg)
-        return niraapad_pb2.EmptyMsg()
-
-    def GenericDeviceGetter(self, req, context):
-        print("%s.get_%s" % (req.backend_type, req.property_name), flush=True)
-
-        resp = None
-        exception = None
-        device_class_name = None
-
-        try:
-            resp = getattr(
-                self.backend_instances[req.backend_type][
-                    req.backend_instance_id], req.property_name)
-            if resp != None:
-                device_class_name = resp.__class__.__name__
-        except Exception as e:
-            NiraapadServicer.print_exception(e)
-            exception = e
-
-        resp = niraapad_pb2.GenericDeviceGetterResp(
-            exception=pickle.dumps(exception),
-            resp=pickle.dumps(device_class_name))
-
-        trace_msg = niraapad_pb2.GenericDeviceGetterTraceMsg(req=req, resp=resp)
-        self.log_trace_msg(trace_msg)
-
-        return resp
-
-    def GenericDeviceGetterTrace(self, trace_msg, context):
-        print("(trace) %s.get_%s" %
               (trace_msg.req.backend_type, trace_msg.req.property_name),
               flush=True)
 
