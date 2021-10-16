@@ -7,8 +7,9 @@ from itertools import repeat
 from datetime import datetime
 import csv
 
-
 from itertools import repeat
+import niraapad.backends
+from niraapad.lab_computer.niraapad_client import NiraapadClient
 from niraapad.backends import DirectUR3Arm
 from niraapad.backends import DirectFtdiDevice, DirectPySerialDevice
 from niraapad.backends import DirectArduinoAugmentedQuantos
@@ -122,13 +123,12 @@ class Curator:
         return arg_val
         
     def convert_to_json(self, parsing_file):
-        print(parsing_file)
         traces = {}
         traces['Traces'] = []
 
         #Parse the tracing file
         for timestamp, trace_msg_type, trace_msg in Tracer.parse_file(parsing_file):
-            print(timestamp, trace_msg_type, trace_msg)
+            print(trace_msg)
             trace_msg_parse = {}
             
             if str(trace_msg) != '':
@@ -270,7 +270,6 @@ class Curator:
                                         writer.writerow([trace['_id'], "Tecan Cavro", trace['Trace Message']['req']['args']['data'][commands_values[i]], None, trace['Trace Message']['resp']['resp'], trace['Trace Message']['resp']['exception']])
                                         i = i + 1
                     else:
-                        print(module)
                         if trace['Trace Message']['req']['backend_instance_id'] in self.backend_instance_id_ur:
                             writer.writerow([trace['_id'], "UR3Arm", trace['Trace Message']['req']['method_name'], str(trace['Trace Message']['req']['args']).replace("{", "").replace("}", "").replace("'","").strip(','), trace['Trace Message']['resp']['resp'],trace['Trace Message']['resp']['exception']])
                         elif trace['Trace Message']['req']['backend_instance_id'] in self.backend_instance_id_arduino:
@@ -296,8 +295,8 @@ class Curator:
         json_files = os.listdir(self.json_path)
 
         #Convert all files to csv file and write it to the file
-        i = 0
         for file in json_files:
+            print(file)
             json_log_file = self.json_path + "\\" + file
             self.dumping_in_csv(json_log_file, file)
             self.backend_instance_id_magstr = []
@@ -305,11 +304,7 @@ class Curator:
             self.backend_instance_id_c9 = []
             self.backend_instance_id_arduino = []
             self.backend_instance_id_ur = []
-            i = i + 1
-            #if i == 2:
-             #   break
-            #break
-
+            
         #Dump it in db
         #for file in json_files:
         #    json_log_file = self.json_path + "\\" + file
