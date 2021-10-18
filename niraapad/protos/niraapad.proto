@@ -64,6 +64,12 @@ message CommandProfile {
   float exec_time_sec = 2; 
 }
 
+message TimeProfile {
+  uint64 id = 1;
+  string arrival_time = 2;
+  string departure_time = 3;
+}
+
 message StartServerTraceMsg {
 }
 
@@ -100,6 +106,8 @@ message StaticMethodReq {
   string method_name = 3;
   bytes args = 4;
   bytes kwargs = 5;
+  uint64 id = 6;
+  repeated TimeProfile time_profiles = 7;
 }
 
 message StaticMethodResp {
@@ -117,6 +125,8 @@ message StaticGetterReq {
   string arrival_time = 1;
   string backend_type = 2;
   string property_name = 3;
+  uint64 id = 4;
+  repeated TimeProfile time_profiles = 5;
 }
 
 message StaticGetterResp {
@@ -135,6 +145,8 @@ message StaticSetterReq {
   string backend_type = 2;
   string property_name = 3;
   bytes value = 4;
+  uint64 id = 5;
+  repeated TimeProfile time_profiles = 6;
 }
 
 message StaticSetterResp {
@@ -154,6 +166,8 @@ message InitializeReq {
   bytes args = 4;
   bytes kwargs = 5;
   bytes stacktrace = 6;
+  uint64 id = 7;
+  repeated TimeProfile time_profiles = 8;
 }
 
 message InitializeResp {
@@ -170,6 +184,8 @@ message UninitializeReq {
   string arrival_time = 1;
   string backend_type = 2;
   int32 backend_instance_id = 3;
+  uint64 id = 4;
+  repeated TimeProfile time_profiles = 5;
 }
 
 message UninitializeResp {
@@ -187,6 +203,8 @@ message GenericGetterReq {
   string backend_type = 2;
   int32 backend_instance_id = 3;
   string property_name = 4;
+  uint64 id = 5;
+  repeated TimeProfile time_profiles = 6;
 }
 
 message GenericGetterResp {
@@ -206,6 +224,8 @@ message GenericSetterReq {
   int32 backend_instance_id = 3;
   string property_name = 4;
   bytes value = 5;
+  uint64 id = 6;
+  repeated TimeProfile time_profiles = 7;
 }
 
 message GenericSetterResp {
@@ -225,6 +245,8 @@ message GenericMethodReq {
   string method_name = 4;
   bytes args = 5;
   bytes kwargs = 6;
+  uint64 id = 7;
+  repeated TimeProfile time_profiles = 8;
 }
 
 message GenericMethodResp {
