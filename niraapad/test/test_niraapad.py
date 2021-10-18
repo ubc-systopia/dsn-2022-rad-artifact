@@ -803,6 +803,16 @@ class TestUR3ArmBackend(unittest.TestCase):
 
             time.sleep(2)
 
+            if args.distributed:
+                continue
+
+            # self.niraapad_server.stop_tracing()
+            # trace_file = self.niraapad_server.get_trace_file()
+            # print("trace_file", trace_file)
+            # for timestamp, trace_msg_type, trace_msg in Tracer.parse_file(
+            #         trace_file):
+            #     print('>', timestamp, trace_msg)
+
     def test_simple_init(self):
         for mo in utils.MO:
             NiraapadClient.update_mos(default_mo=mo)
