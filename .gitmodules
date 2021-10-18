@@ -1,9 +1,0 @@
-[submodule "hein_robots"]
-	path = hein_robots
-	url = https://gitlab.com/heingroup/hein_robots.git
-[submodule "python-urx"]
-	path = python-urx
-	url = https://github.com/SintefManufacturing/python-urx.git
-[submodule "ftdi_serial"]
-	path = ftdi_serial
-	url = https://gitlab.com/north-robotics/ftdi_serial.git
