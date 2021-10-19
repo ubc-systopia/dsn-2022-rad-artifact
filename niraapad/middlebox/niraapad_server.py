@@ -44,6 +44,15 @@ class NiraapadServicer(niraapad_pb2_grpc.NiraapadServicer):
     def log_trace_msg(self, trace_msg, elapsed=0):
         self.tracer.write_to_file(trace_msg)
 
+    def BatchedTrace(self, batched_trace_msg, context):
+        trace_msgs = pickle.loads(batched_trace_msg.trace_msgs)
+        for trace_msg in trace_msgs:
+            trace_msg_type = (str(type(trace_msg))).split("'")[1].split(".")[-1]
+            print("(trace) %s.%s" %
+                  (trace_msg.req.backend_type, trace_msg_type))
+            self.log_trace_msg(trace_msg)
+        return niraapad_pb2.EmptyMsg()
+
     def InitializeConnection(self, req, context):
         print("NiraapadClientHelper.__init__", flush=True)
 
@@ -131,14 +140,6 @@ class NiraapadServicer(niraapad_pb2_grpc.NiraapadServicer):
 
         return resp
 
-    def StaticMethodTrace(self, trace_msg, context):
-        print("(trace) %s.%s" %
-              (trace_msg.req.backend_type, trace_msg.req.method_name),
-              flush=True)
-
-        self.log_trace_msg(trace_msg)
-        return niraapad_pb2.EmptyMsg()
-
     def StaticGetter(self, req, context):
         print("%s.get_%s" % (req.backend_type, req.property_name), flush=True)
 
@@ -166,14 +167,6 @@ class NiraapadServicer(niraapad_pb2_grpc.NiraapadServicer):
         self.log_trace_msg(trace_msg)
 
         return resp
-
-    def StaticGetterTrace(self, trace_msg, context):
-        print("(trace) %s.get_%s" %
-              (trace_msg.req.backend_type, trace_msg.req.property_name),
-              flush=True)
-
-        self.log_trace_msg(trace_msg)
-        return niraapad_pb2.EmptyMsg()
 
     def StaticSetter(self, req, context):
         print("%s.set_%s" % (req.backend_type, req.property_name), flush=True)
@@ -203,14 +196,6 @@ class NiraapadServicer(niraapad_pb2_grpc.NiraapadServicer):
         self.log_trace_msg(trace_msg)
 
         return resp
-
-    def StaticSetterTrace(self, trace_msg, context):
-        print("(trace) %s.%s" %
-              (trace_msg.req.backend_type, trace_msg.req.property_name),
-              flush=True)
-
-        self.log_trace_msg(trace_msg)
-        return niraapad_pb2.EmptyMsg()
 
     def Initialize(self, req, context):
         print("%s.__init__" % (req.backend_type), flush=True)
@@ -251,12 +236,6 @@ class NiraapadServicer(niraapad_pb2_grpc.NiraapadServicer):
 
         return resp
 
-    def InitializeTrace(self, trace_msg, context):
-        print("(trace) %s.__init__" % (trace_msg.req.backend_type), flush=True)
-
-        self.log_trace_msg(trace_msg)
-        return niraapad_pb2.EmptyMsg()
-
     def Uninitialize(self, req, context):
         print("%s.__del__" % (req.backend_type), flush=True)
 
@@ -288,12 +267,6 @@ class NiraapadServicer(niraapad_pb2_grpc.NiraapadServicer):
         self.log_trace_msg(trace_msg)
 
         return resp
-
-    def UninitializeTrace(self, trace_msg, context):
-        print("(trace) %s.__del__" % (trace_msg.req.backend_type), flush=True)
-
-        self.log_trace_msg(trace_msg)
-        return niraapad_pb2.EmptyMsg()
 
     def GenericMethod(self, req, context):
         print("%s.%s" % (req.backend_type, req.method_name), flush=True)
@@ -336,14 +309,6 @@ class NiraapadServicer(niraapad_pb2_grpc.NiraapadServicer):
 
         return resp
 
-    def GenericMethodTrace(self, trace_msg, context):
-        print("(trace) %s.%s" %
-              (trace_msg.req.backend_type, trace_msg.req.method_name),
-              flush=True)
-
-        self.log_trace_msg(trace_msg)
-        return niraapad_pb2.EmptyMsg()
-
     def GenericGetter(self, req, context):
         print("%s.get_%s" % (req.backend_type, req.property_name), flush=True)
 
@@ -380,14 +345,6 @@ class NiraapadServicer(niraapad_pb2_grpc.NiraapadServicer):
 
         return resp
 
-    def GenericGetterTrace(self, trace_msg, context):
-        print("(trace) %s.get_%s" %
-              (trace_msg.req.backend_type, trace_msg.req.property_name),
-              flush=True)
-
-        self.log_trace_msg(trace_msg)
-        return niraapad_pb2.EmptyMsg()
-
     def GenericSetter(self, req, context):
         print("%s.set_%s" % (req.backend_type, req.property_name), flush=True)
 
@@ -420,14 +377,6 @@ class NiraapadServicer(niraapad_pb2_grpc.NiraapadServicer):
         self.log_trace_msg(trace_msg)
 
         return resp
-
-    def GenericSetterTrace(self, trace_msg, context):
-        print("(trace) %s.set_%s" %
-              (trace_msg.req.backend_type, trace_msg.req.property_name),
-              flush=True)
-
-        self.log_trace_msg(trace_msg)
-        return niraapad_pb2.EmptyMsg()
 
     @staticmethod
     def print_exception(e):

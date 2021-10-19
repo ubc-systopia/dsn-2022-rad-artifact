@@ -172,7 +172,10 @@ class TestC9Controller(unittest.TestCase):
                                                   args.keysdir)
             self.niraapad_server.start()
 
-        NiraapadClient.connect_to_middlebox(args.host, args.port, args.keysdir)
+        NiraapadClient.connect_to_middlebox(args.host,
+                                            args.port,
+                                            args.keysdir,
+                                            debug=False)
 
     def tearDown(self):
         if args.distributed == False:
@@ -183,7 +186,7 @@ class TestC9Controller(unittest.TestCase):
         for mo in utils.MO:
             if mo != utils.MO.VIA_MIDDLEBOX:
                 continue
-            NiraapadClient.update_mos(default_mo=mo)
+            NiraapadClient.update_mos(default_mo=mo, debug=False)
             device_serial = 'AB0KPC1S'
             c9 = C9Controller(device_serial=device_serial,
                               use_joystick=False,
@@ -194,7 +197,7 @@ class TestC9Controller(unittest.TestCase):
         for mo in utils.MO:
             if mo != utils.MO.VIA_MIDDLEBOX:
                 continue
-            NiraapadClient.update_mos(default_mo=mo)
+            NiraapadClient.update_mos(default_mo=mo, debug=False)
 
             device_serial = 'AB0KPC1S'
             c9 = C9Controller(device_serial=device_serial,
@@ -226,7 +229,7 @@ class TestC9Controller(unittest.TestCase):
         for mo in utils.MO:
             if mo != utils.MO.VIA_MIDDLEBOX:
                 continue
-            NiraapadClient.update_mos(default_mo=mo)
+            NiraapadClient.update_mos(default_mo=mo, debug=False)
 
             device_serial = 'AB0KPC1S'
 
@@ -247,7 +250,7 @@ class TestC9Controller(unittest.TestCase):
 
     def test_py_serial_device(self):
         for mo in utils.MO:
-            NiraapadClient.update_mos(default_mo=mo)
+            NiraapadClient.update_mos(default_mo=mo, debug=False)
             self.assertEqual(PySerialDevice.PARITIES[0],
                              PySerialDriver.PARITY_NONE)
             self.assertEqual(PySerialDevice.PARITIES[1],
@@ -263,7 +266,8 @@ class TestC9Controller(unittest.TestCase):
         if args.distributed:
             return
 
-        NiraapadClient.update_mos(default_mo=utils.MO.VIA_MIDDLEBOX)
+        NiraapadClient.update_mos(default_mo=utils.MO.VIA_MIDDLEBOX,
+                                  debug=False)
         device_serial = 'AB0KPC1S'
         c9 = C9Controller(device_serial=device_serial,
                           use_joystick=False,
@@ -309,7 +313,10 @@ class TestN9Backend(unittest.TestCase):
                                                   args.keysdir)
             self.niraapad_server.start()
 
-        NiraapadClient.connect_to_middlebox(args.host, args.port, args.keysdir)
+        NiraapadClient.connect_to_middlebox(args.host,
+                                            args.port,
+                                            args.keysdir,
+                                            debug=False)
 
     def tearDown(self):
         if args.distributed == False:
@@ -318,7 +325,7 @@ class TestN9Backend(unittest.TestCase):
 
     def test_class_variables(self):
         for mo in utils.MO:
-            NiraapadClient.update_mos(default_mo=mo)
+            NiraapadClient.update_mos(default_mo=mo, debug=False)
 
             #         self.assertEqual(Serial.FT_OK, DirectSerial.FT_OK)
             #         self.assertEqual(Serial.FT_PURGE_RX, DirectSerial.FT_PURGE_RX)
@@ -377,14 +384,14 @@ class TestN9Backend(unittest.TestCase):
 
     def test_static_methods(self):
         for mo in utils.MO:
-            NiraapadClient.update_mos(default_mo=mo)
+            NiraapadClient.update_mos(default_mo=mo, debug=False)
             serial_devices_info = Serial.list_devices()
             device_ports = Serial.list_device_ports()
             device_serials = Serial.list_device_serials()
 
     def test_init(self):
         for mo in utils.MO:
-            NiraapadClient.update_mos(default_mo=mo)
+            NiraapadClient.update_mos(default_mo=mo, debug=False)
             serial = Serial(connect=False)
             self.assertEqual(115200, serial.baudrate)
             self.assertEqual(Serial.PARITY_NONE, serial.parity)
@@ -576,7 +583,7 @@ class TestN9Backend(unittest.TestCase):
         # Currently, self.device in ftdi_serial.py is None
         # Therefore, any method that invokes update_timeouts() fails
         for mo in utils.MO:
-            NiraapadClient.update_mos(default_mo=mo)
+            NiraapadClient.update_mos(default_mo=mo, debug=False)
             serial = Serial(connect=False)
             self.assertEqual(5, serial.read_timeout)
             self.assertEqual(5, serial.write_timeout)
@@ -602,7 +609,7 @@ class TestN9Backend(unittest.TestCase):
         # Currently, self.device in ftdi_serial.py is None
         # Therefore, any method that invokes init_device() fails
         for mo in utils.MO:
-            NiraapadClient.update_mos(default_mo=mo)
+            NiraapadClient.update_mos(default_mo=mo, debug=False)
             serial = Serial(connect=False)
             # serial.set_parameters(baudrate=10)
             # serial.set_parameters(parity=11)
@@ -623,7 +630,7 @@ class TestN9Backend(unittest.TestCase):
         for mo in utils.MO:
             if mo == utils.MO.DIRECT:
                 continue
-            NiraapadClient.update_mos(default_mo=mo)
+            NiraapadClient.update_mos(default_mo=mo, debug=False)
             serial = Serial(connect=False)
         self.niraapad_server.stop_tracing()
         trace_file = self.niraapad_server.get_trace_file()
@@ -655,7 +662,8 @@ class TestN9Backend(unittest.TestCase):
         if args.distributed:
             return
 
-        NiraapadClient.update_mos(default_mo=utils.MO.VIA_MIDDLEBOX)
+        NiraapadClient.update_mos(default_mo=utils.MO.VIA_MIDDLEBOX,
+                                  debug=False)
         devices = Serial.list_devices()  # 0
         device_ports = Serial.list_device_ports()  # 1
         device_serials = Serial.list_device_serials()  # 2
@@ -769,7 +777,10 @@ class TestUR3ArmBackend(unittest.TestCase):
                                                   args.keysdir)
             self.niraapad_server.start()
 
-        NiraapadClient.connect_to_middlebox(args.host, args.port, args.keysdir)
+        NiraapadClient.connect_to_middlebox(args.host,
+                                            args.port,
+                                            args.keysdir,
+                                            debug=False)
 
     def tearDown(self):
         if args.distributed == False:
@@ -777,10 +788,9 @@ class TestUR3ArmBackend(unittest.TestCase):
             del self.niraapad_server
 
     def test_init_vm(self):
+        NiraapadClient.niraapad_batch_traces = True
         for mo in utils.MO:
-            if mo != utils.MO.VIA_MIDDLEBOX:
-                continue
-            NiraapadClient.update_mos(default_mo=mo)
+            NiraapadClient.update_mos(default_mo=mo, debug=False)
             ur3_arm = UR3Arm("192.168.63.128", gripper_base_port=30002)
             jointpositions = [-54.36, -60.60, -85.60, -52.12, 121.92, 50.02]
             ur3_arm.move_joints(jointpositions)
@@ -788,14 +798,15 @@ class TestUR3ArmBackend(unittest.TestCase):
                 [round(elem, 2) for elem in ur3_arm.joint_positions],
                 [round(elem, 2) for elem in jointpositions])
 
-            location = Location(x=50,
-                                y=-160,
-                                z=550,
-                                rx=-118.9,
-                                ry=56.53,
-                                rz=-135.8)
-            ur3_arm.move_to_location(location)
-            self.assertEqual(ur3_arm.location, location)
+            for i in range(0, 200):
+                location = Location(x=50,
+                                    y=-160,
+                                    z=550,
+                                    rx=-118.9,
+                                    ry=56.53,
+                                    rz=-135.8)
+                ur3_arm.move_to_location(location)
+                self.assertEqual(ur3_arm.location, location)
 
             self.assertEqual(ur3_arm.joint_count, 6)
             ur3_arm.disconnect()
@@ -815,12 +826,12 @@ class TestUR3ArmBackend(unittest.TestCase):
 
     def test_simple_init(self):
         for mo in utils.MO:
-            NiraapadClient.update_mos(default_mo=mo)
+            NiraapadClient.update_mos(default_mo=mo, debug=False)
             ur3_arm = UR3Arm(connect=False)
 
     def test_init(self):
         for mo in utils.MO:
-            NiraapadClient.update_mos(default_mo=mo)
+            NiraapadClient.update_mos(default_mo=mo, debug=False)
             ur3_arm = UR3Arm(connect=False)
             self.assertEqual(ur3_arm.default_velocity, 250)
             self.assertEqual(ur3_arm.max_velocity, 500)
@@ -963,7 +974,7 @@ class TestUR3ArmBackend(unittest.TestCase):
 
     def test_exception_handling(self):
         for mo in utils.MO:
-            NiraapadClient.update_mos(default_mo=mo)
+            NiraapadClient.update_mos(default_mo=mo, debug=False)
             ur3_arm = UR3Arm(max_joint_velocity=100.0, connect=False)
             with self.assertRaises(robot_arms.RobotArmNotConnectedError):
                 robot = ur3_arm.robot
@@ -1002,7 +1013,10 @@ class TestIKABackend(unittest.TestCase):
                                                   args.keysdir)
             self.niraapad_server.start()
 
-        NiraapadClient.connect_to_middlebox(args.host, args.port, args.keysdir)
+        NiraapadClient.connect_to_middlebox(args.host,
+                                            args.port,
+                                            args.keysdir,
+                                            debug=False)
 
     def tearDown(self):
         if args.distributed == False:
@@ -1023,7 +1037,7 @@ class TestIKABackend(unittest.TestCase):
         for mo in utils.MO:
             if mo != utils.MO.DIRECT_PLUS_MIDDLEBOX:
                 continue
-            NiraapadClient.update_mos(default_mo=mo)
+            NiraapadClient.update_mos(default_mo=mo, debug=False)
             with self.assertRaises(IKAError):
                 magnetic_stirrer = MagneticStirrer(device_port='COM16')
 
@@ -1039,7 +1053,10 @@ class TestQuantosBackend(unittest.TestCase):
                                                   args.keysdir)
             self.niraapad_server.start()
 
-        NiraapadClient.connect_to_middlebox(args.host, args.port, args.keysdir)
+        NiraapadClient.connect_to_middlebox(args.host,
+                                            args.port,
+                                            args.keysdir,
+                                            debug=False)
 
     def tearDown(self):
         if args.distributed == False:
@@ -1048,7 +1065,7 @@ class TestQuantosBackend(unittest.TestCase):
 
     def test_simple_init(self):
         for mo in utils.MO:
-            NiraapadClient.update_mos(default_mo=mo)
+            NiraapadClient.update_mos(default_mo=mo, debug=False)
             if mo != utils.MO.VIA_MIDDLEBOX:
                 continue
             # try:
@@ -1076,7 +1093,10 @@ class TestKinovaBackend(unittest.TestCase):
                                                   args.keysdir)
             self.niraapad_server.start()
 
-        NiraapadClient.connect_to_middlebox(args.host, args.port, args.keysdir)
+        NiraapadClient.connect_to_middlebox(args.host,
+                                            args.port,
+                                            args.keysdir,
+                                            debug=False)
 
     def tearDown(self):
         if args.distributed == False:
@@ -1085,7 +1105,7 @@ class TestKinovaBackend(unittest.TestCase):
 
     def test_simple_init(self):
         for mo in utils.MO:
-            NiraapadClient.update_mos(default_mo=mo)
+            NiraapadClient.update_mos(default_mo=mo, debug=False)
             # kinova_arm = KinovaGen3Arm(connect=False)
 
 
@@ -1100,7 +1120,10 @@ class TestMisc(unittest.TestCase):
                                                   args.keysdir)
             self.niraapad_server.start()
 
-        NiraapadClient.connect_to_middlebox(args.host, args.port, args.keysdir)
+        NiraapadClient.connect_to_middlebox(args.host,
+                                            args.port,
+                                            args.keysdir,
+                                            debug=False)
 
     def tearDown(self):
         if args.distributed == False:
@@ -1110,7 +1133,7 @@ class TestMisc(unittest.TestCase):
     def test_operation_modes(self):
 
         for mo in utils.MO:
-            NiraapadClient.update_mos(default_mo=mo)
+            NiraapadClient.update_mos(default_mo=mo, debug=False)
 
             for backend, backend_mo in NiraapadClient.niraapad_mos.items():
                 self.assertTrue(backend in utils.BACKENDS)
@@ -1122,7 +1145,9 @@ class TestMisc(unittest.TestCase):
                 exceptions = {
                     utils.BACKENDS.ARDUINO_AUGMENTED_QUANTOS: exception_mo
                 }
-                NiraapadClient.update_mos(default_mo=mo, exceptions=exceptions)
+                NiraapadClient.update_mos(default_mo=mo,
+                                          exceptions=exceptions,
+                                          debug=False)
                 for backend, backend_mo in NiraapadClient.niraapad_mos.items():
                     self.assertTrue(backend in utils.BACKENDS)
                     if backend is utils.BACKENDS.BALANCE or \
@@ -1135,7 +1160,9 @@ class TestMisc(unittest.TestCase):
 
             for exception_mo in utils.MO:
                 exceptions = {utils.BACKENDS.UR3_ARM: exception_mo}
-                NiraapadClient.update_mos(default_mo=mo, exceptions=exceptions)
+                NiraapadClient.update_mos(default_mo=mo,
+                                          exceptions=exceptions,
+                                          debug=False)
                 for backend, backend_mo in NiraapadClient.niraapad_mos.items():
                     self.assertTrue(backend in utils.BACKENDS)
                     if backend is utils.BACKENDS.UR3_ARM or backend is utils.BACKENDS.ROBOT_ARM:
@@ -1145,7 +1172,9 @@ class TestMisc(unittest.TestCase):
 
             for exception_mo in utils.MO:
                 exceptions = {utils.BACKENDS.PY_SERIAL_DEVICE: exception_mo}
-                NiraapadClient.update_mos(default_mo=mo, exceptions=exceptions)
+                NiraapadClient.update_mos(default_mo=mo,
+                                          exceptions=exceptions,
+                                          debug=False)
                 for backend, backend_mo in NiraapadClient.niraapad_mos.items():
                     self.assertTrue(backend in utils.BACKENDS)
                     if backend is utils.BACKENDS.DEVICE or \
@@ -1158,7 +1187,9 @@ class TestMisc(unittest.TestCase):
 
             for exception_mo in utils.MO:
                 exceptions = {utils.BACKENDS.FTDI_DEVICE: exception_mo}
-                NiraapadClient.update_mos(default_mo=mo, exceptions=exceptions)
+                NiraapadClient.update_mos(default_mo=mo,
+                                          exceptions=exceptions,
+                                          debug=False)
                 for backend, backend_mo in NiraapadClient.niraapad_mos.items():
                     self.assertTrue(backend in utils.BACKENDS)
                     if backend is utils.BACKENDS.DEVICE or \
@@ -1173,7 +1204,9 @@ class TestMisc(unittest.TestCase):
             exceptions[utils.BACKENDS.FTDI_DEVICE] = utils.MO.DIRECT
             exceptions[utils.BACKENDS.ARDUINO_AUGMENT] = utils.MO.DIRECT
             exceptions[utils.BACKENDS.UR3_ARM] = utils.MO.DIRECT_PLUS_MIDDLEBOX
-            NiraapadClient.update_mos(default_mo=mo, exceptions=exceptions)
+            NiraapadClient.update_mos(default_mo=mo,
+                                      exceptions=exceptions,
+                                      debug=False)
             self.assertEqual(NiraapadClient.niraapad_mos[utils.BACKENDS.DEVICE],
                              utils.MO.DIRECT)
             self.assertEqual(
@@ -1218,7 +1251,10 @@ class TestPerformance(unittest.TestCase):
                                                   args.keysdir)
             self.niraapad_server.start()
 
-        NiraapadClient.connect_to_middlebox(args.host, args.port, args.keysdir)
+        NiraapadClient.connect_to_middlebox(args.host,
+                                            args.port,
+                                            args.keysdir,
+                                            debug=False)
 
     def tearDown(self):
         if args.distributed == False:
@@ -1228,7 +1264,7 @@ class TestPerformance(unittest.TestCase):
     def test_performance(self):
         for mo in utils.MO:
             for i in range(0, 100000):
-                NiraapadClient.update_mos(default_mo=mo)
+                NiraapadClient.update_mos(default_mo=mo, debug=False)
                 ur3_arm = UR3Arm(connect=False)
 
 
@@ -1243,7 +1279,10 @@ class TestFaultTolerance(unittest.TestCase):
                                                   args.keysdir)
             self.niraapad_server.start()
 
-        NiraapadClient.connect_to_middlebox(args.host, args.port, args.keysdir)
+        NiraapadClient.connect_to_middlebox(args.host,
+                                            args.port,
+                                            args.keysdir,
+                                            debug=False)
 
     def tearDown(self):
         if args.distributed == False:
@@ -1251,7 +1290,7 @@ class TestFaultTolerance(unittest.TestCase):
             del self.niraapad_server
 
     def test_ur3_arm_init(self):
-        NiraapadClient.update_mos(utils.MO.DIRECT_PLUS_MIDDLEBOX)
+        NiraapadClient.update_mos(utils.MO.DIRECT_PLUS_MIDDLEBOX, debug=False)
 
         ur3_arm = UR3Arm(connect=False)
         self.assertEqual(ur3_arm.default_velocity, 250)
@@ -1314,7 +1353,10 @@ class TestProductionEnvironment(unittest.TestCase):
                                                   args.keysdir)
             self.niraapad_server.start()
 
-        NiraapadClient.connect_to_middlebox(args.host, args.port, args.keysdir)
+        NiraapadClient.connect_to_middlebox(args.host,
+                                            args.port,
+                                            args.keysdir,
+                                            debug=False)
 
     def tearDown(self):
         if args.distributed == False:
@@ -1438,13 +1480,13 @@ def suite_production_environment():
 
 if __name__ == "__main__":
     runner = unittest.TextTestRunner()
-    runner.run(suite_c9())
+    # runner.run(suite_c9())
     runner.run(suite_serial())
     runner.run(suite_ur3arm())
     runner.run(suite_ika())
     runner.run(suite_quantos())
-    # runner.run(suite_kinova())
     runner.run(suite_misc())
+    # runner.run(suite_kinova())
     # runner.run(suite_performance())
     # # runner.run(suite_fault_tolerance())
     # runner.run(suite_production_environment())

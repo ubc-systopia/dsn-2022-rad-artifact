@@ -61,6 +61,21 @@ class NiraapadClientHelper:
         if exception != None:
             raise exception
 
+    def update_traces(self, trace_msg):
+        if NiraapadClient.niraapad_batch_traces:
+            NiraapadClient.niraapad_batched_trace_msgs.append(trace_msg)
+            if default_timer(
+            ) - NiraapadClient.niraapad_batch_start_time > NiraapadClient.niraapad_batch_duration_sec:
+                self.stub.BatchedTrace(
+                    niraapad_pb2.BatchedTraceMsg(trace_msgs=pickle.dumps(
+                        NiraapadClient.niraapad_batched_trace_msgs)))
+                NiraapadClient.niraapad_batch_start_time = default_timer()
+                NiraapadClient.niraapad_batched_trace_msg = []
+        else:
+            self.stub.BatchedTrace(
+                niraapad_pb2.BatchedTraceMsg(
+                    trace_msgs=pickle.dumps([trace_msg])))
+
     def static_method(self, id, backend_type, method_name, args_pickled,
                       kwargs_pickled):
         resp = self.stub.StaticMethod(
@@ -79,20 +94,20 @@ class NiraapadClientHelper:
 
     def static_method_trace(self, id, backend_type, method_name, args_pickled,
                             kwargs_pickled, resp_pickled, exec_time_sec):
-        self.stub.StaticMethodTrace(
-            niraapad_pb2.StaticMethodTraceMsg(
-                req=niraapad_pb2.StaticMethodReq(
-                    id=id,
-                    backend_type=backend_type,
-                    method_name=method_name,
-                    args=args_pickled,
-                    kwargs=kwargs_pickled,
-                    time_profiles=NiraapadClient.get_time_profiles()),
-                resp=niraapad_pb2.StaticMethodResp(exception=pickle.dumps(None),
-                                                   resp=resp_pickled),
-                profile=niraapad_pb2.CommandProfile(
-                    mo=int(utils.MO.DIRECT_PLUS_MIDDLEBOX),
-                    exec_time_sec=exec_time_sec)))
+        trace_msg = niraapad_pb2.StaticMethodTraceMsg(
+            req=niraapad_pb2.StaticMethodReq(
+                id=id,
+                backend_type=backend_type,
+                method_name=method_name,
+                args=args_pickled,
+                kwargs=kwargs_pickled,
+                time_profiles=NiraapadClient.get_time_profiles()),
+            resp=niraapad_pb2.StaticMethodResp(exception=pickle.dumps(None),
+                                               resp=resp_pickled),
+            profile=niraapad_pb2.CommandProfile(mo=int(
+                utils.MO.DIRECT_PLUS_MIDDLEBOX),
+                                                exec_time_sec=exec_time_sec))
+        self.update_traces(trace_msg)
 
     def static_getter(self, id, backend_type, property_name):
         resp = self.stub.StaticGetter(
@@ -109,18 +124,18 @@ class NiraapadClientHelper:
 
     def static_getter_trace(self, id, backend_type, property_name, resp_pickled,
                             exec_time_sec):
-        resp = self.stub.StaticGetterTrace(
-            niraapad_pb2.StaticGetterTraceMsg(
-                req=niraapad_pb2.StaticGetterReq(
-                    id=id,
-                    backend_type=backend_type,
-                    property_name=property_name,
-                    time_profiles=NiraapadClient.get_time_profiles()),
-                resp=niraapad_pb2.StaticGetterResp(exception=pickle.dumps(None),
-                                                   resp=resp_pickled),
-                profile=niraapad_pb2.CommandProfile(
-                    mo=int(utils.MO.DIRECT_PLUS_MIDDLEBOX),
-                    exec_time_sec=exec_time_sec)))
+        trace_msg = niraapad_pb2.StaticGetterTraceMsg(
+            req=niraapad_pb2.StaticGetterReq(
+                id=id,
+                backend_type=backend_type,
+                property_name=property_name,
+                time_profiles=NiraapadClient.get_time_profiles()),
+            resp=niraapad_pb2.StaticGetterResp(exception=pickle.dumps(None),
+                                               resp=resp_pickled),
+            profile=niraapad_pb2.CommandProfile(mo=int(
+                utils.MO.DIRECT_PLUS_MIDDLEBOX),
+                                                exec_time_sec=exec_time_sec))
+        self.update_traces(trace_msg)
 
     def static_setter(self, id, backend_type, property_name, value_pickled):
         resp = self.stub.StaticSetter(
@@ -137,19 +152,18 @@ class NiraapadClientHelper:
 
     def static_setter_trace(self, id, backend_type, property_name,
                             value_pickled, exec_time_sec):
-        self.stub.StaticSetterTrace(
-            niraapad_pb2.StaticSetterTraceMsg(
-                req=niraapad_pb2.StaticSetterReq(
-                    id=id,
-                    backend_type=backend_type,
-                    property_name=property_name,
-                    value=value_pickled,
-                    time_profiles=NiraapadClient.get_time_profiles()),
-                resp=niraapad_pb2.StaticSetterResp(
-                    exception=pickle.dumps(None)),
-                profile=niraapad_pb2.CommandProfile(
-                    mo=int(utils.MO.DIRECT_PLUS_MIDDLEBOX),
-                    exec_time_sec=exec_time_sec)))
+        trace_msg = niraapad_pb2.StaticSetterTraceMsg(
+            req=niraapad_pb2.StaticSetterReq(
+                id=id,
+                backend_type=backend_type,
+                property_name=property_name,
+                value=value_pickled,
+                time_profiles=NiraapadClient.get_time_profiles()),
+            resp=niraapad_pb2.StaticSetterResp(exception=pickle.dumps(None)),
+            profile=niraapad_pb2.CommandProfile(mo=int(
+                utils.MO.DIRECT_PLUS_MIDDLEBOX),
+                                                exec_time_sec=exec_time_sec))
+        self.update_traces(trace_msg)
 
     def initialize(self, id, backend_type, args_pickled, kwargs_pickled,
                    stacktrace_pickled):
@@ -171,20 +185,20 @@ class NiraapadClientHelper:
     def initialize_trace(self, id, backend_type, args_pickled, kwargs_pickled,
                          stacktrace_pickled, exec_time_sec):
         self.backend_instance_count += 1
-        self.stub.InitializeTrace(
-            niraapad_pb2.InitializeTraceMsg(
-                req=niraapad_pb2.InitializeReq(
-                    id=id,
-                    backend_type=backend_type,
-                    backend_instance_id=self.backend_instance_count,
-                    args=args_pickled,
-                    kwargs=kwargs_pickled,
-                    stacktrace=stacktrace_pickled,
-                    time_profiles=NiraapadClient.get_time_profiles()),
-                resp=niraapad_pb2.InitializeResp(exception=pickle.dumps(None)),
-                profile=niraapad_pb2.CommandProfile(
-                    mo=int(utils.MO.DIRECT_PLUS_MIDDLEBOX),
-                    exec_time_sec=exec_time_sec)))
+        trace_msg = niraapad_pb2.InitializeTraceMsg(
+            req=niraapad_pb2.InitializeReq(
+                id=id,
+                backend_type=backend_type,
+                backend_instance_id=self.backend_instance_count,
+                args=args_pickled,
+                kwargs=kwargs_pickled,
+                stacktrace=stacktrace_pickled,
+                time_profiles=NiraapadClient.get_time_profiles()),
+            resp=niraapad_pb2.InitializeResp(exception=pickle.dumps(None)),
+            profile=niraapad_pb2.CommandProfile(mo=int(
+                utils.MO.DIRECT_PLUS_MIDDLEBOX),
+                                                exec_time_sec=exec_time_sec))
+        self.update_traces(trace_msg)
         return self.backend_instance_count
 
     def uninitialize(self, id, backend_type, backend_instance_id):
@@ -200,18 +214,18 @@ class NiraapadClientHelper:
 
     def uninitialize_trace(self, id, backend_type, backend_instance_id,
                            exec_time_sec):
-        self.stub.UnintializeTrace(
-            niraapad_pb2.UnintializeTraceMsg(
-                req=niraapad_pb2.UnintializeReq(
-                    id=id,
-                    backend_type=backend_type,
-                    backend_instance_id=backend_instance_id,
-                    time_profiles=NiraapadClient.get_time_profiles()),
-                resp=niraapad_pb2.GenericSetterResp(
-                    exception=pickle.dumps(None),
-                    profile=niraapad_pb2.CommandProfile(
-                        mo=int(utils.MO.DIRECT_PLUS_MIDDLEBOX),
-                        exec_time_sec=exec_time_sec))))
+        trace_msg = niraapad_pb2.UnintializeTraceMsg(
+            req=niraapad_pb2.UnintializeReq(
+                id=id,
+                backend_type=backend_type,
+                backend_instance_id=backend_instance_id,
+                time_profiles=NiraapadClient.get_time_profiles()),
+            resp=niraapad_pb2.GenericSetterResp(
+                exception=pickle.dumps(None),
+                profile=niraapad_pb2.CommandProfile(
+                    mo=int(utils.MO.DIRECT_PLUS_MIDDLEBOX),
+                    exec_time_sec=exec_time_sec)))
+        self.update_traces(trace_msg)
 
     def generic_method(self, id, backend_type, backend_instance_id, method_name,
                        args_pickled, kwargs_pickled):
@@ -232,21 +246,21 @@ class NiraapadClientHelper:
     def generic_method_trace(self, id, backend_type, backend_instance_id,
                              method_name, args_pickled, kwargs_pickled,
                              resp_pickled, exec_time_sec):
-        self.stub.GenericMethodTrace(
-            niraapad_pb2.GenericMethodTraceMsg(
-                req=niraapad_pb2.GenericMethodReq(
-                    id=id,
-                    backend_type=backend_type,
-                    backend_instance_id=backend_instance_id,
-                    method_name=method_name,
-                    args=args_pickled,
-                    kwargs=kwargs_pickled,
-                    time_profiles=NiraapadClient.get_time_profiles()),
-                resp=niraapad_pb2.GenericMethodResp(
-                    exception=pickle.dumps(None), resp=resp_pickled),
-                profile=niraapad_pb2.CommandProfile(
-                    mo=int(utils.MO.DIRECT_PLUS_MIDDLEBOX),
-                    exec_time_sec=exec_time_sec)))
+        trace_msg = niraapad_pb2.GenericMethodTraceMsg(
+            req=niraapad_pb2.GenericMethodReq(
+                id=id,
+                backend_type=backend_type,
+                backend_instance_id=backend_instance_id,
+                method_name=method_name,
+                args=args_pickled,
+                kwargs=kwargs_pickled,
+                time_profiles=NiraapadClient.get_time_profiles()),
+            resp=niraapad_pb2.GenericMethodResp(exception=pickle.dumps(None),
+                                                resp=resp_pickled),
+            profile=niraapad_pb2.CommandProfile(mo=int(
+                utils.MO.DIRECT_PLUS_MIDDLEBOX),
+                                                exec_time_sec=exec_time_sec))
+        self.update_traces(trace_msg)
 
     def generic_getter(self, id, backend_type, backend_instance_id,
                        property_name):
@@ -264,19 +278,19 @@ class NiraapadClientHelper:
 
     def generic_getter_trace(self, id, backend_type, backend_instance_id,
                              property_name, resp_pickled, exec_time_sec):
-        self.stub.GenericGetterTrace(
-            niraapad_pb2.GenericGetterTraceMsg(
-                req=niraapad_pb2.GenericGetterReq(
-                    id=id,
-                    backend_type=backend_type,
-                    backend_instance_id=backend_instance_id,
-                    property_name=property_name,
-                    time_profiles=NiraapadClient.get_time_profiles()),
-                resp=niraapad_pb2.GenericGetterResp(
-                    exception=pickle.dumps(None), resp=resp_pickled),
-                profile=niraapad_pb2.CommandProfile(
-                    mo=int(utils.MO.DIRECT_PLUS_MIDDLEBOX),
-                    exec_time_sec=exec_time_sec)))
+        trace_msg = niraapad_pb2.GenericGetterTraceMsg(
+            req=niraapad_pb2.GenericGetterReq(
+                id=id,
+                backend_type=backend_type,
+                backend_instance_id=backend_instance_id,
+                property_name=property_name,
+                time_profiles=NiraapadClient.get_time_profiles()),
+            resp=niraapad_pb2.GenericGetterResp(exception=pickle.dumps(None),
+                                                resp=resp_pickled),
+            profile=niraapad_pb2.CommandProfile(mo=int(
+                utils.MO.DIRECT_PLUS_MIDDLEBOX),
+                                                exec_time_sec=exec_time_sec))
+        self.update_traces(trace_msg)
 
     def generic_setter(self, id, backend_type, backend_instance_id,
                        property_name, value_pickled):
@@ -294,20 +308,19 @@ class NiraapadClientHelper:
 
     def generic_setter_trace(self, id, backend_type, backend_instance_id,
                              property_name, value_pickled, exec_time_sec):
-        self.stub.GenericSetterTrace(
-            niraapad_pb2.GenericSetterTraceMsg(
-                req=niraapad_pb2.GenericSetterReq(
-                    id=id,
-                    backend_type=backend_type,
-                    backend_instance_id=backend_instance_id,
-                    property_name=property_name,
-                    value=value_pickled,
-                    time_profiles=NiraapadClient.get_time_profiles()),
-                resp=niraapad_pb2.GenericSetterResp(
-                    exception=pickle.dumps(None)),
-                profile=niraapad_pb2.CommandProfile(
-                    mo=int(utils.MO.DIRECT_PLUS_MIDDLEBOX),
-                    exec_time_sec=exec_time_sec)))
+        trace_msg = niraapad_pb2.GenericSetterTraceMsg(
+            req=niraapad_pb2.GenericSetterReq(
+                id=id,
+                backend_type=backend_type,
+                backend_instance_id=backend_instance_id,
+                property_name=property_name,
+                value=value_pickled,
+                time_profiles=NiraapadClient.get_time_profiles()),
+            resp=niraapad_pb2.GenericSetterResp(exception=pickle.dumps(None)),
+            profile=niraapad_pb2.CommandProfile(mo=int(
+                utils.MO.DIRECT_PLUS_MIDDLEBOX),
+                                                exec_time_sec=exec_time_sec))
+        self.update_traces(trace_msg)
 
 
 class NiraapadClient:
@@ -318,6 +331,11 @@ class NiraapadClient:
     niraapad_lock = threading.Lock()
     niraapad_time_profiles = {}
     niraapad_req_id = 0
+
+    niraapad_batch_traces = False
+    niraapad_batch_duration_sec = 10
+    niraapad_batch_start_time = default_timer()
+    niraapad_batched_trace_msgs = []
 
     def __init__(self):
         if type(self) == SuperClass:
@@ -366,41 +384,49 @@ class NiraapadClient:
         return time_profiles
 
     @staticmethod
-    def connect_to_middlebox(host, port, keysdir=None):
-        print("NiraapadClient: Connect to middlebox at %s:%s" % (host, port))
+    def connect_to_middlebox(host, port, keysdir=None, debug=True):
+        if debug:
+            print("NiraapadClient: Connect to middlebox at %s:%s" %
+                  (host, port))
         try:
             if NiraapadClient.niraapad_client_helper != None:
                 del NiraapadClient.niraapad_client_helper
             NiraapadClient.niraapad_client_helper = NiraapadClientHelper(
                 host, port, keysdir)
-            print("NiraapadClient: Middlebox successfully connected")
+            if debug:
+                print("NiraapadClient: Middlebox successfully connected")
         except Exception as e:
             NiraapadClient.handle_any_exception("NiraapadClient",
                                                 "connect_to_middlebox", e)
-            print(
-                "EXITING. Please try again. If error persists, please try without Niraapad."
-            )
+            if debug:
+                print(
+                    "EXITING. Please try again. If error persists, please try without Niraapad."
+                )
             exit()
 
         for backend in utils.BACKENDS:
             NiraapadClient.niraapad_mos[backend] = utils.MO.VIA_MIDDLEBOX
-            print("NiraapadClient: Initial mode of operation",
-                  utils.MO.VIA_MIDDLEBOX,
-                  flush=True)
+            if debug:
+                print("NiraapadClient: Initial mode of operation",
+                      utils.MO.VIA_MIDDLEBOX,
+                      flush=True)
 
     @staticmethod
-    def update_mos(default_mo=utils.MO.VIA_MIDDLEBOX, exceptions={}):
-        print("NiraapadClient: Updating mode of operation")
+    def update_mos(default_mo=utils.MO.VIA_MIDDLEBOX,
+                   exceptions={},
+                   debug=True):
+        if debug:
+            print("NiraapadClient: Updating mode of operation")
         for backend in utils.BACKENDS:
             NiraapadClient.niraapad_mos[backend] = default_mo
         for backend, mo in exceptions.items():
-            # print("NiraapadClient: EXCEPTION: %s --> %s" % (backend, mo))
             assert (backend in utils.BACKENDS)
             assert (mo in utils.MO)
             NiraapadClient.niraapad_mos[backend] = mo
             NiraapadClient.update_group_mos(backend, mo)
         for backend, mo in NiraapadClient.niraapad_mos.items():
-            print("  NiraapadClinet: %s --> %s" % (backend, mo))
+            if debug:
+                print("  NiraapadClinet: %s --> %s" % (backend, mo))
 
     @staticmethod
     def update_group_mos(backend, mo):
