@@ -128,22 +128,35 @@ class Curator:
 
         #Parse the tracing file
         for timestamp, trace_msg_type, trace_msg in Tracer.parse_file(parsing_file):
-            print(trace_msg)
             trace_msg_parse = {}
-            
+
             if str(trace_msg) != '':
                 #Seperate the response and request
                 for field, sub_fields in trace_msg.ListFields():
-
+                    
                     msg_sub_field = {}
+
+
 
                     #Convert response and request in json format
                     for sub_field, value in sub_fields.ListFields():
+                        #if (sub_field.name == "time_profiles"):
+                           # print(type(value))
+                           # print(json.loads(str(value).replace("\n",",\n")))
                         #Merge args and kwargs, conversion to json format
                         if str(sub_field.name) == "args":
                             args = pickle.loads(value)
                         elif str(sub_field.name) == "kwargs":
                             msg_sub_field["args"] = self.convert_args(trace_msg_type, trace_msg, args, pickle.loads(value), trace_msg.req.backend_instance_id)
+                        #Time Profile conversion to json format
+                        elif str(sub_field.name) == "time_profiles":
+                            time_profile = {}
+                            #print(trace_msg.req.time_profiles.listFields())
+                            for val in value:
+                                time_profile['id'] = val.id
+                                time_profile['arrival_time'] = val.arrival_time
+                                time_profile['departure_time'] = val.departure_time
+                            msg_sub_field["time_profile"] = time_profile
                         #Pickle if the value is in bytes format
                         elif isinstance(value, bytes):
                             #Checking for read commands for the modules
@@ -172,8 +185,9 @@ class Curator:
                 else:
                     self.backend_instance_id_arduino.append(trace_msg_parse['req']['backend_instance_id'])
 
-
-
+            
+            #print(trace_msg_parse)
+            
 
             #Creating the dictionary of traces
             traces['Traces'].append({
@@ -181,6 +195,7 @@ class Curator:
                     'Trace Message Type' : trace_msg_type,
                     'Trace Message' : trace_msg_parse
                 })
+            
         
 
         return traces
@@ -220,10 +235,8 @@ class Curator:
             writer.writerow(header)
 
             for trace in traces['Traces']:
-                #print(trace)
                 module = ""
                 if trace['Trace Message Type'] == "InitializeTraceMsg":
-                    #print("IntializeTraceMsg")
                     if "magnetic_stirrer.py" in trace['Trace Message']['req']['stacktrace']:
                         self.backend_instance_id_magstr.append(trace['Trace Message']['req']['backend_instance_id'])
                         writer.writerow([trace['_id'], "Magnetic Stirrer", "_init_", str(trace['Trace Message']['req']['args']).replace("{", "").replace("}", "").replace("{","").replace("'","").strip(','), None, trace['Trace Message']['resp']['exception']])
@@ -241,7 +254,7 @@ class Curator:
                             self.backend_instance_id_arduino.append(trace['Trace Message']['req']['backend_instance_id'])
                         writer.writerow([trace['_id'], module, "_init_", str(trace['Trace Message']['req']['args']).replace("{", "").replace("}", "").replace("'","").strip(','), None, trace['Trace Message']['resp']['exception']])
             
-                elif trace['Trace Message Type'] == "GenericMethodTraceMsg":
+                elif trace['Trace Message Type'] == "GenericMethodTraceMsg" or trace['Trace Message Type'] == "GenericSetterTraceMsg":
                     if trace['Trace Message']['req']['backend_instance_id'] in self.backend_instance_id_magstr:
                             if 'args' in trace['Trace Message']['req']['args'].keys() and trace['Trace Message']['req']['args']['command_name']:
                                 writer.writerow([trace['_id'], "Magnetic Stirrer", str(trace['Trace Message']['req']['args']['command_name']), trace['Trace Message']['req']['args']['value'].replace("{", "").replace("}", "").replace("'","").strip(','), trace['Trace Message']['resp']['resp'], trace['Trace Message']['resp']['exception']])
@@ -273,8 +286,10 @@ class Curator:
                         if trace['Trace Message']['req']['backend_instance_id'] in self.backend_instance_id_ur:
                             writer.writerow([trace['_id'], "UR3Arm", trace['Trace Message']['req']['method_name'], str(trace['Trace Message']['req']['args']).replace("{", "").replace("}", "").replace("'","").strip(','), trace['Trace Message']['resp']['resp'],trace['Trace Message']['resp']['exception']])
                         elif trace['Trace Message']['req']['backend_instance_id'] in self.backend_instance_id_arduino:
-                            writer.writerow([trace['_id'], "ArduinoAugmentedQuantos", trace['Trace Message']['req']['method_name'], str(trace['Trace Message']['req']['args']).replace("{", "").replace("}", "").replace("'","").strip(','), trace['Trace Message']['resp']['resp'],trace['Trace Message']['resp']['exception']])
-        
+                            try: 
+                                writer.writerow([trace['_id'], "ArduinoAugmentedQuantos", trace['Trace Message']['req']['method_name'], str(trace['Trace Message']['req']['args']).replace("{", "").replace("}", "").replace("'","").strip(','), trace['Trace Message']['resp']['resp'],trace['Trace Message']['resp']['exception']])
+                            except:
+                                writer.writerow([trace['_id'], "ArduinoAugmentedQuantos", trace['Trace Message']['req']['property_name'], str(trace['Trace Message']['req']['value']).replace("{", "").replace("}", "").replace("'","").strip(','), None,trace['Trace Message']['resp']['exception']])
 
     def main_process(self):
        #Get the list of tracing files
