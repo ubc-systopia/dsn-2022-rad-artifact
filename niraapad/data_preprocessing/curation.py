@@ -184,7 +184,11 @@ class Curator:
                 elif "controller.py" not in stacktrace and trace_msg_parse['req']['backend_type'] == "DirectFtdiDevice":
                     self.backend_instance_id_cavro.append(trace_msg_parse['req']['backend_instance_id'])
                 else:
-                    self.backend_instance_id_arduino.append(trace_msg_parse['req']['backend_instance_id'])
+                    module = trace_msg_parse['req']['backend_type'].replace("Direct","")
+                    if module == "UR3Arm":
+                        self.backend_instance_id_ur.append(trace_msg_parse['req']['backend_instance_id'])
+                    else:
+                        self.backend_instance_id_arduino.append(trace_msg_parse['req']['backend_instance_id'])
 
             
             #print(trace_msg_parse)
@@ -322,6 +326,7 @@ class Curator:
                             writer.writerow([trace['_id'], "UR3Arm", trace['Trace Message']['req']['method_name'], str(trace['Trace Message']['req']['args']).replace("{", "").replace("}", "").replace("'","").strip(','), trace['Trace Message']['resp']['resp'],trace['Trace Message']['resp']['exception'], trace['Trace Message']['profile']['exec_time_sec']])
                         elif trace['Trace Message']['req']['backend_instance_id'] in self.backend_instance_id_arduino:
                             try: 
+                                
                                 writer.writerow([trace['Trace Message']['req']['id'],trace['_id'], "ArduinoAugmentedQuantos", trace['Trace Message']['req']['method_name'], str(trace['Trace Message']['req']['args']).replace("{", "").replace("}", "").replace("'","").strip(','), trace['Trace Message']['resp']['resp'],trace['Trace Message']['resp']['exception'], trace['Trace Message']['profile']['exec_time_sec']])
                             except:
                                 writer.writerow([trace['Trace Message']['req']['id'],trace['_id'], "ArduinoAugmentedQuantos", trace['Trace Message']['req']['property_name'], str(trace['Trace Message']['req']['value']).replace("{", "").replace("}", "").replace("'","").strip(','), None,trace['Trace Message']['resp']['exception'], trace['Trace Message']['profile']['exec_time_sec']])
