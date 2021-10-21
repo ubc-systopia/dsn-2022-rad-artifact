@@ -291,8 +291,8 @@ class Curator:
             
                 elif trace['Trace Message Type'] == "GenericMethodTraceMsg" or trace['Trace Message Type'] == "GenericSetterTraceMsg":
                     if trace['Trace Message']['req']['backend_instance_id'] in self.backend_instance_id_magstr:
-                            if 'args' in trace['Trace Message']['req']['args'].keys() and trace['Trace Message']['req']['args']['command_name']:
-                                writer.writerow([trace['Trace Message']['req']['id'],trace['_id'], "Magnetic Stirrer", str(trace['Trace Message']['req']['args']['command_name']), trace['Trace Message']['req']['args']['value'].replace("{", "").replace("}", "").replace("'","").strip(','), trace['Trace Message']['resp']['resp'], trace['Trace Message']['resp']['exception'], trace['Trace Message']['profile']['exec_time_sec']])
+                            if 'data' in trace['Trace Message']['req']['args'].keys() and trace['Trace Message']['req']['args']['data']['command_name']:
+                                writer.writerow([trace['Trace Message']['req']['id'],trace['_id'], "Magnetic Stirrer", str(trace['Trace Message']['req']['args']['data']['command_name']), trace['Trace Message']['req']['args']['data']['value'], trace['Trace Message']['resp']['resp'], trace['Trace Message']['resp']['exception'], trace['Trace Message']['profile']['exec_time_sec']])
                         
                     elif trace['Trace Message']['req']['backend_instance_id'] in self.backend_instance_id_c9:
                         
