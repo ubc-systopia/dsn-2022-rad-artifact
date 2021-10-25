@@ -19,7 +19,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   syntax='proto3',
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_pb=b'\n\x1eniraapad/protos/niraapad.proto\"3\n\x0e\x43ommandProfile\x12\n\n\x02mo\x18\x01 \x01(\x05\x12\x15\n\rexec_time_sec\x18\x02 \x01(\x02\"G\n\x0bTimeProfile\x12\n\n\x02id\x18\x01 \x01(\x04\x12\x14\n\x0c\x61rrival_time\x18\x02 \x01(\t\x12\x16\n\x0e\x64\x65parture_time\x18\x03 \x01(\t\"\x15\n\x13StartServerTraceMsg\"\x14\n\x12StopServerTraceMsg\"\x19\n\x17InitializeConnectionReq\"-\n\x18InitializeConnectionResp\x12\x11\n\texception\x18\x01 \x01(\x0c\"n\n\x1cInitializeConnectionTraceMsg\x12%\n\x03req\x18\x01 \x01(\x0b\x32\x18.InitializeConnectionReq\x12\'\n\x04resp\x18\x02 \x01(\x0b\x32\x19.InitializeConnectionResp\"\x15\n\x13\x44\x65leteConnectionReq\")\n\x14\x44\x65leteConnectionResp\x12\x11\n\texception\x18\x01 \x01(\x0c\"b\n\x18\x44\x65leteConnectionTraceMsg\x12!\n\x03req\x18\x01 \x01(\x0b\x32\x14.DeleteConnectionReq\x12#\n\x04resp\x18\x02 \x01(\x0b\x32\x15.DeleteConnectionResp\"\xa1\x01\n\x0fStaticMethodReq\x12\x14\n\x0c\x61rrival_time\x18\x01 \x01(\t\x12\x14\n\x0c\x62\x61\x63kend_type\x18\x02 \x01(\t\x12\x13\n\x0bmethod_name\x18\x03 \x01(\t\x12\x0c\n\x04\x61rgs\x18\x04 \x01(\x0c\x12\x0e\n\x06kwargs\x18\x05 \x01(\x0c\x12\n\n\x02id\x18\x06 \x01(\x04\x12#\n\rtime_profiles\x18\x07 \x03(\x0b\x32\x0c.TimeProfile\"3\n\x10StaticMethodResp\x12\x11\n\texception\x18\x01 \x01(\x0c\x12\x0c\n\x04resp\x18\x02 \x01(\x0c\"x\n\x14StaticMethodTraceMsg\x12\x1d\n\x03req\x18\x01 \x01(\x0b\x32\x10.StaticMethodReq\x12\x1f\n\x04resp\x18\x02 \x01(\x0b\x32\x11.StaticMethodResp\x12 \n\x07profile\x18\x03 \x01(\x0b\x32\x0f.CommandProfile\"\x85\x01\n\x0fStaticGetterReq\x12\x14\n\x0c\x61rrival_time\x18\x01 \x01(\t\x12\x14\n\x0c\x62\x61\x63kend_type\x18\x02 \x01(\t\x12\x15\n\rproperty_name\x18\x03 \x01(\t\x12\n\n\x02id\x18\x04 \x01(\x04\x12#\n\rtime_profiles\x18\x05 \x03(\x0b\x32\x0c.TimeProfile\"3\n\x10StaticGetterResp\x12\x11\n\texception\x18\x01 \x01(\x0c\x12\x0c\n\x04resp\x18\x02 \x01(\x0c\"x\n\x14StaticGetterTraceMsg\x12\x1d\n\x03req\x18\x01 \x01(\x0b\x32\x10.StaticGetterReq\x12\x1f\n\x04resp\x18\x02 \x01(\x0b\x32\x11.StaticGetterResp\x12 \n\x07profile\x18\x03 \x01(\x0b\x32\x0f.CommandProfile\"\x94\x01\n\x0fStaticSetterReq\x12\x14\n\x0c\x61rrival_time\x18\x01 \x01(\t\x12\x14\n\x0c\x62\x61\x63kend_type\x18\x02 \x01(\t\x12\x15\n\rproperty_name\x18\x03 \x01(\t\x12\r\n\x05value\x18\x04 \x01(\x0c\x12\n\n\x02id\x18\x05 \x01(\x04\x12#\n\rtime_profiles\x18\x06 \x03(\x0b\x32\x0c.TimeProfile\"%\n\x10StaticSetterResp\x12\x11\n\texception\x18\x01 \x01(\x0c\"x\n\x14StaticSetterTraceMsg\x12\x1d\n\x03req\x18\x01 \x01(\x0b\x32\x10.StaticSetterReq\x12\x1f\n\x04resp\x18\x02 \x01(\x0b\x32\x11.StaticSetterResp\x12 \n\x07profile\x18\x03 \x01(\x0b\x32\x0f.CommandProfile\"\xbb\x01\n\rInitializeReq\x12\x14\n\x0c\x61rrival_time\x18\x01 \x01(\t\x12\x14\n\x0c\x62\x61\x63kend_type\x18\x02 \x01(\t\x12\x1b\n\x13\x62\x61\x63kend_instance_id\x18\x03 \x01(\x05\x12\x0c\n\x04\x61rgs\x18\x04 \x01(\x0c\x12\x0e\n\x06kwargs\x18\x05 \x01(\x0c\x12\x12\n\nstacktrace\x18\x06 \x01(\x0c\x12\n\n\x02id\x18\x07 \x01(\x04\x12#\n\rtime_profiles\x18\x08 \x03(\x0b\x32\x0c.TimeProfile\"#\n\x0eInitializeResp\x12\x11\n\texception\x18\x01 \x01(\x0c\"r\n\x12InitializeTraceMsg\x12\x1b\n\x03req\x18\x01 \x01(\x0b\x32\x0e.InitializeReq\x12\x1d\n\x04resp\x18\x02 \x01(\x0b\x32\x0f.InitializeResp\x12 \n\x07profile\x18\x03 \x01(\x0b\x32\x0f.CommandProfile\"\x8b\x01\n\x0fUninitializeReq\x12\x14\n\x0c\x61rrival_time\x18\x01 \x01(\t\x12\x14\n\x0c\x62\x61\x63kend_type\x18\x02 \x01(\t\x12\x1b\n\x13\x62\x61\x63kend_instance_id\x18\x03 \x01(\x05\x12\n\n\x02id\x18\x04 \x01(\x04\x12#\n\rtime_profiles\x18\x05 \x03(\x0b\x32\x0c.TimeProfile\"%\n\x10UninitializeResp\x12\x11\n\texception\x18\x01 \x01(\x0c\"t\n\x14UninitializeTraceMsg\x12\x1b\n\x03req\x18\x01 \x01(\x0b\x32\x0e.InitializeReq\x12\x1d\n\x04resp\x18\x02 \x01(\x0b\x32\x0f.InitializeResp\x12 \n\x07profile\x18\x03 \x01(\x0b\x32\x0f.CommandProfile\"\xa3\x01\n\x10GenericGetterReq\x12\x14\n\x0c\x61rrival_time\x18\x01 \x01(\t\x12\x14\n\x0c\x62\x61\x63kend_type\x18\x02 \x01(\t\x12\x1b\n\x13\x62\x61\x63kend_instance_id\x18\x03 \x01(\x05\x12\x15\n\rproperty_name\x18\x04 \x01(\t\x12\n\n\x02id\x18\x05 \x01(\x04\x12#\n\rtime_profiles\x18\x06 \x03(\x0b\x32\x0c.TimeProfile\"4\n\x11GenericGetterResp\x12\x11\n\texception\x18\x01 \x01(\x0c\x12\x0c\n\x04resp\x18\x02 \x01(\x0c\"{\n\x15GenericGetterTraceMsg\x12\x1e\n\x03req\x18\x01 \x01(\x0b\x32\x11.GenericGetterReq\x12 \n\x04resp\x18\x02 \x01(\x0b\x32\x12.GenericGetterResp\x12 \n\x07profile\x18\x03 \x01(\x0b\x32\x0f.CommandProfile\"\xb2\x01\n\x10GenericSetterReq\x12\x14\n\x0c\x61rrival_time\x18\x01 \x01(\t\x12\x14\n\x0c\x62\x61\x63kend_type\x18\x02 \x01(\t\x12\x1b\n\x13\x62\x61\x63kend_instance_id\x18\x03 \x01(\x05\x12\x15\n\rproperty_name\x18\x04 \x01(\t\x12\r\n\x05value\x18\x05 \x01(\x0c\x12\n\n\x02id\x18\x06 \x01(\x04\x12#\n\rtime_profiles\x18\x07 \x03(\x0b\x32\x0c.TimeProfile\"&\n\x11GenericSetterResp\x12\x11\n\texception\x18\x01 \x01(\x0c\"{\n\x15GenericSetterTraceMsg\x12\x1e\n\x03req\x18\x01 \x01(\x0b\x32\x11.GenericSetterReq\x12 \n\x04resp\x18\x02 \x01(\x0b\x32\x12.GenericSetterResp\x12 \n\x07profile\x18\x03 \x01(\x0b\x32\x0f.CommandProfile\"\xbf\x01\n\x10GenericMethodReq\x12\x14\n\x0c\x61rrival_time\x18\x01 \x01(\t\x12\x14\n\x0c\x62\x61\x63kend_type\x18\x02 \x01(\t\x12\x1b\n\x13\x62\x61\x63kend_instance_id\x18\x03 \x01(\x05\x12\x13\n\x0bmethod_name\x18\x04 \x01(\t\x12\x0c\n\x04\x61rgs\x18\x05 \x01(\x0c\x12\x0e\n\x06kwargs\x18\x06 \x01(\x0c\x12\n\n\x02id\x18\x07 \x01(\x04\x12#\n\rtime_profiles\x18\x08 \x03(\x0b\x32\x0c.TimeProfile\"4\n\x11GenericMethodResp\x12\x11\n\texception\x18\x01 \x01(\x0c\x12\x0c\n\x04resp\x18\x02 \x01(\x0c\"{\n\x15GenericMethodTraceMsg\x12\x1e\n\x03req\x18\x01 \x01(\x0b\x32\x11.GenericMethodReq\x12 \n\x04resp\x18\x02 \x01(\x0b\x32\x12.GenericMethodResp\x12 \n\x07profile\x18\x03 \x01(\x0b\x32\x0f.CommandProfile\"%\n\x0f\x42\x61tchedTraceMsg\x12\x12\n\ntrace_msgs\x18\x01 \x01(\x0c\"$\n\x0bTraceHeader\x12\x15\n\rmetadata_size\x18\x01 \x01(\x05\"R\n\rTraceMetadata\x12\x11\n\ttimestamp\x18\x01 \x01(\t\x12\x16\n\x0etrace_msg_type\x18\x02 \x01(\t\x12\x16\n\x0etrace_msg_size\x18\x03 \x01(\x05\"\n\n\x08\x45mptyMsg2\x86\x05\n\x08Niraapad\x12M\n\x14InitializeConnection\x12\x18.InitializeConnectionReq\x1a\x19.InitializeConnectionResp\"\x00\x12\x41\n\x10\x44\x65leteConnection\x12\x14.DeleteConnectionReq\x1a\x15.DeleteConnectionResp\"\x00\x12\x35\n\x0cStaticMethod\x12\x10.StaticMethodReq\x1a\x11.StaticMethodResp\"\x00\x12\x35\n\x0cStaticGetter\x12\x10.StaticGetterReq\x1a\x11.StaticGetterResp\"\x00\x12\x35\n\x0cStaticSetter\x12\x10.StaticSetterReq\x1a\x11.StaticSetterResp\"\x00\x12/\n\nInitialize\x12\x0e.InitializeReq\x1a\x0f.InitializeResp\"\x00\x12\x35\n\x0cUninitialize\x12\x10.UninitializeReq\x1a\x11.UninitializeResp\"\x00\x12\x38\n\rGenericGetter\x12\x11.GenericGetterReq\x1a\x12.GenericGetterResp\"\x00\x12\x38\n\rGenericSetter\x12\x11.GenericSetterReq\x1a\x12.GenericSetterResp\"\x00\x12\x38\n\rGenericMethod\x12\x11.GenericMethodReq\x1a\x12.GenericMethodResp\"\x00\x12-\n\x0c\x42\x61tchedTrace\x12\x10.BatchedTraceMsg\x1a\t.EmptyMsg\"\x00\x62\x06proto3'
+  serialized_pb=b'\n\x1eniraapad/protos/niraapad.proto\"3\n\x0e\x43ommandProfile\x12\n\n\x02mo\x18\x01 \x01(\x05\x12\x15\n\rexec_time_sec\x18\x02 \x01(\x02\"G\n\x0bTimeProfile\x12\n\n\x02id\x18\x01 \x01(\x04\x12\x14\n\x0c\x61rrival_time\x18\x02 \x01(\t\x12\x16\n\x0e\x64\x65parture_time\x18\x03 \x01(\t\"\x15\n\x13StartServerTraceMsg\"\x14\n\x12StopServerTraceMsg\"\x19\n\x17InitializeConnectionReq\"-\n\x18InitializeConnectionResp\x12\x11\n\texception\x18\x01 \x01(\x0c\"n\n\x1cInitializeConnectionTraceMsg\x12%\n\x03req\x18\x01 \x01(\x0b\x32\x18.InitializeConnectionReq\x12\'\n\x04resp\x18\x02 \x01(\x0b\x32\x19.InitializeConnectionResp\"\x15\n\x13\x44\x65leteConnectionReq\")\n\x14\x44\x65leteConnectionResp\x12\x11\n\texception\x18\x01 \x01(\x0c\"b\n\x18\x44\x65leteConnectionTraceMsg\x12!\n\x03req\x18\x01 \x01(\x0b\x32\x14.DeleteConnectionReq\x12#\n\x04resp\x18\x02 \x01(\x0b\x32\x15.DeleteConnectionResp\"\xa1\x01\n\x0fStaticMethodReq\x12\x14\n\x0c\x61rrival_time\x18\x01 \x01(\t\x12\x14\n\x0c\x62\x61\x63kend_type\x18\x02 \x01(\t\x12\x13\n\x0bmethod_name\x18\x03 \x01(\t\x12\x0c\n\x04\x61rgs\x18\x04 \x01(\x0c\x12\x0e\n\x06kwargs\x18\x05 \x01(\x0c\x12\n\n\x02id\x18\x06 \x01(\x04\x12#\n\rtime_profiles\x18\x07 \x03(\x0b\x32\x0c.TimeProfile\"3\n\x10StaticMethodResp\x12\x11\n\texception\x18\x01 \x01(\x0c\x12\x0c\n\x04resp\x18\x02 \x01(\x0c\"x\n\x14StaticMethodTraceMsg\x12\x1d\n\x03req\x18\x01 \x01(\x0b\x32\x10.StaticMethodReq\x12\x1f\n\x04resp\x18\x02 \x01(\x0b\x32\x11.StaticMethodResp\x12 \n\x07profile\x18\x03 \x01(\x0b\x32\x0f.CommandProfile\"\x85\x01\n\x0fStaticGetterReq\x12\x14\n\x0c\x61rrival_time\x18\x01 \x01(\t\x12\x14\n\x0c\x62\x61\x63kend_type\x18\x02 \x01(\t\x12\x15\n\rproperty_name\x18\x03 \x01(\t\x12\n\n\x02id\x18\x04 \x01(\x04\x12#\n\rtime_profiles\x18\x05 \x03(\x0b\x32\x0c.TimeProfile\"3\n\x10StaticGetterResp\x12\x11\n\texception\x18\x01 \x01(\x0c\x12\x0c\n\x04resp\x18\x02 \x01(\x0c\"x\n\x14StaticGetterTraceMsg\x12\x1d\n\x03req\x18\x01 \x01(\x0b\x32\x10.StaticGetterReq\x12\x1f\n\x04resp\x18\x02 \x01(\x0b\x32\x11.StaticGetterResp\x12 \n\x07profile\x18\x03 \x01(\x0b\x32\x0f.CommandProfile\"\x94\x01\n\x0fStaticSetterReq\x12\x14\n\x0c\x61rrival_time\x18\x01 \x01(\t\x12\x14\n\x0c\x62\x61\x63kend_type\x18\x02 \x01(\t\x12\x15\n\rproperty_name\x18\x03 \x01(\t\x12\r\n\x05value\x18\x04 \x01(\x0c\x12\n\n\x02id\x18\x05 \x01(\x04\x12#\n\rtime_profiles\x18\x06 \x03(\x0b\x32\x0c.TimeProfile\"%\n\x10StaticSetterResp\x12\x11\n\texception\x18\x01 \x01(\x0c\"x\n\x14StaticSetterTraceMsg\x12\x1d\n\x03req\x18\x01 \x01(\x0b\x32\x10.StaticSetterReq\x12\x1f\n\x04resp\x18\x02 \x01(\x0b\x32\x11.StaticSetterResp\x12 \n\x07profile\x18\x03 \x01(\x0b\x32\x0f.CommandProfile\"\xbb\x01\n\rInitializeReq\x12\x14\n\x0c\x61rrival_time\x18\x01 \x01(\t\x12\x14\n\x0c\x62\x61\x63kend_type\x18\x02 \x01(\t\x12\x1b\n\x13\x62\x61\x63kend_instance_id\x18\x03 \x01(\x05\x12\x0c\n\x04\x61rgs\x18\x04 \x01(\x0c\x12\x0e\n\x06kwargs\x18\x05 \x01(\x0c\x12\x12\n\nstacktrace\x18\x06 \x01(\x0c\x12\n\n\x02id\x18\x07 \x01(\x04\x12#\n\rtime_profiles\x18\x08 \x03(\x0b\x32\x0c.TimeProfile\"#\n\x0eInitializeResp\x12\x11\n\texception\x18\x01 \x01(\x0c\"r\n\x12InitializeTraceMsg\x12\x1b\n\x03req\x18\x01 \x01(\x0b\x32\x0e.InitializeReq\x12\x1d\n\x04resp\x18\x02 \x01(\x0b\x32\x0f.InitializeResp\x12 \n\x07profile\x18\x03 \x01(\x0b\x32\x0f.CommandProfile\"\x8b\x01\n\x0fUninitializeReq\x12\x14\n\x0c\x61rrival_time\x18\x01 \x01(\t\x12\x14\n\x0c\x62\x61\x63kend_type\x18\x02 \x01(\t\x12\x1b\n\x13\x62\x61\x63kend_instance_id\x18\x03 \x01(\x05\x12\n\n\x02id\x18\x04 \x01(\x04\x12#\n\rtime_profiles\x18\x05 \x03(\x0b\x32\x0c.TimeProfile\"%\n\x10UninitializeResp\x12\x11\n\texception\x18\x01 \x01(\x0c\"t\n\x14UninitializeTraceMsg\x12\x1b\n\x03req\x18\x01 \x01(\x0b\x32\x0e.InitializeReq\x12\x1d\n\x04resp\x18\x02 \x01(\x0b\x32\x0f.InitializeResp\x12 \n\x07profile\x18\x03 \x01(\x0b\x32\x0f.CommandProfile\"\xa3\x01\n\x10GenericGetterReq\x12\x14\n\x0c\x61rrival_time\x18\x01 \x01(\t\x12\x14\n\x0c\x62\x61\x63kend_type\x18\x02 \x01(\t\x12\x1b\n\x13\x62\x61\x63kend_instance_id\x18\x03 \x01(\x05\x12\x15\n\rproperty_name\x18\x04 \x01(\t\x12\n\n\x02id\x18\x05 \x01(\x04\x12#\n\rtime_profiles\x18\x06 \x03(\x0b\x32\x0c.TimeProfile\"4\n\x11GenericGetterResp\x12\x11\n\texception\x18\x01 \x01(\x0c\x12\x0c\n\x04resp\x18\x02 \x01(\x0c\"{\n\x15GenericGetterTraceMsg\x12\x1e\n\x03req\x18\x01 \x01(\x0b\x32\x11.GenericGetterReq\x12 \n\x04resp\x18\x02 \x01(\x0b\x32\x12.GenericGetterResp\x12 \n\x07profile\x18\x03 \x01(\x0b\x32\x0f.CommandProfile\"\xb2\x01\n\x10GenericSetterReq\x12\x14\n\x0c\x61rrival_time\x18\x01 \x01(\t\x12\x14\n\x0c\x62\x61\x63kend_type\x18\x02 \x01(\t\x12\x1b\n\x13\x62\x61\x63kend_instance_id\x18\x03 \x01(\x05\x12\x15\n\rproperty_name\x18\x04 \x01(\t\x12\r\n\x05value\x18\x05 \x01(\x0c\x12\n\n\x02id\x18\x06 \x01(\x04\x12#\n\rtime_profiles\x18\x07 \x03(\x0b\x32\x0c.TimeProfile\"&\n\x11GenericSetterResp\x12\x11\n\texception\x18\x01 \x01(\x0c\"{\n\x15GenericSetterTraceMsg\x12\x1e\n\x03req\x18\x01 \x01(\x0b\x32\x11.GenericSetterReq\x12 \n\x04resp\x18\x02 \x01(\x0b\x32\x12.GenericSetterResp\x12 \n\x07profile\x18\x03 \x01(\x0b\x32\x0f.CommandProfile\"\xbf\x01\n\x10GenericMethodReq\x12\x14\n\x0c\x61rrival_time\x18\x01 \x01(\t\x12\x14\n\x0c\x62\x61\x63kend_type\x18\x02 \x01(\t\x12\x1b\n\x13\x62\x61\x63kend_instance_id\x18\x03 \x01(\x05\x12\x13\n\x0bmethod_name\x18\x04 \x01(\t\x12\x0c\n\x04\x61rgs\x18\x05 \x01(\x0c\x12\x0e\n\x06kwargs\x18\x06 \x01(\x0c\x12\n\n\x02id\x18\x07 \x01(\x04\x12#\n\rtime_profiles\x18\x08 \x03(\x0b\x32\x0c.TimeProfile\"4\n\x11GenericMethodResp\x12\x11\n\texception\x18\x01 \x01(\x0c\x12\x0c\n\x04resp\x18\x02 \x01(\x0c\"{\n\x15GenericMethodTraceMsg\x12\x1e\n\x03req\x18\x01 \x01(\x0b\x32\x11.GenericMethodReq\x12 \n\x04resp\x18\x02 \x01(\x0b\x32\x12.GenericMethodResp\x12 \n\x07profile\x18\x03 \x01(\x0b\x32\x0f.CommandProfile\"%\n\x0f\x42\x61tchedTraceMsg\x12\x12\n\ntrace_msgs\x18\x01 \x01(\x0c\"$\n\x0bTraceHeader\x12\x15\n\rmetadata_size\x18\x01 \x01(\x05\"R\n\rTraceMetadata\x12\x11\n\ttimestamp\x18\x01 \x01(\t\x12\x16\n\x0etrace_msg_type\x18\x02 \x01(\t\x12\x16\n\x0etrace_msg_size\x18\x03 \x01(\x05\"\n\n\x08\x45mptyMsg\"\"\n\x0cLoadTraceReq\x12\x12\n\ntrace_file\x18\x01 \x01(\t\"\x1f\n\rLoadTraceResp\x12\x0e\n\x06status\x18\x01 \x01(\x08\x32\xb4\x05\n\x08Niraapad\x12M\n\x14InitializeConnection\x12\x18.InitializeConnectionReq\x1a\x19.InitializeConnectionResp\"\x00\x12\x41\n\x10\x44\x65leteConnection\x12\x14.DeleteConnectionReq\x1a\x15.DeleteConnectionResp\"\x00\x12\x35\n\x0cStaticMethod\x12\x10.StaticMethodReq\x1a\x11.StaticMethodResp\"\x00\x12\x35\n\x0cStaticGetter\x12\x10.StaticGetterReq\x1a\x11.StaticGetterResp\"\x00\x12\x35\n\x0cStaticSetter\x12\x10.StaticSetterReq\x1a\x11.StaticSetterResp\"\x00\x12/\n\nInitialize\x12\x0e.InitializeReq\x1a\x0f.InitializeResp\"\x00\x12\x35\n\x0cUninitialize\x12\x10.UninitializeReq\x1a\x11.UninitializeResp\"\x00\x12\x38\n\rGenericGetter\x12\x11.GenericGetterReq\x1a\x12.GenericGetterResp\"\x00\x12\x38\n\rGenericSetter\x12\x11.GenericSetterReq\x1a\x12.GenericSetterResp\"\x00\x12\x38\n\rGenericMethod\x12\x11.GenericMethodReq\x1a\x12.GenericMethodResp\"\x00\x12-\n\x0c\x42\x61tchedTrace\x12\x10.BatchedTraceMsg\x1a\t.EmptyMsg\"\x00\x12,\n\tLoadTrace\x12\r.LoadTraceReq\x1a\x0e.LoadTraceResp\"\x00\x62\x06proto3'
 )
 
 
@@ -1702,6 +1702,70 @@ _EMPTYMSG = _descriptor.Descriptor(
   serialized_end=3396,
 )
 
+
+_LOADTRACEREQ = _descriptor.Descriptor(
+  name='LoadTraceReq',
+  full_name='LoadTraceReq',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  create_key=_descriptor._internal_create_key,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='trace_file', full_name='LoadTraceReq.trace_file', index=0,
+      number=1, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=3398,
+  serialized_end=3432,
+)
+
+
+_LOADTRACERESP = _descriptor.Descriptor(
+  name='LoadTraceResp',
+  full_name='LoadTraceResp',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  create_key=_descriptor._internal_create_key,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='status', full_name='LoadTraceResp.status', index=0,
+      number=1, type=8, cpp_type=7, label=1,
+      has_default_value=False, default_value=False,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=3434,
+  serialized_end=3465,
+)
+
 _INITIALIZECONNECTIONTRACEMSG.fields_by_name['req'].message_type = _INITIALIZECONNECTIONREQ
 _INITIALIZECONNECTIONTRACEMSG.fields_by_name['resp'].message_type = _INITIALIZECONNECTIONRESP
 _DELETECONNECTIONTRACEMSG.fields_by_name['req'].message_type = _DELETECONNECTIONREQ
@@ -1776,6 +1840,8 @@ DESCRIPTOR.message_types_by_name['BatchedTraceMsg'] = _BATCHEDTRACEMSG
 DESCRIPTOR.message_types_by_name['TraceHeader'] = _TRACEHEADER
 DESCRIPTOR.message_types_by_name['TraceMetadata'] = _TRACEMETADATA
 DESCRIPTOR.message_types_by_name['EmptyMsg'] = _EMPTYMSG
+DESCRIPTOR.message_types_by_name['LoadTraceReq'] = _LOADTRACEREQ
+DESCRIPTOR.message_types_by_name['LoadTraceResp'] = _LOADTRACERESP
 _sym_db.RegisterFileDescriptor(DESCRIPTOR)
 
 CommandProfile = _reflection.GeneratedProtocolMessageType('CommandProfile', (_message.Message,), {
@@ -2044,6 +2110,20 @@ EmptyMsg = _reflection.GeneratedProtocolMessageType('EmptyMsg', (_message.Messag
   })
 _sym_db.RegisterMessage(EmptyMsg)
 
+LoadTraceReq = _reflection.GeneratedProtocolMessageType('LoadTraceReq', (_message.Message,), {
+  'DESCRIPTOR' : _LOADTRACEREQ,
+  '__module__' : 'niraapad.protos.niraapad_pb2'
+  # @@protoc_insertion_point(class_scope:LoadTraceReq)
+  })
+_sym_db.RegisterMessage(LoadTraceReq)
+
+LoadTraceResp = _reflection.GeneratedProtocolMessageType('LoadTraceResp', (_message.Message,), {
+  'DESCRIPTOR' : _LOADTRACERESP,
+  '__module__' : 'niraapad.protos.niraapad_pb2'
+  # @@protoc_insertion_point(class_scope:LoadTraceResp)
+  })
+_sym_db.RegisterMessage(LoadTraceResp)
+
 
 
 _NIRAAPAD = _descriptor.ServiceDescriptor(
@@ -2053,8 +2133,8 @@ _NIRAAPAD = _descriptor.ServiceDescriptor(
   index=0,
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_start=3399,
-  serialized_end=4045,
+  serialized_start=3468,
+  serialized_end=4160,
   methods=[
   _descriptor.MethodDescriptor(
     name='InitializeConnection',
@@ -2163,6 +2243,16 @@ _NIRAAPAD = _descriptor.ServiceDescriptor(
     containing_service=None,
     input_type=_BATCHEDTRACEMSG,
     output_type=_EMPTYMSG,
+    serialized_options=None,
+    create_key=_descriptor._internal_create_key,
+  ),
+  _descriptor.MethodDescriptor(
+    name='LoadTrace',
+    full_name='Niraapad.LoadTrace',
+    index=11,
+    containing_service=None,
+    input_type=_LOADTRACEREQ,
+    output_type=_LOADTRACERESP,
     serialized_options=None,
     create_key=_descriptor._internal_create_key,
   ),

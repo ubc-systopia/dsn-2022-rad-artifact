@@ -36,6 +36,9 @@ service Niraapad {
 
   // Used for sending traces (can be a batch or a single trace)
   rpc BatchedTrace(BatchedTraceMsg) returns (EmptyMsg) {}
+
+  // Load the trace file for simulation / replay
+  rpc LoadTrace(LoadTraceReq) returns (LoadTraceResp) {}
 }
 
 message CommandProfile {
@@ -263,4 +266,12 @@ message TraceMetadata {
 
 // Since gRPC does not allow defining RPC with void params / return values
 message EmptyMsg {
+}
+
+message LoadTraceReq {
+  string trace_file = 1;
+}
+
+message LoadTraceResp {
+  bool status = 1;
 }

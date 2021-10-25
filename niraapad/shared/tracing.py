@@ -2,6 +2,7 @@ from datetime import datetime
 
 import os
 
+import niraapad.shared.utils as utils
 import niraapad.protos.niraapad_pb2 as niraapad_pb2
 import niraapad.protos.niraapad_pb2_grpc as niraapad_pb2_grpc
 
@@ -9,10 +10,18 @@ import niraapad.protos.niraapad_pb2_grpc as niraapad_pb2_grpc
 class Tracer:
 
     trace_file_counter = 1
+    ignored_msg_types = [
+        "StartServerTraceMsg", "DeleteConnectionTraceMsg",
+        "InitializeConnectionTraceMsg", "StopServerTraceMsg"
+    ]
 
-    def __init__(self, trace_path=None):
-        self.trace_path = trace_path
-        self.trace_file = Tracer.get_trace_file(self.trace_path)
+    def __init__(self, trace_path=None, trace_file=None):
+        if trace_file == None:
+            self.trace_path = trace_path
+            self.trace_file = Tracer.get_trace_file(self.trace_path)
+        else:
+            self.trace_file = Tracer.get_trace_file_after_replay(
+                trace_path, trace_file)
         self.tracing = True
         self.tracing_day = datetime.now().date().day
 
@@ -64,6 +73,13 @@ class Tracer:
         return trace_file
 
     @staticmethod
+    def get_trace_file_after_replay(trace_path, trace_file):
+        os.makedirs(trace_path, exist_ok=True)
+        trace_file = os.path.join(trace_path, "replayed-" + trace_file)
+        Tracer.trace_file_counter += 1
+        return trace_file
+
+    @staticmethod
     def get_trace_header_str_length():
         trace_header = niraapad_pb2.TraceHeader(metadata_size=100)
         trace_header_str = trace_header.SerializeToString()
@@ -109,4 +125,63 @@ class Tracer:
             f.close()
 
         except Exception as e:
-            print("Exception:", e)
+            print("Error: parse_file failed with exception %s" % e)
+
+    @staticmethod
+    def get_msg_type(trace_msg):
+        return (str(type(trace_msg))).split("'")[1].split(".")[-1]
+
+    @staticmethod
+    def get_trace_dict(trace_file_path):
+        trace_dict = {}
+        for timestamp, msg_type, trace_msg in Tracer.parse_file(
+                trace_file_path):
+            if msg_type in Tracer.ignored_msg_types:
+                continue
+            trace_dict[trace_msg.req.id] = trace_msg
+        return trace_dict
+
+    # @staticmethod
+    # def get_trace_array(trace_file_path):
+    #     trace_array = []
+    #     for timestamp, msg_type, trace_msg in Tracer.parse_file(trace_file_path):
+    #         if msg_type in Tracer.ignored_msg_types: continue
+    #         trace_array.append(trace_msg)
+    #     return trace_array
+
+    @staticmethod
+    def get_trace_array(trace_file_path):
+
+        arrival_times = {}
+        for timestamp, msg_type, trace_msg in Tracer.parse_file(
+                trace_file_path):
+            if msg_type in Tracer.ignored_msg_types:
+                continue
+            for time_profile in trace_msg.req.time_profiles:
+                arrival_times[time_profile.id] = time_profile.arrival_time
+
+        trace_array = []
+        for timestamp, msg_type, trace_msg in Tracer.parse_file(
+                trace_file_path):
+            if msg_type in Tracer.ignored_msg_types:
+                continue
+            trace_array.append(trace_msg)
+
+        inter_arrival_times = {}
+        for i in range(0, len(trace_array)):
+            try:
+                req_id = trace_array[i].req.id
+                next_req_id = trace_array[i + 1].req.id
+                inter_arrival_times[req_id] = utils.elapsed_time_ms(
+                    arrival_times[req_id], arrival_times[next_req_id])
+            except Exception as e:
+                print(
+                    "Error: get_trace_array may have failed with exception %s" %
+                    e)
+                inter_arrival_times[req_id] = 0
+        new_trace_array = []
+        for i in range(0, len(trace_array)):
+            new_trace_array.append(
+                [trace_array[i], inter_arrival_times[trace_array[i].req.id]])
+
+        return new_trace_array

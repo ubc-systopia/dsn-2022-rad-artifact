@@ -5,6 +5,7 @@ import inspect
 
 from enum import Enum
 from copy import copy
+from datetime import datetime
 
 from ftdi_serial import FtdiDevice, SerialDeviceInfo
 from hein_robots.base.robot_arms import RobotArm
@@ -13,6 +14,15 @@ from hein_robots.universal_robots.ur3 import UR3Arm
 FUNC_NAME = lambda: inspect.stack()[1].function
 CALLER_METHOD_NAME = lambda: inspect.stack()[2].function
 max_func_name_len = 100
+
+
+# Given two datetime strings, compute difference in milliseconds
+def elapsed_time_ms(start_time_str, end_time_str):
+    datetime_format = '%Y:%m:%d:%H:%M:%S.%f'
+    start_time = datetime.strptime(start_time_str, datetime_format)
+    end_time = datetime.strptime(end_time_str, datetime_format)
+    elapsed_time = end_time - start_time
+    return elapsed_time.total_seconds() * 1000
 
 
 # Disable print() output
