@@ -6,6 +6,7 @@ from pymongo import MongoClient
 from itertools import repeat
 from datetime import datetime
 import csv
+import pandas as pd
 
 from itertools import repeat
 import niraapad.backends
@@ -50,7 +51,6 @@ class Curator:
             elif method_name == "read":
                 commands = magstr.read_ika(value,commands)
         elif backend_instance_id in self.backend_instance_id_c9:
-            #print(value)
             c9 = controller_commands()
             if method_name == "write":
                 commands = c9.write_centrifuge(value, commands)
@@ -183,10 +183,12 @@ class Curator:
                 elif "controller.py" not in stacktrace and trace_msg_parse['req']['backend_type'] == "DirectFtdiDevice":
                     self.backend_instance_id_cavro.append(trace_msg_parse['req']['backend_instance_id'])
                 else:
-                    self.backend_instance_id_arduino.append(trace_msg_parse['req']['backend_instance_id'])
+                    module = trace_msg_parse['req']['backend_type'].replace("Direct","")
+                    if module == "UR3Arm":
+                        self.backend_instance_id_ur.append(trace_msg_parse['req']['backend_instance_id'])
+                    else:
+                        self.backend_instance_id_arduino.append(trace_msg_parse['req']['backend_instance_id'])
 
-            
-            #print(trace_msg_parse)
             
 
             #Creating the dictionary of traces
@@ -221,53 +223,87 @@ class Curator:
         except Exception as e:
             print("Exception:", e)
 
+    def dumping_time_profiling(self, json_path, file):
+        #Fetching the json file
+        with open(json_path, "r") as jsonfile:
+            traces = json.load(jsonfile)
+        
+        header = ["id", "Arrival_Time", "Departure_Time"]
+
+       #Opening csv file
+        with open(self.csv_path + "\\" + file.strip(".json") + "_t" + ".csv", 'w', newline='') as csvfile:
+            writer = csv.writer(csvfile)
+            writer.writerow(header)
+
+            for trace in traces['Traces']:
+                try:
+                    writer.writerow([trace['Trace Message']['req']['time_profile']['id'], trace['Trace Message']['req']['time_profile']['arrival_time'], trace['Trace Message']['req']['time_profile']['departure_time']])
+                except:
+                    pass
+
+
+    def merging_csv(self, file):
+        df1 = pd.read_csv(self.csv_path + "\\" + file.strip(".json") + ".csv") 
+        df2 = pd.read_csv(self.csv_path + "\\" + file.strip(".json") + "_t.csv")
+        os.remove(self.csv_path + "\\" + file.strip(".json") + ".csv")
+        os.remove(self.csv_path + "\\" + file.strip(".json") + "_t.csv")
+
+        # Merge the two dataframes, using _ID column as key
+        df3 = pd.merge(df1, df2, on = 'id', how='left')
+        df3.set_index('id', inplace = True)
+
+        # Write it to a new CSV file
+        df3.to_csv(self.csv_path +  "\\" +file.strip(".json") + ".csv")
+
 
     def dumping_in_csv(self, json_path, file):
         #Fetching the json file
         with open(json_path, "r") as jsonfile:
             traces = json.load(jsonfile)
         
-        header = ["Timestamp", "Module", "Method_Name", "Arguments", "Responses", "Exceptions"]
-        
+
+        header = ["id", "Timestamp", "Module", "Method_Name", "Arguments", "Responses", "Exceptions", "Execution Time (Sec)"]
         #Opening csv file
         with open(self.csv_path + "\\" + file.strip(".json") + ".csv", 'w', newline='') as csvfile:
             writer = csv.writer(csvfile)
             writer.writerow(header)
+
+            
 
             for trace in traces['Traces']:
                 module = ""
                 if trace['Trace Message Type'] == "InitializeTraceMsg":
                     if "magnetic_stirrer.py" in trace['Trace Message']['req']['stacktrace']:
                         self.backend_instance_id_magstr.append(trace['Trace Message']['req']['backend_instance_id'])
-                        writer.writerow([trace['_id'], "Magnetic Stirrer", "_init_", str(trace['Trace Message']['req']['args']).replace("{", "").replace("}", "").replace("{","").replace("'","").strip(','), None, trace['Trace Message']['resp']['exception']])
+                        writer.writerow([trace['Trace Message']['req']['id'],trace['_id'], "Magnetic Stirrer", "_init_", str(trace['Trace Message']['req']['args']).replace("{", "").replace("}", "").replace("{","").replace("'","").strip(','), None, trace['Trace Message']['resp']['exception'], trace['Trace Message']['profile']['exec_time_sec']])
                     elif "controller.py" in trace["Trace Message"]["req"]["stacktrace"]:
                         self.backend_instance_id_c9.append(trace['Trace Message']['req']['backend_instance_id'])
-                        writer.writerow([trace['_id'], "N9", "_init_", str(trace['Trace Message']['req']['args']).replace("{", "").replace("}", "").replace("'","").strip(','), None, trace['Trace Message']['resp']['exception']])
+                        writer.writerow([trace['Trace Message']['req']['id'],trace['_id'], "N9", "_init_", str(trace['Trace Message']['req']['args']).replace("{", "").replace("}", "").replace("'","").strip(','), None, trace['Trace Message']['resp']['exception'],  trace['Trace Message']['profile']['exec_time_sec']])
                     elif "controller.py" not in trace['Trace Message']["req"]["stacktrace"] and trace["Trace Message"]["req"]["backend_type"] == "DirectFtdiDevice":
                         self.backend_instance_id_cavro.append(trace['Trace Message']['req']['backend_instance_id'])
-                        writer.writerow([trace['_id'], "Tecan Cavro", "_init_", str(trace['Trace Message']['req']['args']).replace("{", "").replace("}", "").replace("'","").strip(','), None, trace['Trace Message']['resp']['exception']])
+                        writer.writerow([trace['Trace Message']['req']['id'],trace['_id'], "Tecan Cavro", "_init_", str(trace['Trace Message']['req']['args']).replace("{", "").replace("}", "").replace("'","").strip(','), None, trace['Trace Message']['resp']['exception'],  trace['Trace Message']['profile']['exec_time_sec']])
                     else:
                         module = trace['Trace Message']['req']['backend_type'].replace("Direct","")
                         if module == "UR3Arm":
                             self.backend_instance_id_ur.append(trace['Trace Message']['req']['backend_instance_id'])
                         elif module == "ArduinoAugmentedQuantos":
                             self.backend_instance_id_arduino.append(trace['Trace Message']['req']['backend_instance_id'])
-                        writer.writerow([trace['_id'], module, "_init_", str(trace['Trace Message']['req']['args']).replace("{", "").replace("}", "").replace("'","").strip(','), None, trace['Trace Message']['resp']['exception']])
+                        writer.writerow([trace['Trace Message']['req']['id'],trace['_id'], module, "_init_", str(trace['Trace Message']['req']['args']).replace("{", "").replace("}", "").replace("'","").strip(','), None, trace['Trace Message']['resp']['exception'], trace['Trace Message']['profile']['exec_time_sec']])
             
                 elif trace['Trace Message Type'] == "GenericMethodTraceMsg" or trace['Trace Message Type'] == "GenericSetterTraceMsg":
                     if trace['Trace Message']['req']['backend_instance_id'] in self.backend_instance_id_magstr:
-                            if 'args' in trace['Trace Message']['req']['args'].keys() and trace['Trace Message']['req']['args']['command_name']:
-                                writer.writerow([trace['_id'], "Magnetic Stirrer", str(trace['Trace Message']['req']['args']['command_name']), trace['Trace Message']['req']['args']['value'].replace("{", "").replace("}", "").replace("'","").strip(','), trace['Trace Message']['resp']['resp'], trace['Trace Message']['resp']['exception']])
+                            if 'data' in trace['Trace Message']['req']['args'].keys() and trace['Trace Message']['req']['args']['data']['command_name']:
+                                writer.writerow([trace['Trace Message']['req']['id'],trace['_id'], "Magnetic Stirrer", str(trace['Trace Message']['req']['args']['data']['command_name']), trace['Trace Message']['req']['args']['data']['value'], trace['Trace Message']['resp']['resp'], trace['Trace Message']['resp']['exception'], trace['Trace Message']['profile']['exec_time_sec']])
                         
                     elif trace['Trace Message']['req']['backend_instance_id'] in self.backend_instance_id_c9:
                         
                             if "data" in trace['Trace Message']['req']['args'].keys() and trace['Trace Message']['req']['args']['data']['command_name']:
                                 
                                 if "args" in trace['Trace Message']['req']['args']['data'].keys():
-                                    writer.writerow([trace['_id'], "N9", trace['Trace Message']['req']['args']['data']['command_name'], str(str(trace['Trace Message']['req']['args']['data']['args']).replace("}","").replace("{","").replace("'","") + "," + str(trace['Trace Message']['req']['args']['data']['flags']).replace("{", "").replace("}", "").replace("'","")).strip(','), trace['Trace Message']['resp']['resp'], trace['Trace Message']['resp']['exception']])
+                                    writer.writerow([trace['Trace Message']['req']['id'],trace['_id'], "N9", trace['Trace Message']['req']['args']['data']['command_name'], str(str(trace['Trace Message']['req']['args']['data']['args']).replace("}","").replace("{","").replace("'","") + "," + str(trace['Trace Message']['req']['args']['data']['flags']).replace("{", "").replace("}", "").replace("'","")).strip(','), trace['Trace Message']['resp']['resp'], trace['Trace Message']['resp']['exception'], trace['Trace Message']['profile']['exec_time_sec']])
                                 else:
 
-                                    writer.writerow([trace['_id'], "N9", trace['Trace Message']['req']['args']['data']['command_name'], None, trace['Trace Message']['resp']['resp'], trace['Trace Message']['resp']['exception']])
+                                    writer.writerow(trace['Trace Message']['req']['id'],[trace['_id'], "N9", trace['Trace Message']['req']['args']['data']['command_name'], None, trace['Trace Message']['resp']['resp'], trace['Trace Message']['resp']['exception'], trace['Trace Message']['resp']['exception'], trace['Trace Message']['req']['time_profile']['exec_time_sec']])
                     elif trace['Trace Message']['req']['backend_instance_id'] in self.backend_instance_id_cavro:
                             if 'data' in trace['Trace Message']['req']['args'].keys() and 'command_name_0' in trace['Trace Message']['req']['args']['data'].keys() and trace['Trace Message']['req']['args']['data']['command_name_0']:
                                 
@@ -277,19 +313,20 @@ class Curator:
             
                                     if i+1 < len(trace['Trace Message']['req']['args']['data'].keys()) and "command" not in commands_values[i+1]:
         
-                                        writer.writerow([trace['_id'], "Tecan Cavro", trace['Trace Message']['req']['args']['data'][commands_values[i]], str(commands_values[i+1] +  ":" + str(trace['Trace Message']['req']['args']['data'][commands_values[i+1]])), trace['Trace Message']['resp']['resp'], trace['Trace Message']['resp']['exception']])
+                                        writer.writerow([trace['Trace Message']['req']['id'],trace['_id'], "Tecan Cavro", trace['Trace Message']['req']['args']['data'][commands_values[i]], str(commands_values[i+1] +  ":" + str(trace['Trace Message']['req']['args']['data'][commands_values[i+1]])), trace['Trace Message']['resp']['resp'], trace['Trace Message']['resp']['exception'], trace['Trace Message']['profile']['exec_time_sec']])
                                         i = i + 2
                                     else:  
-                                        writer.writerow([trace['_id'], "Tecan Cavro", trace['Trace Message']['req']['args']['data'][commands_values[i]], None, trace['Trace Message']['resp']['resp'], trace['Trace Message']['resp']['exception']])
+                                        writer.writerow([trace['Trace Message']['req']['id'],trace['_id'], "Tecan Cavro", trace['Trace Message']['req']['args']['data'][commands_values[i]], None, trace['Trace Message']['resp']['resp'], trace['Trace Message']['resp']['exception'], trace['Trace Message']['resp']['exception'], trace['Trace Message']['req']['profile']['exec_time_sec']])
                                         i = i + 1
                     else:
                         if trace['Trace Message']['req']['backend_instance_id'] in self.backend_instance_id_ur:
-                            writer.writerow([trace['_id'], "UR3Arm", trace['Trace Message']['req']['method_name'], str(trace['Trace Message']['req']['args']).replace("{", "").replace("}", "").replace("'","").strip(','), trace['Trace Message']['resp']['resp'],trace['Trace Message']['resp']['exception']])
+                            writer.writerow([trace['_id'], "UR3Arm", trace['Trace Message']['req']['method_name'], str(trace['Trace Message']['req']['args']).replace("{", "").replace("}", "").replace("'","").strip(','), trace['Trace Message']['resp']['resp'],trace['Trace Message']['resp']['exception'], trace['Trace Message']['profile']['exec_time_sec']])
                         elif trace['Trace Message']['req']['backend_instance_id'] in self.backend_instance_id_arduino:
                             try: 
-                                writer.writerow([trace['_id'], "ArduinoAugmentedQuantos", trace['Trace Message']['req']['method_name'], str(trace['Trace Message']['req']['args']).replace("{", "").replace("}", "").replace("'","").strip(','), trace['Trace Message']['resp']['resp'],trace['Trace Message']['resp']['exception']])
+                                
+                                writer.writerow([trace['Trace Message']['req']['id'],trace['_id'], "ArduinoAugmentedQuantos", trace['Trace Message']['req']['method_name'], str(trace['Trace Message']['req']['args']).replace("{", "").replace("}", "").replace("'","").strip(','), trace['Trace Message']['resp']['resp'],trace['Trace Message']['resp']['exception'], trace['Trace Message']['profile']['exec_time_sec']])
                             except:
-                                writer.writerow([trace['_id'], "ArduinoAugmentedQuantos", trace['Trace Message']['req']['property_name'], str(trace['Trace Message']['req']['value']).replace("{", "").replace("}", "").replace("'","").strip(','), None,trace['Trace Message']['resp']['exception']])
+                                writer.writerow([trace['Trace Message']['req']['id'],trace['_id'], "ArduinoAugmentedQuantos", trace['Trace Message']['req']['property_name'], str(trace['Trace Message']['req']['value']).replace("{", "").replace("}", "").replace("'","").strip(','), None,trace['Trace Message']['resp']['exception'], trace['Trace Message']['profile']['exec_time_sec']])
 
     def main_process(self):
        #Get the list of tracing files
@@ -314,6 +351,8 @@ class Curator:
             print(file)
             json_log_file = self.json_path + "\\" + file
             self.dumping_in_csv(json_log_file, file)
+            self.dumping_time_profiling(json_log_file, file)
+            self.merging_csv(file)
             self.backend_instance_id_magstr = []
             self.backend_instance_id_cavro = []
             self.backend_instance_id_c9 = []
