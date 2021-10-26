@@ -9,7 +9,7 @@ import seaborn as sns
 from matplotlib import pyplot as plt
 
 
-idir="/Users/amee/Desktop/Research/CPS/dataset/experiments/datasets/"
+idir="C:\\Users\\CPSAdmin\\Documents\\cps-security\\cps-security-code\\data_analysis\\csv\\"
 ifile_ext=".csv"
 
 def main():

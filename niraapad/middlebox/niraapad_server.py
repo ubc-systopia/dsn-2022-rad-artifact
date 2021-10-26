@@ -30,6 +30,7 @@ class NiraapadServicer(niraapad_pb2_grpc.NiraapadServicer):
     trace_metadata_length = 132  # bytes
 
     def __init__(self, tracedir):
+        print("Initializing NiraapadServicer", flush=True)
         self.backend_instances = {}
         self.tracer = Tracer(tracedir)
 
@@ -47,9 +48,8 @@ class NiraapadServicer(niraapad_pb2_grpc.NiraapadServicer):
     def BatchedTrace(self, batched_trace_msg, context):
         trace_msgs = pickle.loads(batched_trace_msg.trace_msgs)
         for trace_msg in trace_msgs:
-            trace_msg_type = (str(type(trace_msg))).split("'")[1].split(".")[-1]
             print("(trace) %s.%s" %
-                  (trace_msg.req.backend_type, trace_msg_type))
+                  (trace_msg.req.backend_type, Tracer.get_msg_type(trace_msg)))
             self.log_trace_msg(trace_msg)
         return niraapad_pb2.EmptyMsg()
 
@@ -386,9 +386,73 @@ class NiraapadServicer(niraapad_pb2_grpc.NiraapadServicer):
         print("<<<<<", flush=True)
 
 
+class NiraapadReplayServicer(niraapad_pb2_grpc.NiraapadServicer):
+    """Provides methods that implement functionality of n9 replay server."""
+
+    def __init__(self, tracedir):
+        print("Initializing NiraapadReplayServicer", flush=True)
+        self.tracedir = tracedir
+
+    def sim_trace(self, id):
+        try:
+            start = default_timer()
+            resp = self.trace_dict[id].resp
+            while default_timer(
+            ) - start < self.trace_dict[id].profile.exec_time_sec:
+                continue
+            return resp
+        except Exception as e:
+            print("Error: sim_trace failed with exception: %s" % e)
+            exit(1)
+
+    def LoadTrace(self, req, context):
+        try:
+            self.trace_dict = Tracer.get_trace_dict(
+                os.path.join(self.tracedir, req.trace_file))
+            return niraapad_pb2.LoadTraceResp(status=True)
+        except Exception as e:
+            print("Error: LoadTrace failed with exception: %s" % e)
+            return niraapad_pb2.LoadTraceResp(status=False)
+
+    def StaticMethod(self, req, context):
+        print("%s.%s" % (req.backend_type, req.method_name), flush=True)
+        return self.sim_trace(req.id)
+
+    def StaticGetter(self, req, context):
+        print("%s.get_%s" % (req.backend_type, req.property_name), flush=True)
+        return self.sim_trace(req.id)
+
+    def StaticSetter(self, req, context):
+        print("%s.set_%s" % (req.backend_type, req.property_name), flush=True)
+        return self.sim_trace(req.id)
+
+    def Initialize(self, req, context):
+        print("%s.__init__" % (req.backend_type), flush=True)
+        return self.sim_trace(req.id)
+
+    def Uninitialize(self, req, context):
+        print("%s.__del__" % (req.backend_type), flush=True)
+        return self.sim_trace(req.id)
+
+    def GenericMethod(self, req, context):
+        print("%s.%s" % (req.backend_type, req.method_name), flush=True)
+        return self.sim_trace(req.id)
+
+    def GenericGetter(self, req, context):
+        print("%s.get_%s" % (req.backend_type, req.property_name), flush=True)
+        return self.sim_trace(req.id)
+
+    def GenericSetter(self, req, context):
+        print("%s.get_%s" % (req.backend_type, req.property_name), flush=True)
+        return self.sim_trace(req.id)
+
+    def stop_tracing(self):
+        pass
+
+
 class NiraapadServer:
 
-    def __init__(self, port, tracedir, keysdir=None):
+    def __init__(self, port, tracedir, keysdir=None, replay=False):
         self.server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
 
         if keysdir == None:
@@ -407,7 +471,11 @@ class NiraapadServer:
                 ((private_key, certificate_chain),))
             self.server.add_secure_port('[::]:' + str(port), server_credentials)
 
-        self.niraapad_servicer = NiraapadServicer(tracedir=tracedir)
+        if replay == True:
+            self.niraapad_servicer = NiraapadReplayServicer(tracedir=tracedir)
+        else:
+            self.niraapad_servicer = NiraapadServicer(tracedir=tracedir)
+
         niraapad_pb2_grpc.add_NiraapadServicer_to_server(
             self.niraapad_servicer, self.server)
 

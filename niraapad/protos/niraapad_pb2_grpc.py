@@ -69,6 +69,11 @@ class NiraapadStub(object):
                 request_serializer=niraapad_dot_protos_dot_niraapad__pb2.BatchedTraceMsg.SerializeToString,
                 response_deserializer=niraapad_dot_protos_dot_niraapad__pb2.EmptyMsg.FromString,
                 )
+        self.LoadTrace = channel.unary_unary(
+                '/Niraapad/LoadTrace',
+                request_serializer=niraapad_dot_protos_dot_niraapad__pb2.LoadTraceReq.SerializeToString,
+                response_deserializer=niraapad_dot_protos_dot_niraapad__pb2.LoadTraceResp.FromString,
+                )
 
 
 class NiraapadServicer(object):
@@ -153,6 +158,13 @@ class NiraapadServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def LoadTrace(self, request, context):
+        """Load the trace file for simulation / replay
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
 
 def add_NiraapadServicer_to_server(servicer, server):
     rpc_method_handlers = {
@@ -210,6 +222,11 @@ def add_NiraapadServicer_to_server(servicer, server):
                     servicer.BatchedTrace,
                     request_deserializer=niraapad_dot_protos_dot_niraapad__pb2.BatchedTraceMsg.FromString,
                     response_serializer=niraapad_dot_protos_dot_niraapad__pb2.EmptyMsg.SerializeToString,
+            ),
+            'LoadTrace': grpc.unary_unary_rpc_method_handler(
+                    servicer.LoadTrace,
+                    request_deserializer=niraapad_dot_protos_dot_niraapad__pb2.LoadTraceReq.FromString,
+                    response_serializer=niraapad_dot_protos_dot_niraapad__pb2.LoadTraceResp.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -405,5 +422,22 @@ class Niraapad(object):
         return grpc.experimental.unary_unary(request, target, '/Niraapad/BatchedTrace',
             niraapad_dot_protos_dot_niraapad__pb2.BatchedTraceMsg.SerializeToString,
             niraapad_dot_protos_dot_niraapad__pb2.EmptyMsg.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def LoadTrace(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/Niraapad/LoadTrace',
+            niraapad_dot_protos_dot_niraapad__pb2.LoadTraceReq.SerializeToString,
+            niraapad_dot_protos_dot_niraapad__pb2.LoadTraceResp.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
