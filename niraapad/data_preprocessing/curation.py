@@ -243,14 +243,23 @@ class Curator:
 
 
     def merging_csv(self, file):
-        df1 = pd.read_csv(self.csv_path + "\\" + file.strip(".json") + ".csv") 
-        df2 = pd.read_csv(self.csv_path + "\\" + file.strip(".json") + "_t.csv")
+
+        
+        csv_file_1 = self.csv_path + "\\" + file.strip(".json") + ".csv"
+        df1 = pd.DataFrame()
+        
+        for chunk1 in pd.read_csv(csv_file_1, chunksize=1):
+            df1 = pd.concat([df1,chunk1])
+        csv_file_2 = self.csv_path + "\\" + file.strip(".json") + "_t.csv"
+        df2 = pd.DataFrame()
+        for chunk2 in pd.read_csv(csv_file_2, chunksize=1):
+            df2 = pd.concat([df2,chunk2])
         os.remove(self.csv_path + "\\" + file.strip(".json") + ".csv")
         os.remove(self.csv_path + "\\" + file.strip(".json") + "_t.csv")
 
         # Merge the two dataframes, using _ID column as key
         df3 = pd.merge(df1, df2, on = 'id', how='left')
-        df3.set_index('id', inplace = True)
+        df3.set_index('id')
 
         # Write it to a new CSV file
         df3.to_csv(self.csv_path +  "\\" +file.strip(".json") + ".csv")
@@ -303,7 +312,7 @@ class Curator:
                                     writer.writerow([trace['Trace Message']['req']['id'],trace['_id'], "N9", trace['Trace Message']['req']['args']['data']['command_name'], str(str(trace['Trace Message']['req']['args']['data']['args']).replace("}","").replace("{","").replace("'","") + "," + str(trace['Trace Message']['req']['args']['data']['flags']).replace("{", "").replace("}", "").replace("'","")).strip(','), trace['Trace Message']['resp']['resp'], trace['Trace Message']['resp']['exception'], trace['Trace Message']['profile']['exec_time_sec']])
                                 else:
 
-                                    writer.writerow(trace['Trace Message']['req']['id'],[trace['_id'], "N9", trace['Trace Message']['req']['args']['data']['command_name'], None, trace['Trace Message']['resp']['resp'], trace['Trace Message']['resp']['exception'], trace['Trace Message']['resp']['exception'], trace['Trace Message']['req']['time_profile']['exec_time_sec']])
+                                    writer.writerow(trace['Trace Message']['req']['id'],[trace['_id'], "N9", trace['Trace Message']['req']['args']['data']['command_name'], None, trace['Trace Message']['resp']['resp'], trace['Trace Message']['resp']['exception'], trace['Trace Message']['resp']['exception'], trace['Trace Message']['time_profile']['exec_time_sec']])
                     elif trace['Trace Message']['req']['backend_instance_id'] in self.backend_instance_id_cavro:
                             if 'data' in trace['Trace Message']['req']['args'].keys() and 'command_name_0' in trace['Trace Message']['req']['args']['data'].keys() and trace['Trace Message']['req']['args']['data']['command_name_0']:
                                 
@@ -316,7 +325,7 @@ class Curator:
                                         writer.writerow([trace['Trace Message']['req']['id'],trace['_id'], "Tecan Cavro", trace['Trace Message']['req']['args']['data'][commands_values[i]], str(commands_values[i+1] +  ":" + str(trace['Trace Message']['req']['args']['data'][commands_values[i+1]])), trace['Trace Message']['resp']['resp'], trace['Trace Message']['resp']['exception'], trace['Trace Message']['profile']['exec_time_sec']])
                                         i = i + 2
                                     else:  
-                                        writer.writerow([trace['Trace Message']['req']['id'],trace['_id'], "Tecan Cavro", trace['Trace Message']['req']['args']['data'][commands_values[i]], None, trace['Trace Message']['resp']['resp'], trace['Trace Message']['resp']['exception'], trace['Trace Message']['resp']['exception'], trace['Trace Message']['req']['profile']['exec_time_sec']])
+                                        writer.writerow([trace['Trace Message']['req']['id'],trace['_id'], "Tecan Cavro", trace['Trace Message']['req']['args']['data'][commands_values[i]], None, trace['Trace Message']['resp']['resp'], trace['Trace Message']['resp']['exception'], trace['Trace Message']['resp']['exception'], trace['Trace Message']['profile']['exec_time_sec']])
                                         i = i + 1
                     else:
                         if trace['Trace Message']['req']['backend_instance_id'] in self.backend_instance_id_ur:
