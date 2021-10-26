@@ -26,7 +26,7 @@ from niraapad.backends import DirectArduinoAugmentedQuantos
 import niraapad.protos.niraapad_pb2 as niraapad_pb2
 import niraapad.protos.niraapad_pb2_grpc as niraapad_pb2_grpc
 from niraapad.shared.tracing import Tracer
-from niraapad.data_preprocessing.commands import magneticstirrer_commands, tecancavro_commands, controller_commands
+from niraapad.data_processing.commands import magneticstirrer_commands, tecancavro_commands, controller_commands
 
 
 class Curator:

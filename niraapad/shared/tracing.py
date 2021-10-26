@@ -75,7 +75,7 @@ class Tracer:
     @staticmethod
     def get_trace_file_after_replay(trace_path, trace_file):
         os.makedirs(trace_path, exist_ok=True)
-        trace_file = os.path.join(trace_path, "replayed-" + trace_file)
+        trace_file = os.path.join(trace_path, trace_file)
         Tracer.trace_file_counter += 1
         return trace_file
 
@@ -179,6 +179,7 @@ class Tracer:
                     "Error: get_trace_array may have failed with exception %s" %
                     e)
                 inter_arrival_times[req_id] = 0
+            
         new_trace_array = []
         for i in range(0, len(trace_array)):
             new_trace_array.append(

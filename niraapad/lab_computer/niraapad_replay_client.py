@@ -59,9 +59,16 @@ parser.add_argument(
 parser.add_argument(
     '-t',
     '--trace_file',
-    default='trace_for_replay.log',
+    default='trace.log',
     help=
-    'Provide path to the trace directory. Defaults to <project-dir>/niraapad/traces/.',
+    'Provide the trace file name. Defaults to "trace.log"',
+    type=str)
+parser.add_argument(
+    '-r',
+    '--replay_trace_file',
+    default='replayed_trace.log',
+    help=
+    'Provide the replay trace file name. Defaults to "replayed_trace.log"',
     type=str)
 
 args = parser.parse_args()
@@ -118,11 +125,11 @@ class NiraapadReplayClient:
             end = default_timer()
             sleep_duration_sec = (inter_arrival_time_ms / 1000.0) - (end -
                                                                      start)
-            # if sleep_duration_sec > 0:
-            #     time.sleep(sleep_duration_sec)
+            if sleep_duration_sec > 0:
+                time.sleep(sleep_duration_sec)
 
-    def update_traces(self, tracedir, trace_file):
-        tracer = Tracer(tracedir, trace_file)
+    def update_traces(self, tracedir, new_trace_file):
+        tracer = Tracer(tracedir, new_trace_file)
         for trace_msg, inter_arrival_time in self.trace_array:
             for k in range(0, len(trace_msg.req.time_profiles)):
                 id = trace_msg.req.time_profiles[k].id
@@ -150,4 +157,4 @@ if __name__ == "__main__":
         exit(1)
 
     client.replay_traces()
-    client.update_traces(args.tracedir, args.trace_file)
+    client.update_traces(args.tracedir, args.replay_trace_file)

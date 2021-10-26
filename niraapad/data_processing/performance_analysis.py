@@ -34,9 +34,11 @@ def compute_response_time(arrival_time_str, departure_time_str):
     return response_time.total_seconds() * 1000
 
 def plot_resp_times(source_files):
+    print("Plotting response times")
 
     dfs = []
     for source_file in source_files:
+        print("Parsing", source_file)
 
         col_names=['id','ts', 'module', 'method', 'arguments', 'responses', 'exceptions', 'exe_time_sec', 'arrival_time', 'departure_time']
         df = pandas.read_csv(args.source + source_file, index_col=False, header = 0, names=col_names)
@@ -55,32 +57,46 @@ def plot_resp_times(source_files):
     mdf = pandas.melt(cdf, id_vars=['source'])
 
     ax = seaborn.boxplot(x='source', y='value', hue='variable', data=mdf)
-    # ax.set(yscale='log')
     ax.set_ylim((0, cdf['resp_time_ms'].max()))
+    pyplot.xlabel("Scenario")
+    pyplot.ylabel("Response Time (ms)")
     # pyplot.show()
-    pyplot.savefig(args.target + "aggregate.pdf")
+    plotfile = args.target + "RESPONSE-TIMES.pdf"
+    pyplot.savefig(plotfile)
+    print("Saving results at", plotfile)
+    pyplot.clf()
 
 def plot_durations(source_files):
+    print("Plotting absolute durations")
+
     for source_file in source_files:
+        print("Parsing", source_file)
+
         col_names=['id','ts', 'module', 'method', 'arguments', 'responses', 'exceptions', 'exe_time_sec', 'arrival_time', 'departure_time']
         df = pandas.read_csv(args.source + source_file, index_col=False, header = 0, names=col_names)
         df.drop(labels=['ts', 'module', 'method', 'arguments', 'responses', 'exceptions', 'exe_time_sec'], axis='columns', inplace=True)
         first_arrival_time = df.iloc[0]['arrival_time']
         df['relative_arrival_time'] = df.apply(lambda row : compute_response_time(first_arrival_time, row['arrival_time']), axis='columns')
         df['relative_departure_time'] = df.apply(lambda row : compute_response_time(first_arrival_time, row['departure_time']), axis='columns')
-        print()
-        print(df)
+    
+        # print()
+        # print(df)
 
         for index, row in df.iterrows():
             x = [row['relative_arrival_time'], row['relative_departure_time']]
             y = [row['id'], row['id']]
             ax = seaborn.lineplot(x=x, y=y)
+        
+        pyplot.xlabel("Time (ms)")
+        pyplot.ylabel("Request ID")
         # pyplot.show()
-        pyplot.savefig(args.target + source_file.split(".csv")[0] + "-durations.pdf")
+        plotfile = args.target + source_file.split(".csv")[0] + "-durations.pdf"
+        pyplot.savefig(plotfile)
+        print("Saving results at", plotfile)
         pyplot.clf()
 
 
 if __name__ == "__main__":
     source_files = os.listdir(args.source)
     plot_resp_times(source_files)
-    # plot_durations(source_files)
+    plot_durations(source_files)
