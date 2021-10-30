@@ -386,24 +386,27 @@ class NiraapadServicer(niraapad_pb2_grpc.NiraapadServicer):
         print("<<<<<", flush=True)
 
 
-class NiraapadReplayServicer(niraapad_pb2_grpc.NiraapadServicer):
-    """Provides methods that implement functionality of n9 replay server."""
+class NiraapadReplayServicerExact(niraapad_pb2_grpc.NiraapadServicer):
+    """Provides methods that implement functionality of n9 server."""
+
+    trace_metadata_length = 132  # bytes
 
     def __init__(self, tracedir):
-        print("Initializing NiraapadReplayServicer", flush=True)
+        print("Initializing NiraapadReplayServicerExact", flush=True)
         self.tracedir = tracedir
 
-    def sim_trace(self, id):
-        try:
-            start = default_timer()
-            resp = self.trace_dict[id].resp
-            while default_timer(
-            ) - start < self.trace_dict[id].profile.exec_time_sec:
-                continue
-            return resp
-        except Exception as e:
-            print("Error: sim_trace failed with exception: %s" % e)
-            exit(1)
+        self.backend_instances = {}
+        self.tracer = Tracer(tracedir)
+
+        trace_msg = niraapad_pb2.StartServerTraceMsg()
+        self.tracer.write_to_file(trace_msg)
+
+    def sim_trace(self, start, id):
+        resp = self.trace_dict[id].resp
+        while default_timer(
+        ) - start < self.trace_dict[id].profile.exec_time_sec:
+            continue
+        return resp
 
     def LoadTrace(self, req, context):
         try:
@@ -414,40 +417,284 @@ class NiraapadReplayServicer(niraapad_pb2_grpc.NiraapadServicer):
             print("Error: LoadTrace failed with exception: %s" % e)
             return niraapad_pb2.LoadTraceResp(status=False)
 
+    def stop_tracing(self):
+        trace_msg = niraapad_pb2.StopServerTraceMsg()
+        self.tracer.write_to_file(trace_msg)
+        self.tracer.stop_tracing()
+
+    def log_trace_msg(self, trace_msg, elapsed=0):
+        self.tracer.write_to_file(trace_msg)
+
+    def BatchedTrace(self, batched_trace_msg, context):
+        trace_msgs = pickle.loads(batched_trace_msg.trace_msgs)
+        for trace_msg in trace_msgs:
+            print("(trace) %s.%s" %
+                  (trace_msg.req.backend_type, Tracer.get_msg_type(trace_msg)))
+            self.log_trace_msg(trace_msg)
+        return niraapad_pb2.EmptyMsg()
+
     def StaticMethod(self, req, context):
         print("%s.%s" % (req.backend_type, req.method_name), flush=True)
-        return self.sim_trace(req.id)
+
+        args = pickle.loads(req.args)
+        kwargs = pickle.loads(req.kwargs)
+
+        resp = None
+        exception = None
+
+        start = default_timer()
+        resp = self.sim_trace(start, req.id)
+        end = default_timer()
+
+        profile = niraapad_pb2.CommandProfile(mo=int(utils.MO.VIA_MIDDLEBOX),
+                                              exec_time_sec=(end - start))
+
+        trace_msg = niraapad_pb2.StaticMethodTraceMsg(req=req,
+                                                      resp=resp,
+                                                      profile=profile)
+        self.log_trace_msg(trace_msg)
+
+        return resp
 
     def StaticGetter(self, req, context):
         print("%s.get_%s" % (req.backend_type, req.property_name), flush=True)
-        return self.sim_trace(req.id)
+
+        resp = None
+        exception = None
+
+        start = default_timer()
+        resp = self.sim_trace(start, req.id)
+        end = default_timer()
+
+        profile = niraapad_pb2.CommandProfile(mo=int(utils.MO.VIA_MIDDLEBOX),
+                                              exec_time_sec=(end - start))
+
+        trace_msg = niraapad_pb2.StaticGetterTraceMsg(req=req,
+                                                      resp=resp,
+                                                      profile=profile)
+        self.log_trace_msg(trace_msg)
+
+        return resp
 
     def StaticSetter(self, req, context):
         print("%s.set_%s" % (req.backend_type, req.property_name), flush=True)
-        return self.sim_trace(req.id)
+
+        value = pickle.loads(req.value)
+
+        resp = None
+        exception = None
+
+        start = default_timer()
+        resp = self.sim_trace(start, req.id)
+        end = default_timer()
+
+        profile = niraapad_pb2.CommandProfile(mo=int(utils.MO.VIA_MIDDLEBOX),
+                                              exec_time_sec=(end - start))
+
+        trace_msg = niraapad_pb2.StaticSetterTraceMsg(req=req,
+                                                      resp=resp,
+                                                      profile=profile)
+        self.log_trace_msg(trace_msg)
+
+        return resp
 
     def Initialize(self, req, context):
         print("%s.__init__" % (req.backend_type), flush=True)
-        return self.sim_trace(req.id)
+
+        # Since the __init__ function is invoked similar to static methods,
+        # that is, it is invoked using the class name, this function is
+        # analogous to the static_method function above, except that we do not
+        # need a variable for the method name, which is known to be "__init__"
+        # in this case.
+
+        args = pickle.loads(req.args)
+        kwargs = pickle.loads(req.kwargs)
+
+        if req.backend_type not in self.backend_instances:
+            self.backend_instances[req.backend_type] = {}
+
+        exception = None
+
+        start = default_timer()
+        resp = self.sim_trace(start, req.id)
+        end = default_timer()
+
+        profile = niraapad_pb2.CommandProfile(mo=int(utils.MO.VIA_MIDDLEBOX),
+                                              exec_time_sec=(end - start))
+
+        trace_msg = niraapad_pb2.InitializeTraceMsg(req=req,
+                                                    resp=resp,
+                                                    profile=profile)
+        self.log_trace_msg(trace_msg)
+
+        return resp
 
     def Uninitialize(self, req, context):
         print("%s.__del__" % (req.backend_type), flush=True)
-        return self.sim_trace(req.id)
+
+        exception = None
+
+        backend_type = req.backend_type
+        backend_instance_id = req.backend_instance_id
+
+        start = default_timer()
+        resp = self.sim_trace(start, req.id)
+        end = default_timer()
+
+        profile = niraapad_pb2.CommandProfile(mo=int(utils.MO.VIA_MIDDLEBOX),
+                                              exec_time_sec=(end - start))
+
+        trace_msg = niraapad_pb2.UninitializeTraceMsg(req=req,
+                                                      resp=resp,
+                                                      profile=profile)
+        self.log_trace_msg(trace_msg)
+
+        return resp
 
     def GenericMethod(self, req, context):
         print("%s.%s" % (req.backend_type, req.method_name), flush=True)
-        return self.sim_trace(req.id)
+
+        # For any generic class instance method, the logic is similar to that
+        # of any generic static method, except that the method is invoked using
+        # the class instance name and not directly using the class name.
+        # Thus, the following set of statements is analogous to the function
+        # definition of the static_methods function above, except that we deal
+        # with specific class instances identified using their unique
+        # identifiers ("backend_instance_id"), which were set during
+        # initialization.
+
+        args = pickle.loads(req.args)
+        kwargs = pickle.loads(req.kwargs)
+
+        resp = None
+        exception = None
+
+        start = default_timer()
+        resp = self.sim_trace(start, req.id)
+        end = default_timer()
+
+        profile = niraapad_pb2.CommandProfile(mo=int(utils.MO.VIA_MIDDLEBOX),
+                                              exec_time_sec=(end - start))
+
+        trace_msg = niraapad_pb2.GenericMethodTraceMsg(req=req,
+                                                       resp=resp,
+                                                       profile=profile)
+        self.log_trace_msg(trace_msg)
+
+        return resp
 
     def GenericGetter(self, req, context):
         print("%s.get_%s" % (req.backend_type, req.property_name), flush=True)
-        return self.sim_trace(req.id)
+
+        # Getter functions are an extremely simplified version of GenericMethod
+        # since they are interpreted not as functions but as variables, which
+        # may be used in an expression; in this case, we simply return the
+        # variable value.
+
+        resp = None
+        exception = None
+
+        start = default_timer()
+        resp = self.sim_trace(start, req.id)
+        end = default_timer()
+
+        profile = niraapad_pb2.CommandProfile(mo=int(utils.MO.VIA_MIDDLEBOX),
+                                              exec_time_sec=(end - start))
+
+        trace_msg = niraapad_pb2.GenericGetterTraceMsg(req=req,
+                                                       resp=resp,
+                                                       profile=profile)
+        self.log_trace_msg(trace_msg)
+
+        return resp
 
     def GenericSetter(self, req, context):
-        print("%s.get_%s" % (req.backend_type, req.property_name), flush=True)
-        return self.sim_trace(req.id)
+        print("%s.set_%s" % (req.backend_type, req.property_name), flush=True)
 
-    def stop_tracing(self):
-        pass
+        # Setter functions are the opposite of getter functions. They simply
+        # assign the provided value to the specified property.
+
+        value = pickle.loads(req.value)
+
+        resp = None
+        exception = None
+
+        start = default_timer()
+        resp = self.sim_trace(start, req.id)
+        end = default_timer()
+
+        profile = niraapad_pb2.CommandProfile(mo=int(utils.MO.VIA_MIDDLEBOX),
+                                              exec_time_sec=(end - start))
+
+        trace_msg = niraapad_pb2.GenericSetterTraceMsg(req=req,
+                                                       resp=resp,
+                                                       profile=profile)
+        self.log_trace_msg(trace_msg)
+
+        return resp
+
+# class NiraapadReplayServicer(niraapad_pb2_grpc.NiraapadServicer):
+#     """Provides methods that implement functionality of n9 replay server."""
+
+#     def __init__(self, tracedir):
+#         print("Initializing NiraapadReplayServicer", flush=True)
+#         self.tracedir = tracedir
+
+#     def sim_trace(self, id):
+#         try:
+#             start = default_timer()
+#             resp = self.trace_dict[id].resp
+#             while default_timer(
+#             ) - start < self.trace_dict[id].profile.exec_time_sec:
+#                 continue
+#             return resp
+#         except Exception as e:
+#             print("Error: sim_trace failed with exception: %s" % e)
+#             exit(1)
+
+#     def LoadTrace(self, req, context):
+#         try:
+#             self.trace_dict = Tracer.get_trace_dict(
+#                 os.path.join(self.tracedir, req.trace_file))
+#             return niraapad_pb2.LoadTraceResp(status=True)
+#         except Exception as e:
+#             print("Error: LoadTrace failed with exception: %s" % e)
+#             return niraapad_pb2.LoadTraceResp(status=False)
+
+#     def StaticMethod(self, req, context):
+#         print("%s.%s" % (req.backend_type, req.method_name), flush=True)
+#         return self.sim_trace(req.id)
+
+#     def StaticGetter(self, req, context):
+#         print("%s.get_%s" % (req.backend_type, req.property_name), flush=True)
+#         return self.sim_trace(req.id)
+
+#     def StaticSetter(self, req, context):
+#         print("%s.set_%s" % (req.backend_type, req.property_name), flush=True)
+#         return self.sim_trace(req.id)
+
+#     def Initialize(self, req, context):
+#         print("%s.__init__" % (req.backend_type), flush=True)
+#         return self.sim_trace(req.id)
+
+#     def Uninitialize(self, req, context):
+#         print("%s.__del__" % (req.backend_type), flush=True)
+#         return self.sim_trace(req.id)
+
+#     def GenericMethod(self, req, context):
+#         print("%s.%s" % (req.backend_type, req.method_name), flush=True)
+#         return self.sim_trace(req.id)
+
+#     def GenericGetter(self, req, context):
+#         print("%s.get_%s" % (req.backend_type, req.property_name), flush=True)
+#         return self.sim_trace(req.id)
+
+#     def GenericSetter(self, req, context):
+#         print("%s.get_%s" % (req.backend_type, req.property_name), flush=True)
+#         return self.sim_trace(req.id)
+
+#     def stop_tracing(self):
+#         pass
 
 
 class NiraapadServer:
@@ -472,7 +719,7 @@ class NiraapadServer:
             self.server.add_secure_port('[::]:' + str(port), server_credentials)
 
         if replay == True:
-            self.niraapad_servicer = NiraapadReplayServicer(tracedir=tracedir)
+            self.niraapad_servicer = NiraapadReplayServicerExact(tracedir=tracedir)
         else:
             self.niraapad_servicer = NiraapadServicer(tracedir=tracedir)
 
