@@ -329,7 +329,7 @@ class Curator:
                                         i = i + 1
                     else:
                         if trace['Trace Message']['req']['backend_instance_id'] in self.backend_instance_id_ur:
-                            writer.writerow([trace['_id'], "UR3Arm", trace['Trace Message']['req']['method_name'], str(trace['Trace Message']['req']['args']).replace("{", "").replace("}", "").replace("'","").strip(','), trace['Trace Message']['resp']['resp'],trace['Trace Message']['resp']['exception'], trace['Trace Message']['profile']['exec_time_sec']])
+                            writer.writerow([trace['Trace Message']['req']['id'], trace['_id'], "UR3Arm", trace['Trace Message']['req']['method_name'], str(trace['Trace Message']['req']['args']).replace("{", "").replace("}", "").replace("'","").strip(','), trace['Trace Message']['resp']['resp'],trace['Trace Message']['resp']['exception'], trace['Trace Message']['profile']['exec_time_sec']])
                         elif trace['Trace Message']['req']['backend_instance_id'] in self.backend_instance_id_arduino:
                             try: 
                                 

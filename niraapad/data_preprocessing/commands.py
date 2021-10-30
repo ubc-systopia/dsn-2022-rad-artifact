@@ -290,10 +290,11 @@ controller = [
         },
         {
             "command_name" : "POS",
-            "method_name" : "cartesian_position",
-            "flags" : {"C" : "C"},
-            "args" : None,
-            "resp" : "cartesian_position"
+            "method_name" : "axis_positions",
+            "flags" : {"C" : "C", "U" : "units", "M" : "motor"},
+            "args" : "axes",
+            "resp" : "axis_positions"
+
         },
         {
             "command_name" : "MVNG",
@@ -301,13 +302,6 @@ controller = [
             "flags" : None,
             "args" : "axes",
             "resp" : "axes_moving"
-        },
-        {
-            "command_name" : "MVNG",
-            "method_name" : "axis_moving",
-            "flags" : None,
-            "args" : "axis",
-            "resp" : "axis_moving"
         },
         {
             "command_name" : "OUTP",
@@ -327,7 +321,7 @@ controller = [
             "command_name" : "JLEN",
             "method_name" : "elbow_length",
             "flags" : None,
-            "args" : "length",
+            "args" : "length_offset",
             "resp" : "length_offset"
         },
         {
@@ -361,7 +355,7 @@ controller = [
         {
             "command_name" : "COM",
             "method_name" : "com_rx_size",
-            "flags" : {"S" : "S"},
+            "flags" : {"S" : "size"},
             "args" : "port",
             "resp" : "no_of_char_input_buffer"
         },   
@@ -510,7 +504,22 @@ class controller_commands:
 
         for cmd in list_of_cmd:
             if cmd["command_name"] == name:
-                if name == "MVNG":
+                if name == "POS":
+                    if len(args) == 0:
+                        check = 3
+                    elif len(args) == 1:
+                        check = 2
+                    else:
+                        check = 1
+                    
+                    if check == 3 and (counter == 2 or counter == 1):
+                        counter = counter - 1 
+                        continue
+                    elif check == 2 and counter == 2:
+                        counter = counter - 1
+                        continue
+                
+                elif name == "MVNG":
                     if len(args) == 1:
                         check = 2
                     else:
@@ -552,30 +561,20 @@ class controller_commands:
                     elif check == 2 and com_counter == 4:
                         com_counter = com_counter - 1
                         continue
-                
-                
-                elif name == "STAT":
-                    if list(flags[0].keys())[0] == "F":
-                        check = 3
-                    elif list(flags[0].keys())[0] == "E":
-                        check = 2
-                    else:
-                        check = 1
-                    
-                    if check == 3 and (counter == 2 or counter == 1):
-                        counter = counter - 1 
-                        continue
-                    elif check == 2 and counter == 2:
-                        counter = counter - 1
-                        continue
 
                 
                 
                 
                 if cmd["flags"] is not None:
                     cmd_flags = cmd["flags"]
+                    # print(name)
+                    # print(flags)
+                    # print(args)
+                    # print(counter)
+                    # print(check)
                     for i in range(0,len(flags)):
                         m_flags[cmd_flags[list(flags[i].keys())[0]]] = list(flags[i].values())[0]
+                    #print(m_flags)
                 if cmd["args"] is not None:
                     cmd_args = cmd["args"].split(", ")
                     
