@@ -8,3 +8,5 @@ dist/*
 *.csv
 *.pdf
 *.json
+*.zip
+*.png
