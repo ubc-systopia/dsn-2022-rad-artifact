@@ -250,32 +250,27 @@ tecan_cavro = [
     }
 ]
 
-
 controller = [
         {
             "command_name" : "PING",
-            "method_name" : "ping",
             "flags" : None,
             "args" : None,
             "resp" : "ping"
         },
         {
             "command_name" : "HOME",
-            "method_name" : "home",
             "flags" : {"C" : "if_needed", "K" : "skip"},
             "args" : "axes",
             "resp" : "home"
         },
         {
             "command_name" : "HALT",
-            "method_name" : "halt",
             "flags" : None,
             "args" : "axes",
             "resp" : "halt"
         },
         {
             "command_name" : "BIAS",
-            "method_name" : "elbow_bias",
             "flags" : None,
             "args" : "bias",
             "resp" : "elbow_bias"
@@ -283,14 +278,12 @@ controller = [
         },
         {
             "command_name" : "CURR",
-            "method_name" : "axis_current",
             "flags" : {"M" : "max"},
             "args" : "axis, max_current",
             "resp" : "axis_current"
         },
         {
             "command_name" : "POS",
-            "method_name" : "axis_positions",
             "flags" : {"C" : "C", "U" : "units", "M" : "motor"},
             "args" : "axes",
             "resp" : "axis_positions"
@@ -298,77 +291,66 @@ controller = [
         },
         {
             "command_name" : "MVNG",
-            "method_name" : "axes_moving",
             "flags" : None,
             "args" : "axes",
             "resp" : "axes_moving"
         },
         {
             "command_name" : "OUTP",
-            "method_name" : "output",
             "flags" : None,
             "args" : "output, value",
             "resp" : "output_state"
         },
         {
             "command_name" : "OUTP",
-            "method_name" : "outputs",
             "flags" : {"A" : "all"},
             "args" : "pins",
             "resp" : "output_pins_state"
         },
         {
             "command_name" : "JLEN",
-            "method_name" : "elbow_length",
             "flags" : None,
             "args" : "length_offset",
             "resp" : "length_offset"
         },
         {
             "command_name" : "SPED",
-            "method_name" : "speed",
             "flags" : None,
             "args" : "velocity, acceleration",
             "resp" : "velocity_acceleration"
         },   
         {
             "command_name" : "ARM",
-            "method_name" : "move_arm",
             "flags" : {"V" : "velocity", "A" : "acceleration", "R" : "relative", "X" : "X", "Y" : "Y", "Z" : "Z", "G" : "gripper", "B" : "elbow_bias"},
             "args" : None,
             "resp" : "move_arm_axes_positions"
         },
         {
             "command_name" : "COM",
-            "method_name" : "com_init",
             "flags" : {"I" : "initialize"},
             "args" : "port, baudrate",
             "resp" : "com_init"
         },
         {
             "command_name" : "COM",
-            "method_name" : "com_flush",
             "flags" : {"F" : "flush"},
             "args" : "port",
             "resp" : "com_flush"
         },
         {
             "command_name" : "COM",
-            "method_name" : "com_rx_size",
             "flags" : {"S" : "size"},
             "args" : "port",
             "resp" : "no_of_char_input_buffer"
         },   
         {
             "command_name" : "COM",
-            "method_name" : "com_read",
             "flags" : {"R" : "read"},
             "args" : "port, timeout, num_bytes",
             "resp" : "bytes_of_data_read"
         },   
         {
             "command_name" : "COM",
-            "method_name" : "com_write",
             "flags" : {"W" : "write"},
             "args" : "port, data_length",
             "resp" : "com_write"
@@ -384,8 +366,8 @@ class magneticstirrer_commands:
         resp = ""
 
         for cmd in list_of_cmd:
-            if cmd["command_name"] == command_name:
-                resp = cmd["resp"]
+            if cmd['command_name'] == command_name:
+                resp = cmd['resp']
 
         return resp
 
@@ -430,9 +412,9 @@ class tecancavro_commands:
         args = ""
 
         for cmd in list_of_cmd:
-            if cmd["command_name"] == command_name:
-                args = cmd["args"]
-                resp = cmd["resp"]
+            if cmd['command_name'] == command_name:
+                args = cmd['args']
+                resp = cmd['resp']
 
         return args, resp
  
@@ -446,13 +428,10 @@ class tecancavro_commands:
 
         
         data = status_data[3:end_line].decode()
-        
-
 
         iter = 0
         if '?' not in data:
-            for i in range(0, len(data)):
-                
+            for i in range(0, len(data)):            
                 if iter < len(data):
                     command_name = data[iter]
                     write_cavro_args, write_cavro_resp = self.get_cavro_cmd(command_name)
@@ -490,10 +469,9 @@ class tecancavro_commands:
 
         return commands
 
-
 class controller_commands:
 
-    def get_centrifuge_cmd(self, name, flags, args):
+    def get_n9_cmd(self, name, flags, args):
         list_of_cmd = controller
         check = 0
         counter = 2
@@ -503,32 +481,9 @@ class controller_commands:
         m_args = {}
 
         for cmd in list_of_cmd:
-            if cmd["command_name"] == name:
-                if name == "POS":
-                    if len(args) == 0:
-                        check = 3
-                    elif len(args) == 1:
-                        check = 2
-                    else:
-                        check = 1
-                    
-                    if check == 3 and (counter == 2 or counter == 1):
-                        counter = counter - 1 
-                        continue
-                    elif check == 2 and counter == 2:
-                        counter = counter - 1
-                        continue
-                
-                elif name == "MVNG":
-                    if len(args) == 1:
-                        check = 2
-                    else:
-                        check = 1
-                
-                    if check == 2 and counter == 2:
-                        counter = counter - 1
-                        continue
-                elif name == "OUTP":
+            #Iterate the commands that are repetitive to get thecorrect one
+            if cmd['command_name'] == name:
+                if name == "OUTP":
                     if len(flags) == 1:
                         check = 2
                     else:
@@ -537,6 +492,7 @@ class controller_commands:
                     if check == 2 and counter == 2: 
                         counter = counter - 1
                         continue
+
                 elif name == "COM":
                     if list(flags[0].keys())[0] == "W":
                         check = 5
@@ -548,7 +504,8 @@ class controller_commands:
                         check = 2
                     elif list(flags[0].keys())[0] == "I":
                         check = 1
-
+                    
+                    
                     if check == 5 and (com_counter == 4 or com_counter == 3 or com_counter == 2 or com_counter == 1):
                         com_counter = com_counter - 1
                         continue
@@ -563,40 +520,30 @@ class controller_commands:
                         continue
 
                 
-                
-                
-                if cmd["flags"] is not None:
+                if cmd['flags'] is not None:
                     cmd_flags = cmd["flags"]
-                    # print(name)
-                    # print(flags)
-                    # print(args)
-                    # print(counter)
-                    # print(check)
                     for i in range(0,len(flags)):
                         m_flags[cmd_flags[list(flags[i].keys())[0]]] = list(flags[i].values())[0]
-                    #print(m_flags)
-                if cmd["args"] is not None:
-                    cmd_args = cmd["args"].split(", ")
-                    
 
+                if cmd['args'] is not None:
+                    cmd_args = cmd['args'].split(", ")
                     if (len(args) != 0):
                         m_args[cmd_args[0]] = args[0]
                     for i in range(1,len(args)):
-                        if len(cmd_args) < len(args):                       
+                        if len(cmd_args) < len(args):              
                             m_args[cmd_args[0]] = m_args[cmd_args[0]] + "," + args[i]
                         else:
                             m_args[cmd_args[i]] = args[i]
 
                 break
 
-    
 
         return m_cmd, m_flags, m_args
 
-
-    def write_centrifuge(self, value, commands):
+    def write_n9(self, value, commands):
         command_str = value.decode()
         request_cmd = command_str.strip('\r').split(' ')
+
 
         if (request_cmd[0] == "PING"):
             commands['command_name'] = 'PING'
@@ -630,7 +577,7 @@ class controller_commands:
             i = i + 1
         
        
-        m_com, m_flags, m_args = self.get_centrifuge_cmd(commands['command_name'], commands['flags'], commands['args'])
+        m_com, m_flags, m_args = self.get_n9_cmd(commands['command_name'], commands['flags'], commands['args'])
 
         commands['command'] = m_com
         commands['flags'] =  m_flags
@@ -639,7 +586,7 @@ class controller_commands:
         return commands
 
 
-    def read_line_centrifuge(value, commands):
+    def read_n9(value, commands):
         list_of_cmd = controller
         resp = ""
         for cmd in list_of_cmd:
@@ -652,6 +599,3 @@ class controller_commands:
         commands['crc'] = crc
                     
         return commands
-            
-
-
