@@ -413,8 +413,8 @@ class Curator:
                                     ['exec_time_sec']
                                 ])
                             else:
-                                writer.writerow(
-                                    trace['Trace Message']['req']['id'], [
+                                writer.writerow([
+                                    trace['Trace Message']['req']['id'],
                                         trace['_id'], "N9",
                                         trace['Trace Message']['req']['args']
                                         ['data']['command_name'], None,
@@ -589,6 +589,7 @@ class Curator:
 
         #Convert all files to csv file and write it to the file
         for file in json_files:
+            print(file)
             json_log_file = self.json_path + "\\" + file
             self.dumping_in_csv(json_log_file, file)
             self.dumping_time_profiling(json_log_file, file)
