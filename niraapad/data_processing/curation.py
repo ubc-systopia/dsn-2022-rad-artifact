@@ -462,7 +462,7 @@ class Curator:
                                         trace['Trace Message']['req']['id'],
                                         trace['_id'], "Tecan Cavro",
                                         trace['Trace Message']['req']['args']
-                                        ['data'][commands_values[i]], None,
+                                        ['data'][commands_values[i]],
                                         trace['Trace Message']['resp']['resp'],
                                         trace['Trace Message']['resp']
                                         ['exception'], trace['Trace Message']
