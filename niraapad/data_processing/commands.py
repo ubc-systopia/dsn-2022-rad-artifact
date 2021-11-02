@@ -430,7 +430,7 @@ class tecancavro_commands:
 
 class controller_commands:
 
-    def get_n9_cmd(self, name, flags, args):
+    def get_c9_cmd(self, name, flags, args):
         list_of_cmd = controller
         check = 0
         counter = 2
@@ -500,7 +500,7 @@ class controller_commands:
 
         return m_cmd, m_flags, m_args
 
-    def write_n9(self, value, commands):
+    def write_c9(self, value, commands):
         command_str = value.decode()
         request_cmd = command_str.strip('\r').split(' ')
 
@@ -532,7 +532,7 @@ class controller_commands:
             commands['args'].append(request_cmd[i])
             i = i + 1
 
-        m_com, m_flags, m_args = self.get_n9_cmd(commands['command_name'],
+        m_com, m_flags, m_args = self.get_c9_cmd(commands['command_name'],
                                                  commands['flags'],
                                                  commands['args'])
 
@@ -542,7 +542,7 @@ class controller_commands:
 
         return commands
 
-    def read_n9(value, commands):
+    def read_c9(value, commands):
         list_of_cmd = controller
         resp = ""
         for cmd in list_of_cmd:
