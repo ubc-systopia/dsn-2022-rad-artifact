@@ -1,7 +1,7 @@
 
 # README
 
-To plot the graphs from the dataset, follow theese steps:
+To plot the graphs from the dataset, follow these steps:
 
 -  Enter the folder Scripts
 -  Run Scripts/Plotting.py
