@@ -1,5 +1,5 @@
 
-##README
+# README
 
 To plot the graphs from the dataset, follow the ese steps
 1- Enter the folder Scripts
