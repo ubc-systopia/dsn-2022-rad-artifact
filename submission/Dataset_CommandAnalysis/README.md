@@ -1,3 +1,4 @@
+# Steps to Run
 Step 1:
 Download all datafiles named: experiment_2021XXX.zip in a folder
 
