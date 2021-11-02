@@ -41,8 +41,7 @@ def plot_resp_times(source_files):
 
         dfs = []
         for source_file in source_files:
-            if 'SMALL' in source_file:
-                continue
+            if 'SMALL' in source_file: continue
             print("Parsing", source_file)
 
             col_names=['id','ts', 'module', 'method', 'arguments', 'responses', 'exceptions', 'exe_time_sec', 'arrival_time', 'departure_time']
@@ -136,7 +135,7 @@ def plot_durations(source_files):
 
 def plot_arguments(source_files):
     print("Plotting arguments")
-    argnames = ['acceleration', 'velocity', 'relative', 'x', 'y']
+    argnames = ['X', 'Y', 'Z', 'gripper', 'elbow_bias']
 
     dfs = {}
     for source_file in source_files:
@@ -151,7 +150,7 @@ def plot_arguments(source_files):
         df.drop(labels=['module', 'method', 'responses', 'exceptions', 'exe_time_sec', 'departure_time'], axis='columns', inplace=True)
         first_arrival_time = df.iloc[0]['arrival_time']
         df['relative_arrival_time'] = df.apply(lambda row : 0.001 * compute_response_time(first_arrival_time, row['arrival_time']), axis='columns')
-        df[['velocity', 'acceleration', 'relative', 'x', 'y']] = df['arguments'].str.split(',', expand=True)
+        df[argnames] = df['arguments'].str.split(',', expand=True)
         
         for arg in argnames:
             df[['temp', arg]] = df[arg].str.split(':', expand=True)
@@ -160,17 +159,25 @@ def plot_arguments(source_files):
         
         dfs[exp_id] = df
     
-        # print(df)
+        print(df)
 
     for arg in argnames:
         plt.figure(figsize=(6,3))
         # print(df[arg].describe())
         plotfile = args.target + source_file.split(".csv")[0] + "-" + arg + ".pdf"
         for exp_id in dfs.keys():
-            seaborn.scatterplot(x='relative_arrival_time', y=arg, data=dfs[exp_id], linewidth=0)
+            ax = seaborn.scatterplot(x='relative_arrival_time', y=arg, data=dfs[exp_id], linewidth=0)
         # ax.set_ylim((0, df[arg].max()))
         plt.xlabel("Time (seconds)")
-        plt.ylabel(arg.capitalize() + " (units)")
+        if arg == 'X' or arg == 'Y' or arg == 'Z':
+            plt.ylabel(arg.capitalize() + " (mm)")
+        elif arg == 'elbow_bias':
+            plt.ylabel('Elbow Bias')
+            ax = plt.gca()
+            ax.set_yticks([0, 1, 2])
+            ax.set_yticklabels(['MIN', 'MAX', 'CLOSEST'])
+        elif arg == 'gripper':
+            plt.ylabel('Gripper Position (degrees)')
         plt.legend(labels=dfs.keys())
         # plt.title(plotfile)
         plt.tight_layout()
@@ -182,6 +189,6 @@ def plot_arguments(source_files):
 
 if __name__ == "__main__":
     source_files = os.listdir(args.source)
-    # plot_resp_times(source_files)
+    plot_resp_times(source_files)
     plot_durations(source_files)
-    # plot_arguments(source_files)
+    plot_arguments(source_files)
