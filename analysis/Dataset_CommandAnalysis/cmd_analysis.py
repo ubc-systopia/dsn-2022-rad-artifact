@@ -7,7 +7,7 @@ from matplotlib import pyplot as plt
 from matplotlib.pyplot import figure
 
 
-idir = idir="<dataset_location_path_name>"
+idir = "<dataset_location_path_name>"
 ifile = "concat_all.csv"
 
 
@@ -30,8 +30,8 @@ def get_name(row):
         return("Tecan")
     elif row["Module"] == "Magnetic Stirrer":
         return("IKA")
-    elif row["Module"] == "N9":
-        return("N9")
+    elif row["Module"] == "C9":
+        return("C9")
     else:
         return("UR3Arm")
 
@@ -89,7 +89,7 @@ def module_freq():
     plt.show()
     plt.clf()
 
-    #plt.rcParams["figure.figsize"] = (390, 120)
+    plt.rcParams["figure.figsize"] = (390, 120)
     sns.histplot(data=df_new, x="Method_Name", hue="Module", multiple="stack")
     plt.xticks(rotation=45)
     plt.xlabel("Method Name", fontsize = 20)
@@ -131,11 +131,16 @@ def module_freq():
     plt.clf()
 
     df_new_noinit = df_new[df_new["Method_Name"] != "_init_"]
-    g=sns.histplot(data=df_new_noinit, x="Method_Name", hue="Abbr_Module")
+    df_new_noinit.sort_values("Module",inplace=True)
+    sns.color_palette("deep")
+    sns.set_theme(style="darkgrid")
+    g=sns.histplot(data=df_new_noinit, x="Method_Name", hue="Abbr_Module") 
+    plt.margins(x=0)
     plt.xticks(rotation=90)
     plt.yscale("log")
-    plt.xlabel("Method Name", fontsize = 20)
+    plt.xlabel("Command Type", fontsize = 20)
     plt.ylabel("Count", fontsize=20)
+    plt.legend(loc='upper right', labels=["Quantos (" + str(df_new.groupby(['Module']).size()[0]) + ")", "C9 (" + str(df_new.groupby(['Module']).size()[1]) + ")", "IKA (" + str(df_new.groupby(['Module']).size()[2]) + ")", "Tecan (" + str(df_new.groupby(['Module']).size()[3]) + ")", "UR3Arm (" + str(df_new.groupby(['Module']).size()[4]) + ")"])
     g.legend_.set_title(None)
     plt.tight_layout()
     plt.savefig("./method_name_loghistogram_hue_noinit.pdf")
@@ -169,7 +174,7 @@ def module_freq():
         print(df_method.head(10))
         print("-------")
         #sns.pairplot(df_method)
-        #plt.show()
+        plt.show()
 
     df_new['Group_row_id'] = df_new.groupby(['Module']).cumcount() + 1
     group_df = df_new.groupby(["Module"])
@@ -185,7 +190,7 @@ def module_freq():
         ofig = "./" + group["Module"].unique()[0] + "_method.pdf"
         print(ofig)
         plt.savefig(ofig)
-        #plt.show()
+        plt.show()
         plt.clf()
 
         sns.stripplot(data=group, x="Group_row_id", y="Responses", jitter=False)
@@ -194,7 +199,7 @@ def module_freq():
         plt.ylabel("Response", fontsize=15)
         plt.tight_layout()
         plt.savefig("./" + group["Module"].unique()[0] + "_response.pdf")
-        #plt.show()
+        plt.show()
         plt.clf()
 
         sns.stripplot(data=group, x="Group_row_id", y="Exceptions", jitter=False)
@@ -203,30 +208,30 @@ def module_freq():
         plt.ylabel("Exceptions", fontsize=15)
         plt.tight_layout()
         plt.savefig("./" + group["Module"].unique()[0] + "_exception.pdf")
-        #plt.show()
+        plt.show()
         plt.clf()
 
-        #sns.catplot(data=group, x="Arguments", y="Responses", col="Method_Name")
-        #plt.tight_layout()
-        #plt.show()
+        # sns.catplot(data=group, x="Arguments", y="Responses", col="Method_Name")
+        # plt.tight_layout()
+        # plt.show()
 
-        #sns.catplot(data=group, x="Arguments", y="Exceptions", col="Method_Name")
-        #plt.tight_layout()
-        #plt.show()
+        # sns.catplot(data=group, x="Arguments", y="Exceptions", col="Method_Name")
+        # plt.tight_layout()
+        # plt.show()
 
-        #sns.catplot(data=group, x="Group_row_id", y="Arguments", col="Method_Name", kind="strip")
-        #plt.set_xticklabels(plt.get_xticks()[::100], rotation=45)
-        #plt.xticks(np.arange(0,group.size,100), np.arange(0,group.size,100))
-        #plt.tight_layout()
-        #plt.show()
+        # sns.catplot(data=group, x="Group_row_id", y="Arguments", col="Method_Name", kind="strip")
+        # plt.set_xticklabels(plt.get_xticks()[::100], rotation=45)
+        # plt.xticks(np.arange(0,group.size,100), np.arange(0,group.size,100))
+        # plt.tight_layout()
+        # plt.show()
 
-        #sns.catplot(data=group, x="Arguments", y="Responses", col="Method_Name", kind="strip")
-        #plt.tight_layout()
-        #plt.show()
+        # sns.catplot(data=group, x="Arguments", y="Responses", col="Method_Name", kind="strip")
+        # plt.tight_layout()
+        # plt.show()
 
-        #sns.catplot(data=group, x="Arguments", y="Exceptions", col="Method_Name", kind="strip")
-        #plt.tight_layout()
-        #plt.show()
+        # sns.catplot(data=group, x="Arguments", y="Exceptions", col="Method_Name", kind="strip")
+        # plt.tight_layout()
+        # plt.show()
 
         print(">>> Next group <<<")
 

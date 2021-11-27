@@ -15,7 +15,7 @@ def main():
     li = []
     for item in file_list:
         print(item)
-        df = pd.read_csv(idir + item, index_col=False, header = 0)
+        df = pd.read_csv(idir +   item, index_col=False, header = 0)
         if (len(df.index) > 1):
             print(item)
             print(list(df))
