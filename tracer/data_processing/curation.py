@@ -10,6 +10,10 @@ import sys
 import pandas as pd
 from pathlib import Path
 from itertools import repeat
+#Path to niraapad
+file_path = os.path.dirname(os.path.abspath(__file__))
+niraapad_path = os.path.dirname(file_path)
+sys.path.append(niraapad_path)
 import niraapad.backends
 import niraapad.protos.niraapad_pb2 as niraapad_pb2
 import niraapad.protos.niraapad_pb2_grpc as niraapad_pb2_grpc
@@ -17,11 +21,9 @@ from niraapad.backends import DirectUR3Arm
 from niraapad.backends import DirectFtdiDevice, DirectPySerialDevice
 from niraapad.backends import DirectArduinoAugmentedQuantos
 from niraapad.shared.tracing import Tracer
-from niraapad.data_processing.commands import magneticstirrer_commands, tecancavro_commands, controller_commands
+from commands import magneticstirrer_commands, tecancavro_commands, controller_commands
 
-#Path to niraapad
-file_path = os.path.dirname(os.path.abspath(__file__))
-niraapad_path = os.path.dirname(os.path.dirname(file_path))
+
 
 
 class Curator:
@@ -401,7 +403,6 @@ class Curator:
                                     ['req']['args']['data']['command_name'],
                                     None,
                                     trace['Trace Message']['resp']['resp'],
-                                    trace['Trace Message']['resp']['exception'],
                                     trace['Trace Message']['resp']['exception']
                                 ])
 
@@ -447,7 +448,7 @@ class Curator:
                                     i = i + 1
                     else:
                         if trace['Trace Message']['req'][
-                                'backend_instance_id'] in self.backend_instance_id_ur:
+                            'backend_type'].replace("Direct", "") == "UR3Arm":
                             writer.writerow([
                                 trace['_id'], "UR3Arm",
                                 trace['Trace Message']['req']['method_name'],
@@ -458,7 +459,7 @@ class Curator:
                                 trace['Trace Message']['resp']['exception']
                             ])
                         elif trace['Trace Message']['req'][
-                                'backend_instance_id'] in self.backend_instance_id_arduino:
+                            'backend_type'].replace("Direct", "") == "ArduinoAugmentedQuantos":
                             try:
                                 writer.writerow([
                                     trace['_id'], "ArduinoAugmentedQuantos",
@@ -483,6 +484,8 @@ class Curator:
                                                         "").strip(','), None,
                                     trace['Trace Message']['resp']['exception']
                                 ])
+                        else:
+                            print(trace)
 
     def dumping_in_csv(self, json_path, file):
         #Fetching the json file
@@ -697,8 +700,8 @@ class Curator:
                                     ])
                                     i = i + 1
                     else:
-                        if trace['Trace Message']['req'][
-                                'backend_instance_id'] in self.backend_instance_id_ur:
+                        if  trace['Trace Message']['req'][
+                            'backend_type'].replace("Direct", "") == "UR3Arm":
                             writer.writerow([
                                 trace['Trace Message']['req']['id'],
                                 trace['_id'], "UR3Arm",
@@ -712,7 +715,7 @@ class Curator:
                                 ['exec_time_sec']
                             ])
                         elif trace['Trace Message']['req'][
-                                'backend_instance_id'] in self.backend_instance_id_arduino:
+                            'backend_type'].replace("Direct", "") == "ArduinoAugmentedQuantos":
                             try:
                                 writer.writerow([
                                     trace['Trace Message']['req']['id'],
@@ -811,6 +814,7 @@ class Curator:
             self.backend_instance_id_arduino = []
             self.backend_instance_id_ur = []
 
+
         #Get the list of json files
         json_files = os.listdir(self.json_path)
 
@@ -832,11 +836,11 @@ class Curator:
             self.backend_instance_id_ur = []
 
         #Dump it in db
-        print("Dumping Json files to MongoDB")
-        for file in json_files:
-            json_log_file = self.json_path + "\\" + file
-            print(json_log_file)
-            self.dumping_in_db(json_log_file)
+        # print("Dumping Json files to MongoDB")
+        # for file in json_files:
+        #     json_log_file = self.json_path + "\\" + file
+        #     print(json_log_file)
+        #     self.dumping_in_db(json_log_file)
 
 
 if __name__ == "__main__":

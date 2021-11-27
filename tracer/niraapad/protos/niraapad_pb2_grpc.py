@@ -29,79 +29,44 @@ class NiraapadStub(object):
                 request_serializer=niraapad_dot_protos_dot_niraapad__pb2.StaticMethodReq.SerializeToString,
                 response_deserializer=niraapad_dot_protos_dot_niraapad__pb2.StaticMethodResp.FromString,
                 )
-        self.StaticMethodTrace = channel.unary_unary(
-                '/Niraapad/StaticMethodTrace',
-                request_serializer=niraapad_dot_protos_dot_niraapad__pb2.StaticMethodTraceMsg.SerializeToString,
-                response_deserializer=niraapad_dot_protos_dot_niraapad__pb2.EmptyMsg.FromString,
-                )
         self.StaticGetter = channel.unary_unary(
                 '/Niraapad/StaticGetter',
                 request_serializer=niraapad_dot_protos_dot_niraapad__pb2.StaticGetterReq.SerializeToString,
                 response_deserializer=niraapad_dot_protos_dot_niraapad__pb2.StaticGetterResp.FromString,
-                )
-        self.StaticGetterTrace = channel.unary_unary(
-                '/Niraapad/StaticGetterTrace',
-                request_serializer=niraapad_dot_protos_dot_niraapad__pb2.StaticGetterTraceMsg.SerializeToString,
-                response_deserializer=niraapad_dot_protos_dot_niraapad__pb2.EmptyMsg.FromString,
                 )
         self.StaticSetter = channel.unary_unary(
                 '/Niraapad/StaticSetter',
                 request_serializer=niraapad_dot_protos_dot_niraapad__pb2.StaticSetterReq.SerializeToString,
                 response_deserializer=niraapad_dot_protos_dot_niraapad__pb2.StaticSetterResp.FromString,
                 )
-        self.StaticSetterTrace = channel.unary_unary(
-                '/Niraapad/StaticSetterTrace',
-                request_serializer=niraapad_dot_protos_dot_niraapad__pb2.StaticSetterTraceMsg.SerializeToString,
-                response_deserializer=niraapad_dot_protos_dot_niraapad__pb2.EmptyMsg.FromString,
-                )
         self.Initialize = channel.unary_unary(
                 '/Niraapad/Initialize',
                 request_serializer=niraapad_dot_protos_dot_niraapad__pb2.InitializeReq.SerializeToString,
                 response_deserializer=niraapad_dot_protos_dot_niraapad__pb2.InitializeResp.FromString,
-                )
-        self.InitializeTrace = channel.unary_unary(
-                '/Niraapad/InitializeTrace',
-                request_serializer=niraapad_dot_protos_dot_niraapad__pb2.InitializeTraceMsg.SerializeToString,
-                response_deserializer=niraapad_dot_protos_dot_niraapad__pb2.EmptyMsg.FromString,
                 )
         self.Uninitialize = channel.unary_unary(
                 '/Niraapad/Uninitialize',
                 request_serializer=niraapad_dot_protos_dot_niraapad__pb2.UninitializeReq.SerializeToString,
                 response_deserializer=niraapad_dot_protos_dot_niraapad__pb2.UninitializeResp.FromString,
                 )
-        self.UninitializeTrace = channel.unary_unary(
-                '/Niraapad/UninitializeTrace',
-                request_serializer=niraapad_dot_protos_dot_niraapad__pb2.UninitializeTraceMsg.SerializeToString,
-                response_deserializer=niraapad_dot_protos_dot_niraapad__pb2.EmptyMsg.FromString,
-                )
         self.GenericGetter = channel.unary_unary(
                 '/Niraapad/GenericGetter',
                 request_serializer=niraapad_dot_protos_dot_niraapad__pb2.GenericGetterReq.SerializeToString,
                 response_deserializer=niraapad_dot_protos_dot_niraapad__pb2.GenericGetterResp.FromString,
-                )
-        self.GenericGetterTrace = channel.unary_unary(
-                '/Niraapad/GenericGetterTrace',
-                request_serializer=niraapad_dot_protos_dot_niraapad__pb2.GenericGetterTraceMsg.SerializeToString,
-                response_deserializer=niraapad_dot_protos_dot_niraapad__pb2.EmptyMsg.FromString,
                 )
         self.GenericSetter = channel.unary_unary(
                 '/Niraapad/GenericSetter',
                 request_serializer=niraapad_dot_protos_dot_niraapad__pb2.GenericSetterReq.SerializeToString,
                 response_deserializer=niraapad_dot_protos_dot_niraapad__pb2.GenericSetterResp.FromString,
                 )
-        self.GenericSetterTrace = channel.unary_unary(
-                '/Niraapad/GenericSetterTrace',
-                request_serializer=niraapad_dot_protos_dot_niraapad__pb2.GenericSetterTraceMsg.SerializeToString,
-                response_deserializer=niraapad_dot_protos_dot_niraapad__pb2.EmptyMsg.FromString,
-                )
         self.GenericMethod = channel.unary_unary(
                 '/Niraapad/GenericMethod',
                 request_serializer=niraapad_dot_protos_dot_niraapad__pb2.GenericMethodReq.SerializeToString,
                 response_deserializer=niraapad_dot_protos_dot_niraapad__pb2.GenericMethodResp.FromString,
                 )
-        self.GenericMethodTrace = channel.unary_unary(
-                '/Niraapad/GenericMethodTrace',
-                request_serializer=niraapad_dot_protos_dot_niraapad__pb2.GenericMethodTraceMsg.SerializeToString,
+        self.BatchedTrace = channel.unary_unary(
+                '/Niraapad/BatchedTrace',
+                request_serializer=niraapad_dot_protos_dot_niraapad__pb2.BatchedTraceMsg.SerializeToString,
                 response_deserializer=niraapad_dot_protos_dot_niraapad__pb2.EmptyMsg.FromString,
                 )
 
@@ -132,21 +97,7 @@ class NiraapadServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
-    def StaticMethodTrace(self, request, context):
-        """Used for all static and class methods
-        """
-        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
-        context.set_details('Method not implemented!')
-        raise NotImplementedError('Method not implemented!')
-
     def StaticGetter(self, request, context):
-        """Used for all static and class variable read access
-        """
-        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
-        context.set_details('Method not implemented!')
-        raise NotImplementedError('Method not implemented!')
-
-    def StaticGetterTrace(self, request, context):
         """Used for all static and class variable read access
         """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
@@ -160,21 +111,7 @@ class NiraapadServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
-    def StaticSetterTrace(self, request, context):
-        """Used for all static and class variable write access
-        """
-        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
-        context.set_details('Method not implemented!')
-        raise NotImplementedError('Method not implemented!')
-
     def Initialize(self, request, context):
-        """Used for the __init__ method
-        """
-        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
-        context.set_details('Method not implemented!')
-        raise NotImplementedError('Method not implemented!')
-
-    def InitializeTrace(self, request, context):
         """Used for the __init__ method
         """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
@@ -188,21 +125,7 @@ class NiraapadServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
-    def UninitializeTrace(self, request, context):
-        """Used for the __del__ method
-        """
-        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
-        context.set_details('Method not implemented!')
-        raise NotImplementedError('Method not implemented!')
-
     def GenericGetter(self, request, context):
-        """Used for property getters
-        """
-        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
-        context.set_details('Method not implemented!')
-        raise NotImplementedError('Method not implemented!')
-
-    def GenericGetterTrace(self, request, context):
         """Used for property getters
         """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
@@ -216,13 +139,6 @@ class NiraapadServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
-    def GenericSetterTrace(self, request, context):
-        """Used for property setters
-        """
-        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
-        context.set_details('Method not implemented!')
-        raise NotImplementedError('Method not implemented!')
-
     def GenericMethod(self, request, context):
         """Used for the remaining methods
         """
@@ -230,8 +146,8 @@ class NiraapadServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
-    def GenericMethodTrace(self, request, context):
-        """Used for the remaining methods
+    def BatchedTrace(self, request, context):
+        """Used for sending traces (can be a batch or a single trace)
         """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -255,79 +171,44 @@ def add_NiraapadServicer_to_server(servicer, server):
                     request_deserializer=niraapad_dot_protos_dot_niraapad__pb2.StaticMethodReq.FromString,
                     response_serializer=niraapad_dot_protos_dot_niraapad__pb2.StaticMethodResp.SerializeToString,
             ),
-            'StaticMethodTrace': grpc.unary_unary_rpc_method_handler(
-                    servicer.StaticMethodTrace,
-                    request_deserializer=niraapad_dot_protos_dot_niraapad__pb2.StaticMethodTraceMsg.FromString,
-                    response_serializer=niraapad_dot_protos_dot_niraapad__pb2.EmptyMsg.SerializeToString,
-            ),
             'StaticGetter': grpc.unary_unary_rpc_method_handler(
                     servicer.StaticGetter,
                     request_deserializer=niraapad_dot_protos_dot_niraapad__pb2.StaticGetterReq.FromString,
                     response_serializer=niraapad_dot_protos_dot_niraapad__pb2.StaticGetterResp.SerializeToString,
-            ),
-            'StaticGetterTrace': grpc.unary_unary_rpc_method_handler(
-                    servicer.StaticGetterTrace,
-                    request_deserializer=niraapad_dot_protos_dot_niraapad__pb2.StaticGetterTraceMsg.FromString,
-                    response_serializer=niraapad_dot_protos_dot_niraapad__pb2.EmptyMsg.SerializeToString,
             ),
             'StaticSetter': grpc.unary_unary_rpc_method_handler(
                     servicer.StaticSetter,
                     request_deserializer=niraapad_dot_protos_dot_niraapad__pb2.StaticSetterReq.FromString,
                     response_serializer=niraapad_dot_protos_dot_niraapad__pb2.StaticSetterResp.SerializeToString,
             ),
-            'StaticSetterTrace': grpc.unary_unary_rpc_method_handler(
-                    servicer.StaticSetterTrace,
-                    request_deserializer=niraapad_dot_protos_dot_niraapad__pb2.StaticSetterTraceMsg.FromString,
-                    response_serializer=niraapad_dot_protos_dot_niraapad__pb2.EmptyMsg.SerializeToString,
-            ),
             'Initialize': grpc.unary_unary_rpc_method_handler(
                     servicer.Initialize,
                     request_deserializer=niraapad_dot_protos_dot_niraapad__pb2.InitializeReq.FromString,
                     response_serializer=niraapad_dot_protos_dot_niraapad__pb2.InitializeResp.SerializeToString,
-            ),
-            'InitializeTrace': grpc.unary_unary_rpc_method_handler(
-                    servicer.InitializeTrace,
-                    request_deserializer=niraapad_dot_protos_dot_niraapad__pb2.InitializeTraceMsg.FromString,
-                    response_serializer=niraapad_dot_protos_dot_niraapad__pb2.EmptyMsg.SerializeToString,
             ),
             'Uninitialize': grpc.unary_unary_rpc_method_handler(
                     servicer.Uninitialize,
                     request_deserializer=niraapad_dot_protos_dot_niraapad__pb2.UninitializeReq.FromString,
                     response_serializer=niraapad_dot_protos_dot_niraapad__pb2.UninitializeResp.SerializeToString,
             ),
-            'UninitializeTrace': grpc.unary_unary_rpc_method_handler(
-                    servicer.UninitializeTrace,
-                    request_deserializer=niraapad_dot_protos_dot_niraapad__pb2.UninitializeTraceMsg.FromString,
-                    response_serializer=niraapad_dot_protos_dot_niraapad__pb2.EmptyMsg.SerializeToString,
-            ),
             'GenericGetter': grpc.unary_unary_rpc_method_handler(
                     servicer.GenericGetter,
                     request_deserializer=niraapad_dot_protos_dot_niraapad__pb2.GenericGetterReq.FromString,
                     response_serializer=niraapad_dot_protos_dot_niraapad__pb2.GenericGetterResp.SerializeToString,
-            ),
-            'GenericGetterTrace': grpc.unary_unary_rpc_method_handler(
-                    servicer.GenericGetterTrace,
-                    request_deserializer=niraapad_dot_protos_dot_niraapad__pb2.GenericGetterTraceMsg.FromString,
-                    response_serializer=niraapad_dot_protos_dot_niraapad__pb2.EmptyMsg.SerializeToString,
             ),
             'GenericSetter': grpc.unary_unary_rpc_method_handler(
                     servicer.GenericSetter,
                     request_deserializer=niraapad_dot_protos_dot_niraapad__pb2.GenericSetterReq.FromString,
                     response_serializer=niraapad_dot_protos_dot_niraapad__pb2.GenericSetterResp.SerializeToString,
             ),
-            'GenericSetterTrace': grpc.unary_unary_rpc_method_handler(
-                    servicer.GenericSetterTrace,
-                    request_deserializer=niraapad_dot_protos_dot_niraapad__pb2.GenericSetterTraceMsg.FromString,
-                    response_serializer=niraapad_dot_protos_dot_niraapad__pb2.EmptyMsg.SerializeToString,
-            ),
             'GenericMethod': grpc.unary_unary_rpc_method_handler(
                     servicer.GenericMethod,
                     request_deserializer=niraapad_dot_protos_dot_niraapad__pb2.GenericMethodReq.FromString,
                     response_serializer=niraapad_dot_protos_dot_niraapad__pb2.GenericMethodResp.SerializeToString,
             ),
-            'GenericMethodTrace': grpc.unary_unary_rpc_method_handler(
-                    servicer.GenericMethodTrace,
-                    request_deserializer=niraapad_dot_protos_dot_niraapad__pb2.GenericMethodTraceMsg.FromString,
+            'BatchedTrace': grpc.unary_unary_rpc_method_handler(
+                    servicer.BatchedTrace,
+                    request_deserializer=niraapad_dot_protos_dot_niraapad__pb2.BatchedTraceMsg.FromString,
                     response_serializer=niraapad_dot_protos_dot_niraapad__pb2.EmptyMsg.SerializeToString,
             ),
     }
@@ -392,23 +273,6 @@ class Niraapad(object):
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
     @staticmethod
-    def StaticMethodTrace(request,
-            target,
-            options=(),
-            channel_credentials=None,
-            call_credentials=None,
-            insecure=False,
-            compression=None,
-            wait_for_ready=None,
-            timeout=None,
-            metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/Niraapad/StaticMethodTrace',
-            niraapad_dot_protos_dot_niraapad__pb2.StaticMethodTraceMsg.SerializeToString,
-            niraapad_dot_protos_dot_niraapad__pb2.EmptyMsg.FromString,
-            options, channel_credentials,
-            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
-
-    @staticmethod
     def StaticGetter(request,
             target,
             options=(),
@@ -422,23 +286,6 @@ class Niraapad(object):
         return grpc.experimental.unary_unary(request, target, '/Niraapad/StaticGetter',
             niraapad_dot_protos_dot_niraapad__pb2.StaticGetterReq.SerializeToString,
             niraapad_dot_protos_dot_niraapad__pb2.StaticGetterResp.FromString,
-            options, channel_credentials,
-            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
-
-    @staticmethod
-    def StaticGetterTrace(request,
-            target,
-            options=(),
-            channel_credentials=None,
-            call_credentials=None,
-            insecure=False,
-            compression=None,
-            wait_for_ready=None,
-            timeout=None,
-            metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/Niraapad/StaticGetterTrace',
-            niraapad_dot_protos_dot_niraapad__pb2.StaticGetterTraceMsg.SerializeToString,
-            niraapad_dot_protos_dot_niraapad__pb2.EmptyMsg.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
@@ -460,23 +307,6 @@ class Niraapad(object):
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
     @staticmethod
-    def StaticSetterTrace(request,
-            target,
-            options=(),
-            channel_credentials=None,
-            call_credentials=None,
-            insecure=False,
-            compression=None,
-            wait_for_ready=None,
-            timeout=None,
-            metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/Niraapad/StaticSetterTrace',
-            niraapad_dot_protos_dot_niraapad__pb2.StaticSetterTraceMsg.SerializeToString,
-            niraapad_dot_protos_dot_niraapad__pb2.EmptyMsg.FromString,
-            options, channel_credentials,
-            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
-
-    @staticmethod
     def Initialize(request,
             target,
             options=(),
@@ -490,23 +320,6 @@ class Niraapad(object):
         return grpc.experimental.unary_unary(request, target, '/Niraapad/Initialize',
             niraapad_dot_protos_dot_niraapad__pb2.InitializeReq.SerializeToString,
             niraapad_dot_protos_dot_niraapad__pb2.InitializeResp.FromString,
-            options, channel_credentials,
-            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
-
-    @staticmethod
-    def InitializeTrace(request,
-            target,
-            options=(),
-            channel_credentials=None,
-            call_credentials=None,
-            insecure=False,
-            compression=None,
-            wait_for_ready=None,
-            timeout=None,
-            metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/Niraapad/InitializeTrace',
-            niraapad_dot_protos_dot_niraapad__pb2.InitializeTraceMsg.SerializeToString,
-            niraapad_dot_protos_dot_niraapad__pb2.EmptyMsg.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
@@ -528,23 +341,6 @@ class Niraapad(object):
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
     @staticmethod
-    def UninitializeTrace(request,
-            target,
-            options=(),
-            channel_credentials=None,
-            call_credentials=None,
-            insecure=False,
-            compression=None,
-            wait_for_ready=None,
-            timeout=None,
-            metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/Niraapad/UninitializeTrace',
-            niraapad_dot_protos_dot_niraapad__pb2.UninitializeTraceMsg.SerializeToString,
-            niraapad_dot_protos_dot_niraapad__pb2.EmptyMsg.FromString,
-            options, channel_credentials,
-            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
-
-    @staticmethod
     def GenericGetter(request,
             target,
             options=(),
@@ -558,23 +354,6 @@ class Niraapad(object):
         return grpc.experimental.unary_unary(request, target, '/Niraapad/GenericGetter',
             niraapad_dot_protos_dot_niraapad__pb2.GenericGetterReq.SerializeToString,
             niraapad_dot_protos_dot_niraapad__pb2.GenericGetterResp.FromString,
-            options, channel_credentials,
-            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
-
-    @staticmethod
-    def GenericGetterTrace(request,
-            target,
-            options=(),
-            channel_credentials=None,
-            call_credentials=None,
-            insecure=False,
-            compression=None,
-            wait_for_ready=None,
-            timeout=None,
-            metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/Niraapad/GenericGetterTrace',
-            niraapad_dot_protos_dot_niraapad__pb2.GenericGetterTraceMsg.SerializeToString,
-            niraapad_dot_protos_dot_niraapad__pb2.EmptyMsg.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
@@ -596,23 +375,6 @@ class Niraapad(object):
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
     @staticmethod
-    def GenericSetterTrace(request,
-            target,
-            options=(),
-            channel_credentials=None,
-            call_credentials=None,
-            insecure=False,
-            compression=None,
-            wait_for_ready=None,
-            timeout=None,
-            metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/Niraapad/GenericSetterTrace',
-            niraapad_dot_protos_dot_niraapad__pb2.GenericSetterTraceMsg.SerializeToString,
-            niraapad_dot_protos_dot_niraapad__pb2.EmptyMsg.FromString,
-            options, channel_credentials,
-            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
-
-    @staticmethod
     def GenericMethod(request,
             target,
             options=(),
@@ -630,7 +392,7 @@ class Niraapad(object):
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
     @staticmethod
-    def GenericMethodTrace(request,
+    def BatchedTrace(request,
             target,
             options=(),
             channel_credentials=None,
@@ -640,8 +402,8 @@ class Niraapad(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/Niraapad/GenericMethodTrace',
-            niraapad_dot_protos_dot_niraapad__pb2.GenericMethodTraceMsg.SerializeToString,
+        return grpc.experimental.unary_unary(request, target, '/Niraapad/BatchedTrace',
+            niraapad_dot_protos_dot_niraapad__pb2.BatchedTraceMsg.SerializeToString,
             niraapad_dot_protos_dot_niraapad__pb2.EmptyMsg.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
