@@ -13,55 +13,40 @@ service Niraapad {
   // Used for all static and class methods
   rpc StaticMethod(StaticMethodReq) returns (StaticMethodResp) {}
 
-  // Used for all static and class methods
-  rpc StaticMethodTrace(StaticMethodTraceMsg) returns (EmptyMsg) {}
-
   // Used for all static and class variable read access
   rpc StaticGetter(StaticGetterReq) returns (StaticGetterResp) {}
-
-  // Used for all static and class variable read access
-  rpc StaticGetterTrace(StaticGetterTraceMsg) returns (EmptyMsg) {}
 
   // Used for all static and class variable write access
   rpc StaticSetter(StaticSetterReq) returns (StaticSetterResp) {}
 
-  // Used for all static and class variable write access
-  rpc StaticSetterTrace(StaticSetterTraceMsg) returns (EmptyMsg) {}
-
   // Used for the __init__ method
   rpc Initialize(InitializeReq) returns (InitializeResp) {}
 
-  // Used for the __init__ method
-  rpc InitializeTrace(InitializeTraceMsg) returns (EmptyMsg) {}
-  
   // Used for the __del__ method
   rpc Uninitialize(UninitializeReq) returns (UninitializeResp) {}
-
-  // Used for the __del__ method
-  rpc UninitializeTrace(UninitializeTraceMsg) returns (EmptyMsg) {}
 
   // Used for property getters
   rpc GenericGetter(GenericGetterReq) returns (GenericGetterResp) {}
 
-  // Used for property getters
-  rpc GenericGetterTrace(GenericGetterTraceMsg) returns (EmptyMsg) {}
-
   // Used for property setters
   rpc GenericSetter(GenericSetterReq) returns (GenericSetterResp) {}
-
-  // Used for property setters
-  rpc GenericSetterTrace(GenericSetterTraceMsg) returns (EmptyMsg) {}
 
   // Used for the remaining methods
   rpc GenericMethod(GenericMethodReq) returns (GenericMethodResp) {}
 
-  // Used for the remaining methods
-  rpc GenericMethodTrace(GenericMethodTraceMsg) returns (EmptyMsg) {}
+  // Used for sending traces (can be a batch or a single trace)
+  rpc BatchedTrace(BatchedTraceMsg) returns (EmptyMsg) {}
 }
 
 message CommandProfile {
   int32 mo = 1;
   float exec_time_sec = 2; 
+}
+
+message TimeProfile {
+  uint64 id = 1;
+  string arrival_time = 2;
+  string departure_time = 3;
 }
 
 message StartServerTraceMsg {
@@ -100,6 +85,8 @@ message StaticMethodReq {
   string method_name = 3;
   bytes args = 4;
   bytes kwargs = 5;
+  uint64 id = 6;
+  repeated TimeProfile time_profiles = 7;
 }
 
 message StaticMethodResp {
@@ -117,6 +104,8 @@ message StaticGetterReq {
   string arrival_time = 1;
   string backend_type = 2;
   string property_name = 3;
+  uint64 id = 4;
+  repeated TimeProfile time_profiles = 5;
 }
 
 message StaticGetterResp {
@@ -135,6 +124,8 @@ message StaticSetterReq {
   string backend_type = 2;
   string property_name = 3;
   bytes value = 4;
+  uint64 id = 5;
+  repeated TimeProfile time_profiles = 6;
 }
 
 message StaticSetterResp {
@@ -154,6 +145,8 @@ message InitializeReq {
   bytes args = 4;
   bytes kwargs = 5;
   bytes stacktrace = 6;
+  uint64 id = 7;
+  repeated TimeProfile time_profiles = 8;
 }
 
 message InitializeResp {
@@ -170,6 +163,8 @@ message UninitializeReq {
   string arrival_time = 1;
   string backend_type = 2;
   int32 backend_instance_id = 3;
+  uint64 id = 4;
+  repeated TimeProfile time_profiles = 5;
 }
 
 message UninitializeResp {
@@ -187,6 +182,8 @@ message GenericGetterReq {
   string backend_type = 2;
   int32 backend_instance_id = 3;
   string property_name = 4;
+  uint64 id = 5;
+  repeated TimeProfile time_profiles = 6;
 }
 
 message GenericGetterResp {
@@ -206,6 +203,8 @@ message GenericSetterReq {
   int32 backend_instance_id = 3;
   string property_name = 4;
   bytes value = 5;
+  uint64 id = 6;
+  repeated TimeProfile time_profiles = 7;
 }
 
 message GenericSetterResp {
@@ -225,6 +224,8 @@ message GenericMethodReq {
   string method_name = 4;
   bytes args = 5;
   bytes kwargs = 6;
+  uint64 id = 7;
+  repeated TimeProfile time_profiles = 8;
 }
 
 message GenericMethodResp {
@@ -236,6 +237,12 @@ message GenericMethodTraceMsg {
   GenericMethodReq req = 1;
   GenericMethodResp resp = 2;
   CommandProfile profile = 3;
+}
+
+// Not using repeated for trace_msgs since each msg
+// may be of a different type
+message BatchedTraceMsg {
+  bytes trace_msgs = 1;
 }
 
 // Trace header helps identify the trace length
