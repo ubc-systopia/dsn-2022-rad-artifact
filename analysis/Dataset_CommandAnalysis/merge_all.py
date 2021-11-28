@@ -2,12 +2,30 @@
 import pandas as pd
 import os
 import glob
+import argparse
 
-idir="<dataset_location_path_name>"
-ifile_ext=".csv"
+parser = argparse.ArgumentParser()
+parser.add_argument(
+    '-I',
+    '--idir',
+    help='Provide path to the directory containing the .csv files. Default is the current directory.',
+    type=str)
+parser.add_argument(
+    '-E',
+    '--ifile_ext',
+    default='.csv',
+    help='Default file extension is ".csv". If the default extension is not used, provide an alternative.',
+    type=str)
+parser.add_argument(
+    '-O',
+    '--ofile',
+    default='./concat_all.csv',
+    help='Output file path where the merged data will be stored. Default is "./concat_all.csv".',
+    type=str)
+args = parser.parse_args()
 
 def main():
-    file_list = os.listdir(idir)
+    file_list = os.listdir(args.idir)
     print(file_list)
 
     # Experiment,Timestamp,Module,Method_Name,Arguments,Responses,Exceptions,Anomaly (Yes/No)
@@ -15,7 +33,7 @@ def main():
     li = []
     for item in file_list:
         print(item)
-        df = pd.read_csv(idir +   item, index_col=False, header = 0)
+        df = pd.read_csv(args.idir +   item, index_col=False, header = 0)
         if (len(df.index) > 1):
             print(item)
             print(list(df))
@@ -28,18 +46,19 @@ def main():
 
     frame = pd.concat(li, axis=0, ignore_index=True)
 
-    ofile = idir + "concat_all.csv"
-    files_present = glob.glob(ofile)
+    # ofile = args.idir + "concat_all.csv"
+    print("ofile =", args.ofile)
+    files_present = glob.glob(args.ofile)
 
-    print("... %s" %ofile)
+    print("... %s" %args.ofile)
     if not files_present:
-        frame.to_csv(ofile, index=False)
-        print(ofile)
+        frame.to_csv(args.ofile, index=False)
+        print(args.ofile)
         print(list(frame))
     else:
         print('WARNING: This file already exists!')
-        os.remove(ofile)
-        print("New File saved: %s" %ofile)
+        os.remove(args.ofile)
+        print("New File saved: %s" %args.ofile)
         print(list(frame))
 
     """
