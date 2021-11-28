@@ -89,7 +89,7 @@ def module_freq():
     plt.show()
     plt.clf()
 
-    plt.rcParams["figure.figsize"] = (390, 120)
+    #plt.rcParams["figure.figsize"] = (390, 120)
     sns.histplot(data=df_new, x="Method_Name", hue="Module", multiple="stack")
     plt.xticks(rotation=45)
     plt.xlabel("Method Name", fontsize = 20)
@@ -140,7 +140,7 @@ def module_freq():
     plt.yscale("log")
     plt.xlabel("Command Type", fontsize = 20)
     plt.ylabel("Count", fontsize=20)
-    plt.legend(loc='upper right', labels=["Quantos (" + str(df_new.groupby(['Module']).size()[0]) + ")", "C9 (" + str(df_new.groupby(['Module']).size()[1]) + ")", "IKA (" + str(df_new.groupby(['Module']).size()[2]) + ")", "Tecan (" + str(df_new.groupby(['Module']).size()[3]) + ")", "UR3Arm (" + str(df_new.groupby(['Module']).size()[4]) + ")"])
+    plt.legend(loc='upper right', labels=["UR3Arm (" + str(df_new.groupby(['Module']).size()[4]) + ")", "C9 (" + str(df_new.groupby(['Module']).size()[1]) + ")", "IKA (" + str(df_new.groupby(['Module']).size()[2]) + ")", "Tecan (" + str(df_new.groupby(['Module']).size()[3]) + ")", "Quantos (" + str(df_new.groupby(['Module']).size()[0]) + ")"])
     g.legend_.set_title(None)
     plt.tight_layout()
     plt.savefig("./method_name_loghistogram_hue_noinit.pdf")
