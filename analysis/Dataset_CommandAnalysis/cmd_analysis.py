@@ -8,7 +8,7 @@ from matplotlib.pyplot import figure
 
 
 idir = "<dataset_location_path_name>"
-ifile = "concat_all.csv"
+ifile = "\\concat_all.csv"
 
 
 def change_width(ax, new_value):
@@ -72,7 +72,7 @@ def module_freq():
     plt.xticks(rotation=90)
     plt.tight_layout()
     plt.savefig("./module_histogram.pdf")
-    plt.show()
+    #plt.show()
     plt.clf()
 
     fig, ax = plt.subplots()
@@ -86,7 +86,7 @@ def module_freq():
     plt.xticks(rotation=90)
     plt.tight_layout()
     plt.savefig("./module_histogram_log.pdf")
-    plt.show()
+    #plt.show()
     plt.clf()
 
     #plt.rcParams["figure.figsize"] = (390, 120)
@@ -96,7 +96,7 @@ def module_freq():
     plt.ylabel("Count", fontsize=20)
     plt.tight_layout()
     plt.savefig("./method_name_histogram.pdf")
-    plt.show()
+    #plt.show()
     plt.clf()
 
     print(df_new.groupby(['Method_Name', 'Abbr_Module']).size())
@@ -115,7 +115,7 @@ def module_freq():
     plt.xticks(rotation=90)
     plt.tight_layout()
     plt.savefig("./method_name_reduced_loghistogram.pdf")
-    plt.show()
+    #plt.show()
     plt.clf()
 
     g1_noinit=g1[g1["Method_Name"] != "_init_"]
@@ -127,11 +127,12 @@ def module_freq():
     plt.xticks(rotation=90)
     plt.tight_layout()
     plt.savefig("./method_name_reduced_loghistogram_noinit.pdf")
-    plt.show()
+    #plt.show()
     plt.clf()
 
+    plt.rcParams["figure.figsize"] = (390, 150)
     df_new_noinit = df_new[df_new["Method_Name"] != "_init_"]
-    df_new_noinit.sort_values("Module",inplace=True)
+    df_new_noinit.sort_values("Module",ascending=False, inplace=True)
     sns.color_palette("deep")
     sns.set_theme(style="darkgrid")
     g=sns.histplot(data=df_new_noinit, x="Method_Name", hue="Abbr_Module") 
@@ -140,7 +141,7 @@ def module_freq():
     plt.yscale("log")
     plt.xlabel("Command Type", fontsize = 20)
     plt.ylabel("Count", fontsize=20)
-    plt.legend(loc='upper right', labels=["UR3Arm (" + str(df_new.groupby(['Module']).size()[4]) + ")", "C9 (" + str(df_new.groupby(['Module']).size()[1]) + ")", "IKA (" + str(df_new.groupby(['Module']).size()[2]) + ")", "Tecan (" + str(df_new.groupby(['Module']).size()[3]) + ")", "Quantos (" + str(df_new.groupby(['Module']).size()[0]) + ")"])
+    plt.legend(loc='upper right', labels=["Quantos (" + str(df_new.groupby(['Module']).size()[0]) + ")",  "C9 (" + str(df_new.groupby(['Module']).size()[1]) + ")", "IKA (" + str(df_new.groupby(['Module']).size()[2]) + ")", "Tecan (" + str(df_new.groupby(['Module']).size()[3]) + ")", "UR3Arm (" + str(df_new.groupby(['Module']).size()[4]) + ")"])
     g.legend_.set_title(None)
     plt.tight_layout()
     plt.savefig("./method_name_loghistogram_hue_noinit.pdf")
