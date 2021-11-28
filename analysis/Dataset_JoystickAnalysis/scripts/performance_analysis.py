@@ -11,6 +11,7 @@ import argparse
 from datetime import datetime
 
 from matplotlib import pyplot as plt
+from matplotlib import ticker
 
 parser = argparse.ArgumentParser()
 parser.add_argument(
@@ -42,6 +43,7 @@ def plot_resp_times(source_files):
         dfs = []
         for source_file in source_files:
             if 'SMALL' in source_file: continue
+            if 'LARGE' in source_file: continue
             # print("Parsing", source_file)
 
             col_names=['id','ts', 'module', 'method', 'arguments', 'responses', 'exceptions', 'exe_time_sec', 'arrival_time', 'departure_time']
@@ -57,9 +59,9 @@ def plot_resp_times(source_files):
             if 'LARGE' in source_file:
                 df['source'] = 'MB-REMOTE-' + source_file.split('-')[0][-1]
             elif 'DIRECT' in source_file:
-                df['source'] = 'DIRECT-' + source_file.split('-')[0][-1]
+                df['source'] = 'D' + source_file.split('-')[0][-1]
             else:
-                df['source'] = 'MB-LOCAL-' + source_file.split('-')[0][-1]
+                df['source'] = 'R' + source_file.split('-')[0][-1]
 
             dfs.append(df)
         
@@ -68,18 +70,19 @@ def plot_resp_times(source_files):
         mdf.sort_values('source', inplace=True)
 
         plt.figure(figsize=(6,3))
+        plt.grid(True, which='both', linestyle='dashed')
         ax = seaborn.boxplot(x='source', y='value', hue='variable', data=mdf)
+        ax.set_axisbelow(True)
         # ax.set_ylim((0, cdf['resp_time_ms'].max()))
-        ax.set_ylim((0, 100))
+        ax.set_ylim((4, 40))
         ax.get_legend().remove()
         ax.set(xlabel=None)
         plotfile = args.target + "RESPONSE-TIMES-FOR-" + command + ".pdf"
-        # plt.xlabel("Scenarios (Focus: %s commands)" % command)
+        plt.xlabel("Command Modes and Sequences (D = DIRECT, R = REMOTE)")
         plt.ylabel("Response Time (ms)")
         plt.xticks(rotation=90, fontsize=10)
         # plt.title(plotfile.split('/')[-1].split('.')[0])
-        # plt.yscale('log')
-        plt.grid(True, which='both')
+        plt.yscale('log')
         plt.tight_layout()
         # plt.show()
         plt.savefig(plotfile)
