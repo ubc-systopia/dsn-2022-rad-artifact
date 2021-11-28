@@ -17,6 +17,7 @@ ax.plot(ts, w3, label='W3', linestyle='dashed')
 ax.legend()
 plt.xlabel('Time(ms)')
 plt.ylabel('Current(ma)')
+plt.tight_layout()
 plt.savefig("j0-weight.pdf")
 
 w1 = data['W1_1'].tolist()
@@ -31,6 +32,7 @@ ax.plot(ts, w3, label='W3', linestyle='dashed')
 ax.legend()
 plt.xlabel('Time(ms)')
 plt.ylabel('Current(ma)')
+plt.tight_layout()
 plt.savefig("j1-weight.pdf")
 
 
@@ -47,6 +49,7 @@ ax.plot(ts, w3, label='W3', linestyle='dashed')
 ax.legend()
 plt.xlabel('Time(ms)')
 plt.ylabel('Current(ma)')
+plt.tight_layout()
 plt.savefig("j2-weight.pdf")
 
 
@@ -63,6 +66,7 @@ ax.plot(ts, w3, label='W3', linestyle='dashed')
 ax.legend()
 plt.xlabel('Time(ms)')
 plt.ylabel('Current(ma)')
+plt.tight_layout()
 plt.savefig("j3-weight.pdf")
 
 
@@ -79,6 +83,7 @@ ax.plot(ts, w3, label='W3', linestyle='dashed')
 ax.legend()
 plt.xlabel('Time(ms)')
 plt.ylabel('Current(ma)')
+plt.tight_layout()
 plt.savefig("j4-weight.pdf")
 
 
@@ -95,6 +100,7 @@ ax.plot(ts, w3, label='W3', linestyle='dashed')
 ax.legend()
 plt.xlabel('Time(ms)')
 plt.ylabel('Current(ma)')
+plt.tight_layout()
 plt.savefig("j5-weight.pdf")
 
 
@@ -115,6 +121,7 @@ ax.plot(ts, V3, label='V3', linestyle='dashed')
 ax.legend()
 plt.xlabel('Time(ms)')
 plt.ylabel('Current(ma)')
+plt.tight_layout()
 plt.savefig("j0-vel.pdf")
 
 
@@ -133,6 +140,7 @@ ax.plot(ts, V3, label='V3', linestyle='dashed')
 ax.legend()
 plt.xlabel('Time(ms)')
 plt.ylabel('Current(ma)')
+plt.tight_layout()
 plt.savefig("j1-vel.pdf")
 
 
@@ -149,6 +157,7 @@ ax.plot(ts, V3, label='V3', linestyle='dashed')
 ax.legend()
 plt.xlabel('Time(ms)')
 plt.ylabel('Current(ma)')
+plt.tight_layout()
 plt.savefig("j2-vel.pdf")
 
 
@@ -165,6 +174,7 @@ ax.plot(ts, V3, label='V3', linestyle='dashed')
 ax.legend()
 plt.xlabel('Time(ms)')
 plt.ylabel('Current(ma)')
+plt.tight_layout()
 plt.savefig("j3-vel.pdf")
 
 V1 = data['V100_4'].tolist()
@@ -180,6 +190,7 @@ ax.plot(ts, V3, label='V3', linestyle='dashed')
 ax.legend()
 plt.xlabel('Time(ms)')
 plt.ylabel('Current(ma)')
+plt.tight_layout()
 plt.savefig("j4-vel.pdf")
 
 
@@ -195,6 +206,7 @@ ax.plot(ts, V3, label='V3', linestyle='dashed')
 ax.legend()
 plt.xlabel('Time(ms)')
 plt.ylabel('Current(ma)')
+plt.tight_layout()
 plt.savefig("j5-vel.pdf")
 
 
@@ -213,6 +225,7 @@ ax.plot(ts, I3, label='Itr3', linestyle='dashed')
 ax.legend()
 plt.xlabel('Time(ms)')
 plt.ylabel('Current(ma)')
+plt.tight_layout()
 plt.savefig("j0-itr.pdf")
 
 
@@ -227,6 +240,7 @@ ax.plot(ts, I3, label='Itr3', linestyle='dashed')
 ax.legend()
 plt.xlabel('Time(ms)')
 plt.ylabel('Current(ma)')
+plt.tight_layout()
 plt.savefig("j1-itr.pdf")
 
 
@@ -241,6 +255,7 @@ ax.plot(ts, I3, label='Itr3', linestyle='dashed')
 ax.legend()
 plt.xlabel('Time(ms)')
 plt.ylabel('Current(ma)')
+plt.tight_layout()
 plt.savefig("j3-itr.pdf")
 
 I1 = data['itr1_4'].tolist()
@@ -254,6 +269,7 @@ ax.plot(ts, I3, label='Itr3', linestyle='dashed')
 ax.legend()
 plt.xlabel('Time(ms)')
 plt.ylabel('Current(ma)')
+plt.tight_layout()
 plt.savefig("j4-itr.pdf")
 
 I1 = data['itr1_5'].tolist()
@@ -267,6 +283,7 @@ ax.plot(ts, I3, label='Itr3', linestyle='dashed')
 ax.legend()
 plt.xlabel('Time(ms)')
 plt.ylabel('Current(ma)')
+plt.tight_layout()
 plt.savefig("j5-itr.pdf")
 
 
@@ -281,6 +298,7 @@ ax.plot(ts, I3, label='Itr3', linestyle='dashed')
 ax.legend()
 plt.xlabel('Time(ms)')
 plt.ylabel('Current(ma)')
+plt.tight_layout()
 plt.savefig("j2-itr.pdf")
 
 
