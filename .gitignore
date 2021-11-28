@@ -10,3 +10,4 @@ dist/*
 *.json
 *.zip
 *.png
+*.DS_Store
