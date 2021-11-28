@@ -95,7 +95,7 @@ def module_freq():
     # # # # plt.show()
     plt.clf()
 
-    plt.rcParams["figure.figsize"] = (390, 120)
+    #plt.rcParams["figure.figsize"] = (390, 120)
     sns.histplot(data=df_new, x="Method_Name", hue="Module", multiple="stack")
     plt.xticks(rotation=45)
     plt.xlabel("Method Name", fontsize = 20)
@@ -136,8 +136,10 @@ def module_freq():
     # # # # # plt.show()
     # plt.clf()
 
+    plt.rcParams["figure.figsize"] = (390, 150)
     df_new_noinit = df_new[df_new["Method_Name"] != "_init_"]
-    df_new_noinit.sort_values("Module",inplace=True)
+    
+    df_new_noinit.sort_values("Module",ascending=False, inplace=True)
     plt.figure(figsize=(12,6))
     # sns.color_palette("deep")
     # sns.set_theme(style="darkgrid")
@@ -146,18 +148,12 @@ def module_freq():
     g.set_axisbelow(True)
     plt.grid(True, which='both', linestyle='dashed', axis='y')
     plt.margins(x=0)
-    plt.xticks(rotation=90, fontsize=14)
+    plt.xticks(rotation=90, fontsize=13)
     plt.yscale("log")
-    # plt.xlabel("Command Type", fontsize = 15)
+    # plt.xlabel("Command Type", fontsize = 14)
     g.set_xlabel(None)
     plt.ylabel("Count", fontsize=15)
-    labels=[ \
-        "UR3Arm (" + str(df_new.groupby(['Module']).size()[4]) + ")", \
-        "Tecan (" + str(df_new.groupby(['Module']).size()[3]) + ")", \
-        "IKA (" + str(df_new.groupby(['Module']).size()[1]) + ")", \
-        "C9 (" + str(df_new.groupby(['Module']).size()[2]) + ")", \
-        "Quantos (" + str(df_new.groupby(['Module']).size()[0]) + ")" ]
-    plt.legend(fontsize=14, loc='upper right', ncol=3, labels=labels)
+    plt.legend(fontsize=13, loc='upper left', ncol=3, labels=["Quantos (" + str(df_new.groupby(['Module']).size()[0]) + ")",  "C9 (" + str(df_new.groupby(['Module']).size()[1]) + ")", "IKA (" + str(df_new.groupby(['Module']).size()[2]) + ")", "Tecan (" + str(df_new.groupby(['Module']).size()[3]) + ")", "UR3Arm (" + str(df_new.groupby(['Module']).size()[4]) + ")"])
     g.legend_.set_title(None)
     plt.tight_layout()
     plt.savefig("./method_name_loghistogram_hue_noinit.pdf")
