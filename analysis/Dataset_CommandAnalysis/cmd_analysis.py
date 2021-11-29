@@ -41,6 +41,94 @@ def get_name(row):
     else:
         return("UR3Arm")
 
+def get_command_label(row):
+    if row["Method_Name"] == "Q":
+        return("Q (get_status)")
+    elif row["Method_Name"] == "P":
+        return("P (set_distance)")
+    elif row["Method_Name"] == "V":
+        return("V (set_velocity)")
+    elif row["Method_Name"] == "A":
+        return("A (set_position)")
+    elif row["Method_Name"] == "I":
+        return("I (set_valve_position)")
+    elif row["Method_Name"] == "G":
+        return("G (stop_batch_command)")
+    elif row["Method_Name"] == "g":
+        return("g (start_batch_command)") 
+    elif row["Method_Name"] == "k":
+        return("k (set_dead_volume)")
+    elif row["Method_Name"] == "L":
+        return("L (set_slope_code)")
+    elif row["Method_Name"] == "Z":
+        return("Z (set_home_position)")
+
+    elif row["Method_Name"] == "IN_SP_1":
+        return("IN_SP_1 (read_rated_temperature)")
+    elif row["Method_Name"] == "IN_SP_4":
+        return("IN_SP_4 (read_rated_speed)")
+    elif row["Method_Name"] == "IN_PV_4":
+        return("IN_PV_4 (read_stirring_speed)")
+    elif row["Method_Name"] == "IN_NAME":
+        return("IN_NAME (read_device_name)")
+    elif row["Method_Name"] == "IN_PV_1":
+        return("IN_PV_1 (read_external_sensor)")
+    elif row["Method_Name"] == "IN_PV_2":
+        return("IN_PV_2 (read_hotplate_sensor)")
+    elif row["Method_Name"] == "STOP_4":
+        return("STOP_4 (stop_the_motor)")
+    elif row["Method_Name"] == "STOP_1":
+        return("STOP_1 (stop_the_heater)")
+    elif row["Method_Name"] == "OUT_SP_4":
+        return("OUT_SP_4 (set_speed)")
+    elif row["Method_Name"] == "START_4":
+        return("START_4 (start_the_motor)")
+    elif row["Method_Name"] == "OUT_SP_1":
+        return("OUT_SP_1 (set_temperature)")
+    elif row["Method_Name"] == "START_1":
+        return("START_1 (start_the_heater)")  
+
+    elif row["Method_Name"] == "HOME":
+        return("HOME (home_n9)")  
+    elif row["Method_Name"] == "CURR":
+        return("CURR (get_axis_current)")  
+    elif row["Method_Name"] == "MVNG":
+        return("MVNG (get_axes_moving_states)")  
+    elif row["Method_Name"] == "SPED":
+        return("SPED (get_speed)")  
+    elif row["Method_Name"] == "ARM":
+        return("ARM (move_arm)")  
+    elif row["Method_Name"] == "BIAS":
+        return("BIAS (set_elbow_bias)")  
+    elif row["Method_Name"] == "OUTP":
+        return("OUTP (toggle_centrifuge)")  
+    elif row["Method_Name"] == "JLEN":
+        return("JLEN (set_elbow_length)") 
+    elif row["Method_Name"] == "PING":
+        return("PING (ping)")  
+    elif row["Method_Name"] == "POS":
+        return("POS (get_position)")  
+    elif row["Method_Name"] == "MOVE":
+        return("MOVE (move_axis)")  
+
+    elif row["Method_Name"] =="zero":
+        return("zero (zero_balance_reading)") 
+    elif row["Method_Name"] == "_init_":
+        if row["Module"] == "Magnetic Stirrer":
+            return("_init_ (IKA)")
+        elif row["Module"] == "UR3Arm":
+            return("_init_ (UR3Arm)")
+        elif row["Module"] == "C9":
+            return("_init_ (C9)")
+        elif row["Module"] == "Tecan Cavro":
+            return("_init_ (Tecan)")
+        elif row["Module"] == "ArduinoAugmentedQuantos":
+            return("_init_ (Quantos)")
+    else:
+        return(row["Method_Name"])
+    
+
+
 
 # Q1,2. Module and Method_Name frequency
 def module_freq():
@@ -83,6 +171,7 @@ def module_freq():
 
     fig, ax = plt.subplots()
     df_new["Abbr_Module"]=df_new.apply(get_name,axis=1)
+    df_new["x_labels"]=df_new.apply(get_command_label,axis=1)
     #plt.rcParams["figure.figsize"] = (10, 3)
     sns.histplot(data=df_new, ax=ax, x="Abbr_Module")
     change_width(ax, .35)
@@ -98,7 +187,7 @@ def module_freq():
     #plt.rcParams["figure.figsize"] = (390, 120)
     sns.histplot(data=df_new, x="Method_Name", hue="Module", multiple="stack")
     plt.xticks(rotation=45)
-    plt.xlabel("Method Name", fontsize = 20)
+    plt.xlabel("Method_Name", fontsize = 20)
     plt.ylabel("Count", fontsize=20)
     plt.tight_layout()
     plt.savefig("./method_name_histogram.pdf")
@@ -116,7 +205,7 @@ def module_freq():
     # sns.barplot(x="Method_Name", y="count", data=g1, hue="Abbr_Module")
     # #plt.ylim(0, 100000)
     # plt.yscale("log")
-    # plt.xlabel("Method Name", fontsize = 20)
+    # plt.xlabel("Method_Name", fontsize = 20)
     # plt.ylabel("Log Count", fontsize=20)
     # plt.xticks(rotation=90)
     # plt.tight_layout()
@@ -128,7 +217,7 @@ def module_freq():
     # sns.barplot(x="Method_Name", y="count", data=g1_noinit, hue="Abbr_Module")
     # #plt.ylim(0, 100000)
     # plt.yscale("log")
-    # plt.xlabel("Method Name", fontsize = 20)
+    # plt.xlabel("Method_Name", fontsize = 20)
     # plt.ylabel("Count", fontsize=20)
     # plt.xticks(rotation=90)
     # plt.tight_layout()
@@ -139,14 +228,15 @@ def module_freq():
     plt.rcParams["figure.figsize"] = (390, 150)
     df_new_noinit = df_new[df_new["Method_Name"] != "_init_"]
     
-    df_new_noinit.sort_values("Module",ascending=False, inplace=True)
+    df_new.sort_values("Module",ascending=False, inplace=True)
     plt.figure(figsize=(12,6))
     # sns.color_palette("deep")
     # sns.set_theme(style="darkgrid")
-    g=sns.histplot(data=df_new_noinit, x="Method_Name", hue="Abbr_Module")
+    print(df_new)
+    g=sns.histplot(data=df_new, x="x_labels", hue="Abbr_Module")
     g.set_ylim((0.1, 1000000))
     g.set_axisbelow(True)
-    plt.grid(True, which='both', linestyle='dashed', axis='y')
+    plt.grid(True, which='major', linestyle='dashed', axis='y')
     plt.margins(x=0)
     plt.xticks(rotation=90, fontsize=13)
     plt.yscale("log")
@@ -157,14 +247,14 @@ def module_freq():
     g.legend_.set_title(None)
     plt.tight_layout()
     plt.savefig("./method_name_loghistogram_hue_noinit.pdf")
-    # # # # plt.show()
+    plt.show()
     plt.clf()
 
     # sns.histplot(data=df_new, x="Method_Name", hue="Module")
     # g=sns.histplot(data=df_new_noinit, x="Method_Name", hue="Abbr_Module")
     # plt.xticks(rotation=90)
     # plt.yscale("log")
-    # plt.xlabel("Method Name", fontsize = 20)
+    # plt.xlabel("Method_Name", fontsize = 20)
     # plt.ylabel("Count", fontsize=20)
     # g.legend_.set_title(None)
     # plt.tight_layout()
@@ -174,7 +264,7 @@ def module_freq():
 
     # g1_new = g1[g1["Percentage"] > 1]
     # sns.barplot(x="Method_Name", y="count", data=g1_new)
-    # plt.xlabel("Method Name", fontsize = 20)
+    # plt.xlabel("Method_Name", fontsize = 20)
     # plt.ylabel("Count", fontsize=20)
     # plt.tight_layout()
     # plt.savefig("./method_name_reduced_histogram.pdf")
@@ -197,7 +287,7 @@ def module_freq():
         sns.stripplot(data=group, x="Group_row_id", y="Method_Name", jitter=False)
         plt.title("%s Module Patterns" % group["Module"].unique())
         plt.xlabel("Timestep (Intra-Module Command Timeline)", fontsize=15)
-        plt.ylabel("Method Name", fontsize=15)
+        plt.ylabel("Method_Name", fontsize=15)
         plt.tight_layout()
         print(group["Module"].unique()[0])
         ofig = "./" + group["Module"].unique()[0] + "_method.pdf"
