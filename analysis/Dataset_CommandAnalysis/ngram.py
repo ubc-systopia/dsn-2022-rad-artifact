@@ -17,11 +17,9 @@ parser.add_argument(
     '-I',
     '--dir',
     default='./ngrams',
-    help='Input directory path to the csv folder containing ground_truth files.',
+    help='Input directory path to the csv folder containing ground_truth files. Default is "./ngrams"',
     type=str)
 args = parser.parse_args()
-
-
 
 idir=args.dir + "\\"
 ifile_ext=".csv"

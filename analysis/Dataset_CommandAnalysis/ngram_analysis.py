@@ -14,7 +14,7 @@ parser.add_argument(
     '-I',
     '--idir',
     default='./ngrams',
-    help='Input directory path which stores the csv files creating ngrams.',
+    help='Input directory path which stores the csv files creating ngrams. Default is "./ngrams".',
     type=str)
 args = parser.parse_args()
 
@@ -59,22 +59,20 @@ for file in ifiles:
     df_seq_count = pd.DataFrame(list(zip(df_top_10[len(df_top_10.columns)-2], df_top_10[len(df_top_10.columns)-3], df_top_10[len(df_top_10.columns)-1])))
     df_new = pd.concat([df_new, df_seq_count])
 
-fig, ax = plt.subplots(figsize=(15,6))
+fig, ax = plt.subplots(figsize=(12,6))
 g=sns.barplot(data=df_new, x=df_new[0], y=df_new[1], hue=df_new[2], edgecolor='black', palette="Set3",  dodge=False)
 plt.grid(True, which='major', linestyle='dashed', axis='y')
 plt.margins(x=0)
 g.set_xlabel(None)
 plt.xticks(rotation=90, fontsize=13)
-plt.ylabel("Frequency", fontsize=15)
-plt.legend(fontsize=13, loc='upper right', ncol=2)
+plt.yticks(fontsize=13)
+plt.ylabel("Count", fontsize=15)
+plt.legend(fontsize=13, loc='upper right', ncol=4)
 g.legend_.set_title(None)
 change_width(ax, 1)
 plt.ylim(0,8000)
 plt.tight_layout()
 plt.savefig("./ngram.pdf")
-plt.show()
+# plt.show()
 plt.clf()
-
-
-    
 
