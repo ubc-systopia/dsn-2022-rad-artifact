@@ -357,6 +357,7 @@ def module_freq():
     sns.pairplot(df_pair, hue="Method_Name")
     # # # # plt.show()
     """
+    
 
 #def cmd_arg_plot():
 #    # group by command and analyze the arguents
