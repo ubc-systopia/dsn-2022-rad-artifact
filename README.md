@@ -6,7 +6,7 @@ in RAD.
 This README provides the link to RAD and its description. Further, it describes the steps required to set up, build and run the RATracer along with 
 the description on running the analysis scripts for power and command data.
 
-# Resources
+## Resources
 
 ### Directory Structure
 
