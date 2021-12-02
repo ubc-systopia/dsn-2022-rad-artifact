@@ -8,9 +8,21 @@ import numpy as np
 import seaborn as sns
 from matplotlib import pyplot as plt
 
+import argparse
 
-idir="/Users/amee/Desktop/Research/CPS/dataset/experiments/dataset_csv_category/datasets/"
-ifile_ext=".csv"
+parser = argparse.ArgumentParser()
+parser.add_argument(
+    '-I',
+    '--idir',
+    help='Provide path to the directory containing the .csv files. Default is the current directory.',
+    type=str)
+parser.add_argument(
+    '-E',
+    '--ifile_ext',
+    default='.csv',
+    help='Default file extension is ".csv". If the default extension is not used, provide an alternative.',
+    type=str)
+args = parser.parse_args()
 
 file_index2 = ["20211018130924-1",  # 0
                "20211018132502-1",
@@ -49,7 +61,7 @@ def compute_transition_prob():
         leave_out_sample = item1
         for item2 in file_index2:
             if item2 != leave_out_sample:
-                df = pd.read_csv(idir + item2 + ifile_ext, index_col=False, header = 0)
+                df = pd.read_csv(args.idir + item2 + args.ifile_ext, index_col=False, header = 0)
                 if (len(df.index) > 1):
                     print(item2)
                     print(list(df))
@@ -72,19 +84,19 @@ def compute_transition_prob():
                     bigram_dict[value] = 1
 
         # Save the transition probability of the current training set using the name of the leave-one-out sample
-        with open(idir + t_regex + item1 + ".csv", 'w') as f:
+        with open(args.idir + t_regex + item1 + ".csv", 'w') as f:
             for k, v in sorted(bigram_dict.items()):
                 f.write('{}, {}, {} \n'.format(k.split(":")[0], k.split(":")[1], v))
 
-        df_transition = pd.read_csv(idir + t_regex + item1 + ".csv", index_col=False, names = ["current_state", "next_state", "count"])
+        df_transition = pd.read_csv(args.idir + t_regex + item1 + ".csv", index_col=False, names = ["current_state", "next_state", "count"])
 
         # compute the probability of each transition
         df_transition['marginal'] = df_transition['count'].groupby(df_transition['current_state']).transform('sum')
         df_transition["probability"] = df_transition['count']/df_transition['marginal']
         print(df_transition)
 
-        df_transition.to_csv(idir + t_regex + item1 + ".csv", index=False)
-        print(idir + t_regex + item1 + ".csv")
+        df_transition.to_csv(args.idir + t_regex + item1 + ".csv", index=False)
+        print(args.idir + t_regex + item1 + ".csv")
         #break
 
     return(t_regex)
@@ -105,14 +117,14 @@ def compute_perplexity_score(t_regex):
 
         print(item1)
         # Get the transition matrix
-        df_transition = pd.read_csv(idir + t_regex + item1 + ".csv", index_col=False)
+        df_transition = pd.read_csv(args.idir + t_regex + item1 + ".csv", index_col=False)
         print(df_transition)
 
         df_transition["current_state_clean"] = df_transition.apply(clean_curr_state,axis=1)
         df_transition["next_state_clean"] = df_transition.apply(clean_next_state,axis=1)
 
         # Now read the command sequence (the leave one out sample)
-        df_cmd = pd.read_csv(idir + item1 + ifile_ext, index_col=False, header=0)
+        df_cmd = pd.read_csv(args.idir + item1 + args.ifile_ext, index_col=False, header=0)
         test_procedure_list = df_cmd['Method_Name'].to_list()
 
         # Now calculate the perplexity as log probability
@@ -171,7 +183,7 @@ def main():
     plt.ylabel("Perplexity Score", fontsize=18)
     plt.tight_layout()
     plt.savefig("./perplexity_score.pdf")
-    plt.show()
+    # plt.show()
 
     #sns.scatterplot(data=df, x="ID", y="Value", hue="Procedure", style="Anomaly")
     sns.boxplot(x="Procedure", y="Value", hue="Anomaly", data=df)
@@ -179,18 +191,19 @@ def main():
     plt.ylabel("Perplexity Score")
     plt.tight_layout()
     plt.savefig("./perplexity_score_boxplot.pdf")
-    plt.show()
+    # plt.show()
+    plt.clf()
 
 
     # sns.scatterplot(data=df, x="ID", y="Value", hue="Procedure", style="Anomaly")
-    #plt.figure(figsize=(5, 2))
+    plt.figure(figsize=(3, 6))
     sns.boxplot(x="Procedure", y="Value", data=df)
     plt.xlabel("Procedure Type", fontsize=15)
     plt.ylabel("Perplexity Score", fontsize=15)
-    plt.ylim(0,6)
+    plt.ylim(1,6)
     plt.tight_layout()
-    plt.savefig("./perplexity_score_boxplot_nohue.pdf")
-    plt.show()
+    plt.savefig("./perplexity_score_boxplot_nohue.pdf",  bbox_inches='tight', pad_inches=0.1)
+    # plt.show()
 
 if __name__ == "__main__":
     main()

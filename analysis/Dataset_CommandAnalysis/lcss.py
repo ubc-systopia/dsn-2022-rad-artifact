@@ -10,12 +10,24 @@ import seaborn as sns
 from matplotlib import pyplot as plt
 from sklearn.feature_extraction.text import TfidfVectorizer
 
+import argparse
 
-idir="/Users/amee/Desktop/Research/CPS/dataset/experiments/dataset_csv_category/datasets/"
-ifile_ext=".csv"
+parser = argparse.ArgumentParser()
+parser.add_argument(
+    '-I',
+    '--idir',
+    help='Provide path to the directory containing the .csv files. Default is the current directory.',
+    type=str)
+parser.add_argument(
+    '-E',
+    '--ifile_ext',
+    default='.csv',
+    help='Default file extension is ".csv". If the default extension is not used, provide an alternative.',
+    type=str)
+args = parser.parse_args()
 
 def main():
-    file_list = os.listdir(idir)
+    file_list = os.listdir(args.idir)
     print(file_list)
 
     # Experiment,Timestamp,Module,Method_Name,Arguments,Responses,Exceptions,Anomaly (Yes/No)
@@ -24,7 +36,7 @@ def main():
     file_index=[]
     for item in file_list:
         if item.startswith("2021"):
-            df = pd.read_csv(idir + item, index_col=False, header = 0)
+            df = pd.read_csv(args.idir + item, index_col=False, header = 0)
             if (len(df.index) > 1):
                 print(item)
                 print(list(df))
@@ -36,7 +48,7 @@ def main():
                 li.append(procedure_list)
                 file_index.append(item)
 
-    ofile = idir + "procedure_list_all.csv"
+    ofile = args.idir + "procedure_list_all.csv"
 
     print("... %s" %ofile)
     if os.path.isfile(ofile):
@@ -187,7 +199,7 @@ def main():
     plt.ylabel("Bigrams", fontsize=18)
     plt.tight_layout()
     plt.savefig("./Bigram_barplot.pdf")
-    plt.show()
+    # plt.show()
     plt.clf()
 
     sns.set_theme(style="whitegrid")
@@ -196,7 +208,7 @@ def main():
     plt.ylabel("Trigrams", fontsize=18)
     plt.tight_layout()
     plt.savefig("./Trigram_barplot.pdf")
-    plt.show()
+    # plt.show()
     plt.clf()
 
     sns.set_theme(style="whitegrid")
@@ -205,7 +217,7 @@ def main():
     plt.ylabel("Fourgrams", fontsize=18)
     plt.tight_layout()
     plt.savefig("./Fourgram_barplot.pdf")
-    plt.show()
+    # plt.show()
     plt.clf()
 
     sns.set_theme(style="whitegrid")
@@ -214,7 +226,7 @@ def main():
     plt.ylabel("Fivegrams", fontsize=18)
     plt.tight_layout()
     plt.savefig("./Fivegram_barplot.pdf")
-    plt.show()
+    # plt.show()
     plt.clf()
 
     # Similarity
@@ -243,8 +255,8 @@ def main():
     plt.xlabel("Procedure ID", fontsize=15)
     plt.ylabel("Procedure ID", fontsize=15)
     plt.savefig("./tfidf_colorbar_spectral.pdf")
-    plt.tight_layout()
-    plt.show()
+    # plt.tight_layout()
+    # plt.show()
     plt.clf()
 
     sns.heatmap(pairwise_similarity.toarray(), linewidth=0.5)
@@ -285,8 +297,8 @@ def main():
                 "20211022152644-1"] #24
 
     for item2 in file_index2:
-        print(idir, item2, ifile_ext)
-        df = pd.read_csv(idir + str(item2) + ifile_ext, index_col=False, header = 0)
+        print(args.idir, item2, args.ifile_ext)
+        df = pd.read_csv(args.idir + str(item2) + args.ifile_ext, index_col=False, header = 0)
         if (len(df.index) > 1):
             print(item2)
             print(list(df))
@@ -317,8 +329,8 @@ def main():
     plt.xlabel("Procedure ID", fontsize=15)
     plt.ylabel("Procedure ID", fontsize=15)
     plt.tight_layout()
-    plt.savefig("./tfidf_colorbar_spectral2.pdf")
-    plt.show()
+    plt.savefig("./tfidf_colorbar_spectral2.pdf", bbox_inches='tight', pad_inches=0)
+    # plt.show()
     plt.clf()
 
     sns.heatmap(pairwise_similarity2.toarray(), linewidth=0.5)
