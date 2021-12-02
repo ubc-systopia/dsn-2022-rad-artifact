@@ -31,7 +31,7 @@ This README file provides the directory structure of this project, documentation
 ### Robotic Arm Dataset (RAD) and Description
 * [Robotic Arm Dataset](https://github.com/ubc-systopia/cps-security-code/blob/main/docs/RAD_Description.pdf)
 * [RAD Description](https://github.com/ubc-systopia/cps-security-code/blob/main/docs/RAD_Description.pdf)
-* [Experiment Steps (Add Readme File)]
+* [Experiment Steps](https://github.com/ubc-systopia/cps-security-code/blob/main/docs/Experiment_Steps.pdf)
 
 
 ### Additional Documents
