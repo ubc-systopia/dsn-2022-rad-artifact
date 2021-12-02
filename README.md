@@ -24,7 +24,7 @@ This README file provides the directory structure of this project, documentation
 * [Running Command Analysis](https://github.com/ubc-systopia/cps-security-code/tree/main/analysis/Dataset_CommandAnalysis)
 
 #### Collecting Power Monitoring Data
-* [Setting and Testing RATracer - Power Monitoring Data (Add Readme file)]
+* [Building and Testing RATracer - Power Monitoring Data (Add Readme file)]
 * [Running Power Analysis](https://github.com/ubc-systopia/cps-security-code/tree/main/analysis/Dataset_PowerAnalysis)
 
 
@@ -36,7 +36,7 @@ This README file provides the directory structure of this project, documentation
 
 ### Additional Documents
 
-* [Setting and Running UR Robot Simulator](https://github.com/ubc-systopia/cps-security-code/blob/main/docs/URsim_Setup.pdf)
+* [Building and Running UR Robot Simulator](https://github.com/ubc-systopia/cps-security-code/blob/main/docs/URsim_Setup.pdf)
 
 
 # Contacts
