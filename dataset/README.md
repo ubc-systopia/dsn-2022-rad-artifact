@@ -1,9 +1,10 @@
 # Repository Description
 
-* [`csv`](https://github.com/ubc-systopia/cps-security-code/tree/main/dataset/csv)
-* [`MongoDB`](https://github.com/ubc-systopia/cps-security-code/tree/main/dataset/mongo_db)
+* [`csv`](https://github.com/ubc-systopia/cps-security-code/tree/main/dataset/csv) stores RAD in csv file format and is further divided in two folders of known_procedures and unknown_procedures.
+* [`MongoDB`](https://github.com/ubc-systopia/cps-security-code/tree/main/dataset/mongo_db) stores RAD in a MongoDB instance.
 
-The csv folder is divided in two folders: known_procedures and unknown_procedures. The known_procedures are further divided in two folders: anomaly and benign. There are 
+
+The known_procedures are further divided in two folders: anomaly and benign. There are 
 25 files that have known procedures and are used for our command analysis. The following table shows the labels and the description assigned to each tracing file.
 
 
