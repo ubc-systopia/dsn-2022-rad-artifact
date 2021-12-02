@@ -8,7 +8,7 @@ The csv folder is divided in two folders: known_procedures and unknown_procedure
 
 
 
-| <div style="width:290px">Tracing File Name</div>;| Experimental Procedure                       | Anomaly (Yes/No) | Description    |
+| <div style="width:500px">Tracing File Name</div>| Experimental Procedure                       | Anomaly (Yes/No) | Description    |
 |-------------------|----------------------------------------------|------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | 20211012132024-1  | Automated Solubility (AS)                    | No               | AS experiment ran smoothly but at the end of experiment 'clean up vial' (Experiment Cleanup) was not done.                                                                                                                                                                                                                   |
 | 20211012143509-1  | Automated Solubility (AS)                    | No               | Initially, the joystick was used to configure the robot at the home position (initial position at the start of the experiment). The AS experiment was started with discarding the needle that the robot was still holding from last experiment as cleanup was not done. The rest of the experiment was carried out smoothly. |
