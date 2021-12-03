@@ -14,17 +14,17 @@ This README file provides the directory structure of this project, documentation
 
 * [`docs`](https://github.com/ubc-systopia/cps-security-code/tree/main/docs) contains additional docs that contains the description of the RAD along with the details of the supervised experiments and their steps. Further, they contain steps to install UR simulator and running it via Python script.
 
-* [`tracer`](https://github.com/ubc-systopia/cps-security-code/tree/main/tracer) contains the  non-intrusive tracing framework, RATracer that uses the middlebox to collect the trace data and send commands to the modules.
+* [`tracer`](https://github.com/ubc-systopia/cps-security-code/tree/main/tracer) contains the  non-intrusive tracing framework, RATracer that uses the middlebox to collect the command and power trace data and send commands to the modules.
 
 ### Getting Started
 
 ##### Collecting Command\Response Data
-* [Building and Testing RATracer - Command Data](https://github.com/ubc-systopia/cps-security-code/blob/main/tracer/README.md)
+* [Building and Testing RATracer - Command](https://github.com/ubc-systopia/cps-security-code/blob/main/tracer/README.md)
 * [Processing Tracing Files](https://github.com/ubc-systopia/cps-security-code/blob/main/tracer/data_processing/README.md)
 * [Running Command Analysis](https://github.com/ubc-systopia/cps-security-code/tree/main/analysis/Dataset_CommandAnalysis)
 
 ##### Collecting Power Monitoring Data
-* [Building and Testing RATracer - Power Monitoring Data (Add Readme file)]
+* [Building and Testing RATracer - Power Monitoring](https://github.com/ubc-systopia/cps-security-code/blob/main/tracer/RATracer_power_monitoring/README.md)
 * [Running Power Analysis](https://github.com/ubc-systopia/cps-security-code/tree/main/analysis/Dataset_PowerAnalysis)
 
 
