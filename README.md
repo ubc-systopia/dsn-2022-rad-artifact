@@ -18,7 +18,7 @@ This README file provides the directory structure of this project, documentation
 
 ### Getting Started
 
-##### Collecting Command\Response Data
+##### Collecting Command Data
 * [Building and Testing RATracer - Command](https://github.com/ubc-systopia/cps-security-code/blob/main/tracer/README.md)
 * [Processing Tracing Files](https://github.com/ubc-systopia/cps-security-code/blob/main/tracer/data_processing/README.md)
 * [Running Command Analysis](https://github.com/ubc-systopia/cps-security-code/tree/main/analysis/Dataset_CommandAnalysis)
