@@ -1,6 +1,0 @@
-{
-    "python.pythonPath": "C:\\Users\\CPSADMIN\\AppData\\Local\\Programs\\Python\\Python37\\python.exe",
-    "terminal.integrated.env.windows":  {"PYTHONPATH": "${workspaceFolder};${workspaceFolder}\\hein_robots;${workspaceFolder}\\ftdi_serial;${workspaceFolder}\\python-urx"},
-    "python.envFile": "{workspaceFolder}\\.env"
-    
-}
