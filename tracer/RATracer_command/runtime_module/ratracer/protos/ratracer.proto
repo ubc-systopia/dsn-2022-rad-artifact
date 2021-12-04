@@ -1,13 +1,13 @@
 syntax = "proto3";
 
-service Niraapad {
+service RATracer {
 
   // Used when the client-server connection starts
-  // i.e., when the NiraapadClientHelper class is initialized
+  // i.e., when the RATracerClientHelper class is initialized
   rpc InitializeConnection(InitializeConnectionReq) returns (InitializeConnectionResp) {}
 
   // Used when the client-server connection stops
-  // i.e., when the NiraapadClientHelper class is deleted
+  // i.e., when the RATracerClientHelper class is deleted
   rpc DeleteConnection(DeleteConnectionReq) returns (DeleteConnectionResp) {}
 
   // Used for all static and class methods

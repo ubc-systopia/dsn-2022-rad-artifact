@@ -10,17 +10,17 @@ import sys
 import pandas as pd
 from pathlib import Path
 from itertools import repeat
-#Path to niraapad
+#Path to ratracer
 file_path = os.path.dirname(os.path.abspath(__file__))
-niraapad_path = os.path.dirname(file_path)
-sys.path.append(niraapad_path)
-import niraapad.backends
-import niraapad.protos.niraapad_pb2 as niraapad_pb2
-import niraapad.protos.niraapad_pb2_grpc as niraapad_pb2_grpc
-from niraapad.backends import DirectUR3Arm
-from niraapad.backends import DirectFtdiDevice, DirectPySerialDevice
-from niraapad.backends import DirectArduinoAugmentedQuantos
-from niraapad.shared.tracing import Tracer
+ratracer_path = os.path.dirname(file_path)
+sys.path.append(ratracer_path)
+import ratracer.backends
+import ratracer.protos.ratracer_pb2 as ratracer_pb2
+import ratracer.protos.ratracer_pb2_grpc as ratracer_pb2_grpc
+from ratracer.backends import DirectUR3Arm
+from ratracer.backends import DirectFtdiDevice, DirectPySerialDevice
+from ratracer.backends import DirectArduinoAugmentedQuantos
+from ratracer.shared.tracing import Tracer
 from commands import magneticstirrer_commands, tecancavro_commands, controller_commands
 
 
@@ -29,15 +29,15 @@ from commands import magneticstirrer_commands, tecancavro_commands, controller_c
 class Curator:
     """Provides methods for converting tracing files to json, csv and then dumping data in mongoDB."""
 
-    Path(niraapad_path + "\\niraapad\\traces").mkdir(parents=True,
+    Path(ratracer_path + "\\ratracer\\traces").mkdir(parents=True,
                                                      exist_ok=True)
-    Path(niraapad_path + "\\niraapad\\logs").mkdir(parents=True, exist_ok=True)
-    Path(niraapad_path + "\\niraapad\\csv").mkdir(parents=True, exist_ok=True)
+    Path(ratracer_path + "\\ratracer\\logs").mkdir(parents=True, exist_ok=True)
+    Path(ratracer_path + "\\ratracer\\csv").mkdir(parents=True, exist_ok=True)
 
     def __init__(self,
-                 trace_path=niraapad_path + "\\niraapad\\traces",
-                 json_path=niraapad_path + "\\niraapad\\logs",
-                 csv_path=niraapad_path + "\\niraapad\\csv",
+                 trace_path=ratracer_path + "\\ratracer\\traces",
+                 json_path=ratracer_path + "\\ratracer\\logs",
+                 csv_path=ratracer_path + "\\ratracer\\csv",
                  database="heinLabTracingData",
                  collection="commandTraces"):
 

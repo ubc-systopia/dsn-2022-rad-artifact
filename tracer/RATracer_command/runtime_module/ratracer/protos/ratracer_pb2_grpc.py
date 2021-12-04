@@ -2,10 +2,10 @@
 """Client and server classes corresponding to protobuf-defined services."""
 import grpc
 
-from niraapad.protos import niraapad_pb2 as niraapad_dot_protos_dot_niraapad__pb2
+from ratracer.protos import ratracer_pb2 as ratracer_dot_protos_dot_ratracer__pb2
 
 
-class NiraapadStub(object):
+class RATracerStub(object):
     """Missing associated documentation comment in .proto file."""
 
     def __init__(self, channel):
@@ -15,68 +15,68 @@ class NiraapadStub(object):
             channel: A grpc.Channel.
         """
         self.InitializeConnection = channel.unary_unary(
-                '/Niraapad/InitializeConnection',
-                request_serializer=niraapad_dot_protos_dot_niraapad__pb2.InitializeConnectionReq.SerializeToString,
-                response_deserializer=niraapad_dot_protos_dot_niraapad__pb2.InitializeConnectionResp.FromString,
+                '/RATracer/InitializeConnection',
+                request_serializer=ratracer_dot_protos_dot_ratracer__pb2.InitializeConnectionReq.SerializeToString,
+                response_deserializer=ratracer_dot_protos_dot_ratracer__pb2.InitializeConnectionResp.FromString,
                 )
         self.DeleteConnection = channel.unary_unary(
-                '/Niraapad/DeleteConnection',
-                request_serializer=niraapad_dot_protos_dot_niraapad__pb2.DeleteConnectionReq.SerializeToString,
-                response_deserializer=niraapad_dot_protos_dot_niraapad__pb2.DeleteConnectionResp.FromString,
+                '/RATracer/DeleteConnection',
+                request_serializer=ratracer_dot_protos_dot_ratracer__pb2.DeleteConnectionReq.SerializeToString,
+                response_deserializer=ratracer_dot_protos_dot_ratracer__pb2.DeleteConnectionResp.FromString,
                 )
         self.StaticMethod = channel.unary_unary(
-                '/Niraapad/StaticMethod',
-                request_serializer=niraapad_dot_protos_dot_niraapad__pb2.StaticMethodReq.SerializeToString,
-                response_deserializer=niraapad_dot_protos_dot_niraapad__pb2.StaticMethodResp.FromString,
+                '/RATracer/StaticMethod',
+                request_serializer=ratracer_dot_protos_dot_ratracer__pb2.StaticMethodReq.SerializeToString,
+                response_deserializer=ratracer_dot_protos_dot_ratracer__pb2.StaticMethodResp.FromString,
                 )
         self.StaticGetter = channel.unary_unary(
-                '/Niraapad/StaticGetter',
-                request_serializer=niraapad_dot_protos_dot_niraapad__pb2.StaticGetterReq.SerializeToString,
-                response_deserializer=niraapad_dot_protos_dot_niraapad__pb2.StaticGetterResp.FromString,
+                '/RATracer/StaticGetter',
+                request_serializer=ratracer_dot_protos_dot_ratracer__pb2.StaticGetterReq.SerializeToString,
+                response_deserializer=ratracer_dot_protos_dot_ratracer__pb2.StaticGetterResp.FromString,
                 )
         self.StaticSetter = channel.unary_unary(
-                '/Niraapad/StaticSetter',
-                request_serializer=niraapad_dot_protos_dot_niraapad__pb2.StaticSetterReq.SerializeToString,
-                response_deserializer=niraapad_dot_protos_dot_niraapad__pb2.StaticSetterResp.FromString,
+                '/RATracer/StaticSetter',
+                request_serializer=ratracer_dot_protos_dot_ratracer__pb2.StaticSetterReq.SerializeToString,
+                response_deserializer=ratracer_dot_protos_dot_ratracer__pb2.StaticSetterResp.FromString,
                 )
         self.Initialize = channel.unary_unary(
-                '/Niraapad/Initialize',
-                request_serializer=niraapad_dot_protos_dot_niraapad__pb2.InitializeReq.SerializeToString,
-                response_deserializer=niraapad_dot_protos_dot_niraapad__pb2.InitializeResp.FromString,
+                '/RATracer/Initialize',
+                request_serializer=ratracer_dot_protos_dot_ratracer__pb2.InitializeReq.SerializeToString,
+                response_deserializer=ratracer_dot_protos_dot_ratracer__pb2.InitializeResp.FromString,
                 )
         self.Uninitialize = channel.unary_unary(
-                '/Niraapad/Uninitialize',
-                request_serializer=niraapad_dot_protos_dot_niraapad__pb2.UninitializeReq.SerializeToString,
-                response_deserializer=niraapad_dot_protos_dot_niraapad__pb2.UninitializeResp.FromString,
+                '/RATracer/Uninitialize',
+                request_serializer=ratracer_dot_protos_dot_ratracer__pb2.UninitializeReq.SerializeToString,
+                response_deserializer=ratracer_dot_protos_dot_ratracer__pb2.UninitializeResp.FromString,
                 )
         self.GenericGetter = channel.unary_unary(
-                '/Niraapad/GenericGetter',
-                request_serializer=niraapad_dot_protos_dot_niraapad__pb2.GenericGetterReq.SerializeToString,
-                response_deserializer=niraapad_dot_protos_dot_niraapad__pb2.GenericGetterResp.FromString,
+                '/RATracer/GenericGetter',
+                request_serializer=ratracer_dot_protos_dot_ratracer__pb2.GenericGetterReq.SerializeToString,
+                response_deserializer=ratracer_dot_protos_dot_ratracer__pb2.GenericGetterResp.FromString,
                 )
         self.GenericSetter = channel.unary_unary(
-                '/Niraapad/GenericSetter',
-                request_serializer=niraapad_dot_protos_dot_niraapad__pb2.GenericSetterReq.SerializeToString,
-                response_deserializer=niraapad_dot_protos_dot_niraapad__pb2.GenericSetterResp.FromString,
+                '/RATracer/GenericSetter',
+                request_serializer=ratracer_dot_protos_dot_ratracer__pb2.GenericSetterReq.SerializeToString,
+                response_deserializer=ratracer_dot_protos_dot_ratracer__pb2.GenericSetterResp.FromString,
                 )
         self.GenericMethod = channel.unary_unary(
-                '/Niraapad/GenericMethod',
-                request_serializer=niraapad_dot_protos_dot_niraapad__pb2.GenericMethodReq.SerializeToString,
-                response_deserializer=niraapad_dot_protos_dot_niraapad__pb2.GenericMethodResp.FromString,
+                '/RATracer/GenericMethod',
+                request_serializer=ratracer_dot_protos_dot_ratracer__pb2.GenericMethodReq.SerializeToString,
+                response_deserializer=ratracer_dot_protos_dot_ratracer__pb2.GenericMethodResp.FromString,
                 )
         self.BatchedTrace = channel.unary_unary(
-                '/Niraapad/BatchedTrace',
-                request_serializer=niraapad_dot_protos_dot_niraapad__pb2.BatchedTraceMsg.SerializeToString,
-                response_deserializer=niraapad_dot_protos_dot_niraapad__pb2.EmptyMsg.FromString,
+                '/RATracer/BatchedTrace',
+                request_serializer=ratracer_dot_protos_dot_ratracer__pb2.BatchedTraceMsg.SerializeToString,
+                response_deserializer=ratracer_dot_protos_dot_ratracer__pb2.EmptyMsg.FromString,
                 )
 
 
-class NiraapadServicer(object):
+class RATracerServicer(object):
     """Missing associated documentation comment in .proto file."""
 
     def InitializeConnection(self, request, context):
         """Used when the client-server connection starts
-        i.e., when the NiraapadClientHelper class is initialized
+        i.e., when the RATracerClientHelper class is initialized
         """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -84,7 +84,7 @@ class NiraapadServicer(object):
 
     def DeleteConnection(self, request, context):
         """Used when the client-server connection stops
-        i.e., when the NiraapadClientHelper class is deleted
+        i.e., when the RATracerClientHelper class is deleted
         """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -154,71 +154,71 @@ class NiraapadServicer(object):
         raise NotImplementedError('Method not implemented!')
 
 
-def add_NiraapadServicer_to_server(servicer, server):
+def add_RATracerServicer_to_server(servicer, server):
     rpc_method_handlers = {
             'InitializeConnection': grpc.unary_unary_rpc_method_handler(
                     servicer.InitializeConnection,
-                    request_deserializer=niraapad_dot_protos_dot_niraapad__pb2.InitializeConnectionReq.FromString,
-                    response_serializer=niraapad_dot_protos_dot_niraapad__pb2.InitializeConnectionResp.SerializeToString,
+                    request_deserializer=ratracer_dot_protos_dot_ratracer__pb2.InitializeConnectionReq.FromString,
+                    response_serializer=ratracer_dot_protos_dot_ratracer__pb2.InitializeConnectionResp.SerializeToString,
             ),
             'DeleteConnection': grpc.unary_unary_rpc_method_handler(
                     servicer.DeleteConnection,
-                    request_deserializer=niraapad_dot_protos_dot_niraapad__pb2.DeleteConnectionReq.FromString,
-                    response_serializer=niraapad_dot_protos_dot_niraapad__pb2.DeleteConnectionResp.SerializeToString,
+                    request_deserializer=ratracer_dot_protos_dot_ratracer__pb2.DeleteConnectionReq.FromString,
+                    response_serializer=ratracer_dot_protos_dot_ratracer__pb2.DeleteConnectionResp.SerializeToString,
             ),
             'StaticMethod': grpc.unary_unary_rpc_method_handler(
                     servicer.StaticMethod,
-                    request_deserializer=niraapad_dot_protos_dot_niraapad__pb2.StaticMethodReq.FromString,
-                    response_serializer=niraapad_dot_protos_dot_niraapad__pb2.StaticMethodResp.SerializeToString,
+                    request_deserializer=ratracer_dot_protos_dot_ratracer__pb2.StaticMethodReq.FromString,
+                    response_serializer=ratracer_dot_protos_dot_ratracer__pb2.StaticMethodResp.SerializeToString,
             ),
             'StaticGetter': grpc.unary_unary_rpc_method_handler(
                     servicer.StaticGetter,
-                    request_deserializer=niraapad_dot_protos_dot_niraapad__pb2.StaticGetterReq.FromString,
-                    response_serializer=niraapad_dot_protos_dot_niraapad__pb2.StaticGetterResp.SerializeToString,
+                    request_deserializer=ratracer_dot_protos_dot_ratracer__pb2.StaticGetterReq.FromString,
+                    response_serializer=ratracer_dot_protos_dot_ratracer__pb2.StaticGetterResp.SerializeToString,
             ),
             'StaticSetter': grpc.unary_unary_rpc_method_handler(
                     servicer.StaticSetter,
-                    request_deserializer=niraapad_dot_protos_dot_niraapad__pb2.StaticSetterReq.FromString,
-                    response_serializer=niraapad_dot_protos_dot_niraapad__pb2.StaticSetterResp.SerializeToString,
+                    request_deserializer=ratracer_dot_protos_dot_ratracer__pb2.StaticSetterReq.FromString,
+                    response_serializer=ratracer_dot_protos_dot_ratracer__pb2.StaticSetterResp.SerializeToString,
             ),
             'Initialize': grpc.unary_unary_rpc_method_handler(
                     servicer.Initialize,
-                    request_deserializer=niraapad_dot_protos_dot_niraapad__pb2.InitializeReq.FromString,
-                    response_serializer=niraapad_dot_protos_dot_niraapad__pb2.InitializeResp.SerializeToString,
+                    request_deserializer=ratracer_dot_protos_dot_ratracer__pb2.InitializeReq.FromString,
+                    response_serializer=ratracer_dot_protos_dot_ratracer__pb2.InitializeResp.SerializeToString,
             ),
             'Uninitialize': grpc.unary_unary_rpc_method_handler(
                     servicer.Uninitialize,
-                    request_deserializer=niraapad_dot_protos_dot_niraapad__pb2.UninitializeReq.FromString,
-                    response_serializer=niraapad_dot_protos_dot_niraapad__pb2.UninitializeResp.SerializeToString,
+                    request_deserializer=ratracer_dot_protos_dot_ratracer__pb2.UninitializeReq.FromString,
+                    response_serializer=ratracer_dot_protos_dot_ratracer__pb2.UninitializeResp.SerializeToString,
             ),
             'GenericGetter': grpc.unary_unary_rpc_method_handler(
                     servicer.GenericGetter,
-                    request_deserializer=niraapad_dot_protos_dot_niraapad__pb2.GenericGetterReq.FromString,
-                    response_serializer=niraapad_dot_protos_dot_niraapad__pb2.GenericGetterResp.SerializeToString,
+                    request_deserializer=ratracer_dot_protos_dot_ratracer__pb2.GenericGetterReq.FromString,
+                    response_serializer=ratracer_dot_protos_dot_ratracer__pb2.GenericGetterResp.SerializeToString,
             ),
             'GenericSetter': grpc.unary_unary_rpc_method_handler(
                     servicer.GenericSetter,
-                    request_deserializer=niraapad_dot_protos_dot_niraapad__pb2.GenericSetterReq.FromString,
-                    response_serializer=niraapad_dot_protos_dot_niraapad__pb2.GenericSetterResp.SerializeToString,
+                    request_deserializer=ratracer_dot_protos_dot_ratracer__pb2.GenericSetterReq.FromString,
+                    response_serializer=ratracer_dot_protos_dot_ratracer__pb2.GenericSetterResp.SerializeToString,
             ),
             'GenericMethod': grpc.unary_unary_rpc_method_handler(
                     servicer.GenericMethod,
-                    request_deserializer=niraapad_dot_protos_dot_niraapad__pb2.GenericMethodReq.FromString,
-                    response_serializer=niraapad_dot_protos_dot_niraapad__pb2.GenericMethodResp.SerializeToString,
+                    request_deserializer=ratracer_dot_protos_dot_ratracer__pb2.GenericMethodReq.FromString,
+                    response_serializer=ratracer_dot_protos_dot_ratracer__pb2.GenericMethodResp.SerializeToString,
             ),
             'BatchedTrace': grpc.unary_unary_rpc_method_handler(
                     servicer.BatchedTrace,
-                    request_deserializer=niraapad_dot_protos_dot_niraapad__pb2.BatchedTraceMsg.FromString,
-                    response_serializer=niraapad_dot_protos_dot_niraapad__pb2.EmptyMsg.SerializeToString,
+                    request_deserializer=ratracer_dot_protos_dot_ratracer__pb2.BatchedTraceMsg.FromString,
+                    response_serializer=ratracer_dot_protos_dot_ratracer__pb2.EmptyMsg.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
-            'Niraapad', rpc_method_handlers)
+            'RATracer', rpc_method_handlers)
     server.add_generic_rpc_handlers((generic_handler,))
 
 
  # This class is part of an EXPERIMENTAL API.
-class Niraapad(object):
+class RATracer(object):
     """Missing associated documentation comment in .proto file."""
 
     @staticmethod
@@ -232,9 +232,9 @@ class Niraapad(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/Niraapad/InitializeConnection',
-            niraapad_dot_protos_dot_niraapad__pb2.InitializeConnectionReq.SerializeToString,
-            niraapad_dot_protos_dot_niraapad__pb2.InitializeConnectionResp.FromString,
+        return grpc.experimental.unary_unary(request, target, '/RATracer/InitializeConnection',
+            ratracer_dot_protos_dot_ratracer__pb2.InitializeConnectionReq.SerializeToString,
+            ratracer_dot_protos_dot_ratracer__pb2.InitializeConnectionResp.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
@@ -249,9 +249,9 @@ class Niraapad(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/Niraapad/DeleteConnection',
-            niraapad_dot_protos_dot_niraapad__pb2.DeleteConnectionReq.SerializeToString,
-            niraapad_dot_protos_dot_niraapad__pb2.DeleteConnectionResp.FromString,
+        return grpc.experimental.unary_unary(request, target, '/RATracer/DeleteConnection',
+            ratracer_dot_protos_dot_ratracer__pb2.DeleteConnectionReq.SerializeToString,
+            ratracer_dot_protos_dot_ratracer__pb2.DeleteConnectionResp.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
@@ -266,9 +266,9 @@ class Niraapad(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/Niraapad/StaticMethod',
-            niraapad_dot_protos_dot_niraapad__pb2.StaticMethodReq.SerializeToString,
-            niraapad_dot_protos_dot_niraapad__pb2.StaticMethodResp.FromString,
+        return grpc.experimental.unary_unary(request, target, '/RATracer/StaticMethod',
+            ratracer_dot_protos_dot_ratracer__pb2.StaticMethodReq.SerializeToString,
+            ratracer_dot_protos_dot_ratracer__pb2.StaticMethodResp.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
@@ -283,9 +283,9 @@ class Niraapad(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/Niraapad/StaticGetter',
-            niraapad_dot_protos_dot_niraapad__pb2.StaticGetterReq.SerializeToString,
-            niraapad_dot_protos_dot_niraapad__pb2.StaticGetterResp.FromString,
+        return grpc.experimental.unary_unary(request, target, '/RATracer/StaticGetter',
+            ratracer_dot_protos_dot_ratracer__pb2.StaticGetterReq.SerializeToString,
+            ratracer_dot_protos_dot_ratracer__pb2.StaticGetterResp.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
@@ -300,9 +300,9 @@ class Niraapad(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/Niraapad/StaticSetter',
-            niraapad_dot_protos_dot_niraapad__pb2.StaticSetterReq.SerializeToString,
-            niraapad_dot_protos_dot_niraapad__pb2.StaticSetterResp.FromString,
+        return grpc.experimental.unary_unary(request, target, '/RATracer/StaticSetter',
+            ratracer_dot_protos_dot_ratracer__pb2.StaticSetterReq.SerializeToString,
+            ratracer_dot_protos_dot_ratracer__pb2.StaticSetterResp.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
@@ -317,9 +317,9 @@ class Niraapad(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/Niraapad/Initialize',
-            niraapad_dot_protos_dot_niraapad__pb2.InitializeReq.SerializeToString,
-            niraapad_dot_protos_dot_niraapad__pb2.InitializeResp.FromString,
+        return grpc.experimental.unary_unary(request, target, '/RATracer/Initialize',
+            ratracer_dot_protos_dot_ratracer__pb2.InitializeReq.SerializeToString,
+            ratracer_dot_protos_dot_ratracer__pb2.InitializeResp.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
@@ -334,9 +334,9 @@ class Niraapad(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/Niraapad/Uninitialize',
-            niraapad_dot_protos_dot_niraapad__pb2.UninitializeReq.SerializeToString,
-            niraapad_dot_protos_dot_niraapad__pb2.UninitializeResp.FromString,
+        return grpc.experimental.unary_unary(request, target, '/RATracer/Uninitialize',
+            ratracer_dot_protos_dot_ratracer__pb2.UninitializeReq.SerializeToString,
+            ratracer_dot_protos_dot_ratracer__pb2.UninitializeResp.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
@@ -351,9 +351,9 @@ class Niraapad(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/Niraapad/GenericGetter',
-            niraapad_dot_protos_dot_niraapad__pb2.GenericGetterReq.SerializeToString,
-            niraapad_dot_protos_dot_niraapad__pb2.GenericGetterResp.FromString,
+        return grpc.experimental.unary_unary(request, target, '/RATracer/GenericGetter',
+            ratracer_dot_protos_dot_ratracer__pb2.GenericGetterReq.SerializeToString,
+            ratracer_dot_protos_dot_ratracer__pb2.GenericGetterResp.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
@@ -368,9 +368,9 @@ class Niraapad(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/Niraapad/GenericSetter',
-            niraapad_dot_protos_dot_niraapad__pb2.GenericSetterReq.SerializeToString,
-            niraapad_dot_protos_dot_niraapad__pb2.GenericSetterResp.FromString,
+        return grpc.experimental.unary_unary(request, target, '/RATracer/GenericSetter',
+            ratracer_dot_protos_dot_ratracer__pb2.GenericSetterReq.SerializeToString,
+            ratracer_dot_protos_dot_ratracer__pb2.GenericSetterResp.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
@@ -385,9 +385,9 @@ class Niraapad(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/Niraapad/GenericMethod',
-            niraapad_dot_protos_dot_niraapad__pb2.GenericMethodReq.SerializeToString,
-            niraapad_dot_protos_dot_niraapad__pb2.GenericMethodResp.FromString,
+        return grpc.experimental.unary_unary(request, target, '/RATracer/GenericMethod',
+            ratracer_dot_protos_dot_ratracer__pb2.GenericMethodReq.SerializeToString,
+            ratracer_dot_protos_dot_ratracer__pb2.GenericMethodResp.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
@@ -402,8 +402,8 @@ class Niraapad(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/Niraapad/BatchedTrace',
-            niraapad_dot_protos_dot_niraapad__pb2.BatchedTraceMsg.SerializeToString,
-            niraapad_dot_protos_dot_niraapad__pb2.EmptyMsg.FromString,
+        return grpc.experimental.unary_unary(request, target, '/RATracer/BatchedTrace',
+            ratracer_dot_protos_dot_ratracer__pb2.BatchedTraceMsg.SerializeToString,
+            ratracer_dot_protos_dot_ratracer__pb2.EmptyMsg.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)

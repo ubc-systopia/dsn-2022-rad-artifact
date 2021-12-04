@@ -6,15 +6,15 @@ import argparse
 # Path to this file start_server.py
 file_path = os.path.dirname(os.path.abspath(__file__))
 
-# Path to the cps-security-code (aka project niraapad) git repo
-niraapad_path = os.path.dirname(os.path.dirname(file_path))
+# Path to the cps-security-code (aka project ratracer) git repo
+ratracer_path = os.path.dirname(os.path.dirname(file_path))
 
 # This import is needed if we are not testing using the PyPI (or TestPyPI)
-# niraapad package but instead using the niraapad files from source
-sys.path.append(niraapad_path)
+# ratracer package but instead using the ratracer files from source
+sys.path.append(ratracer_path)
 
-import niraapad.backends
-from niraapad.middlebox.niraapad_server import NiraapadServer
+import ratracer.backends
+from ratracer.middlebox.ratracer_server import RATracerServer
 
 server = None
 
@@ -34,16 +34,16 @@ parser.add_argument('-P',
 parser.add_argument(
     '-K',
     '--keysdir',
-    default=os.path.join(niraapad_path, "niraapad", "keys", "localhost"),
+    default=os.path.join(ratracer_path, "ratracer", "keys", "localhost"),
     help=
-    'Provide path to the directory containing the "server.key" and "server.crt" files. Defaults to <project-dir>/niraapad/keys/localhost.',
+    'Provide path to the directory containing the "server.key" and "server.crt" files. Defaults to <project-dir>/ratracer/keys/localhost.',
     type=str)
 parser.add_argument(
     '-T',
     '--tracedir',
-    default=os.path.join(niraapad_path, "niraapad", "traces"),
+    default=os.path.join(ratracer_path, "ratracer", "traces"),
     help=
-    'Provide path to the trace directory. Defaults to <project-dir>/niraapad/traces/.',
+    'Provide path to the trace directory. Defaults to <project-dir>/ratracer/traces/.',
     type=str)
 parser.add_argument('-S',
                     '--secure',
@@ -61,5 +61,5 @@ if __name__ == "__main__":
     if args.secure == False:
         args.keysdir = None
 
-    server = NiraapadServer(args.port, args.tracedir, args.keysdir, args.replay)
+    server = RATracerServer(args.port, args.tracedir, args.keysdir, args.replay)
     server.start(wait=True)

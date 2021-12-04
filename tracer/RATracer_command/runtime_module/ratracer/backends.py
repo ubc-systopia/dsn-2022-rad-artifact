@@ -1,8 +1,8 @@
 import os
 import sys
 
-import niraapad.shared.utils as utils
-from niraapad.lab_computer.niraapad_client import NiraapadClient
+import ratracer.shared.utils as utils
+from ratracer.lab_computer.ratracer_client import RATracerClient
 
 
 class AttributeMeta(type):
@@ -16,9 +16,9 @@ class AttributeMeta(type):
         try:
             return type.__getattribute__(cls, key)
         except AttributeError:
-            niraapad_backend_type = type.__getattribute__(
-                cls, "niraapad_backend_type")
-            return NiraapadClient.static_getter(niraapad_backend_type, key)
+            ratracer_backend_type = type.__getattribute__(
+                cls, "ratracer_backend_type")
+            return RATracerClient.static_getter(ratracer_backend_type, key)
 
     def __setattr__(cls, key, value):
         """
@@ -26,12 +26,12 @@ class AttributeMeta(type):
         trap and appropriately handle all write accesses to class variables.
         """
 
-        niraapad_backend_type = type.__getattribute__(cls,
-                                                      "niraapad_backend_type")
-        NiraapadClient.static_setter(niraapad_backend_type, key, value)
+        ratracer_backend_type = type.__getattribute__(cls,
+                                                      "ratracer_backend_type")
+        RATracerClient.static_setter(ratracer_backend_type, key, value)
 
 
-class VirtualDevice(NiraapadClient, metaclass=AttributeMeta):
+class VirtualDevice(RATracerClient, metaclass=AttributeMeta):
     """
     This class is just a facade. It's objective is to provide the same
     interface to all Hein Lab experiment scripts as the erstwhile "class
@@ -40,11 +40,11 @@ class VirtualDevice(NiraapadClient, metaclass=AttributeMeta):
     forwards each function call to the respective function call in the
     respective original Device class object (class objects are not involved
     in the case of static functions), or to the respective function call in the
-    global object of type "class NiraapadClientHelper" (which in turn invokes
+    global object of type "class RATracerClientHelper" (which in turn invokes
     an RPC to the middlebox), or both.
     """
 
-    niraapad_backend_type = utils.BACKENDS.DEVICE
+    ratracer_backend_type = utils.BACKENDS.DEVICE
 
     def __init__(self, *args, **kwargs):
         return self.initialize(*args, **kwargs)
@@ -115,11 +115,11 @@ class VirtualDevice(NiraapadClient, metaclass=AttributeMeta):
 #     forwards each function call to the respective function call in the
 #     respective original MockDevice class object (class objects are not involved in
 #     the case of static functions), or to the respective function call in the
-#     global object of type "class NiraapadClientHelper" (which in turn invokes
+#     global object of type "class RATracerClientHelper" (which in turn invokes
 #     an RPC to the middlebox), or both.
 #     """
 
-#     niraapad_backend_type = utils.BACKENDS.MOCK_DEVICE
+#     ratracer_backend_type = utils.BACKENDS.MOCK_DEVICE
 
 #     def __init__(self, *args, **kwargs):
 #         return self.initialize(*args, **kwargs)
@@ -152,11 +152,11 @@ class VirtualFtdiDevice(VirtualDevice, metaclass=AttributeMeta):
     forwards each function call to the respective function call in the
     respective original FtdiDevice class object (class objects are not involved in
     the case of static functions), or to the respective function call in the
-    global object of type "class NiraapadClientHelper" (which in turn invokes
+    global object of type "class RATracerClientHelper" (which in turn invokes
     an RPC to the middlebox), or both.
     """
 
-    niraapad_backend_type = utils.BACKENDS.FTDI_DEVICE
+    ratracer_backend_type = utils.BACKENDS.FTDI_DEVICE
 
     def __init__(self, *args, **kwargs):
         return self.initialize(*args, **kwargs)
@@ -214,11 +214,11 @@ class VirtualPySerialDevice(VirtualDevice, metaclass=AttributeMeta):
     forwards each function call to the respective function call in the
     respective original PySerialDevice class object (class objects are not involved in
     the case of static functions), or to the respective function call in the
-    global object of type "class NiraapadClientHelper" (which in turn invokes
+    global object of type "class RATracerClientHelper" (which in turn invokes
     an RPC to the middlebox), or both.
     """
 
-    niraapad_backend_type = utils.BACKENDS.PY_SERIAL_DEVICE
+    ratracer_backend_type = utils.BACKENDS.PY_SERIAL_DEVICE
 
     def __init__(self, *args, **kwargs):
         return self.initialize(*args, **kwargs)
@@ -258,7 +258,7 @@ class VirtualPySerialDevice(VirtualDevice, metaclass=AttributeMeta):
         return self.generic_method(*args, **kwargs)
 
 
-class VirtualRobotArm(NiraapadClient, metaclass=AttributeMeta):
+class VirtualRobotArm(RATracerClient, metaclass=AttributeMeta):
     """
     This class is just a facade. It's objective is to provide the same
     interface to all Hein Lab experiment scripts as the erstwhile "class
@@ -267,11 +267,11 @@ class VirtualRobotArm(NiraapadClient, metaclass=AttributeMeta):
     forwards each function call to the respective function call in the
     respective original RobotArm class object (class objects are not involved
     in the case of static functions), or to the respective function call in the
-    global object of type "class NiraapadClientHelper" (which in turn invokes
+    global object of type "class RATracerClientHelper" (which in turn invokes
     an RPC to the middlebox), or both.
     """
 
-    niraapad_backend_type = utils.BACKENDS.ROBOT_ARM
+    ratracer_backend_type = utils.BACKENDS.ROBOT_ARM
 
     def __init__(self, *args, **kwargs):
         return self.initialize(*args, **kwargs)
@@ -355,11 +355,11 @@ class VirtualUR3Arm(VirtualRobotArm, metaclass=AttributeMeta):
     forwards each function call to the respective function call in the
     respective original UR3Arm class object (class objects are not involved in
     the case of static functions), or to the respective function call in the
-    global object of type "class NiraapadClientHelper" (which in turn invokes
+    global object of type "class RATracerClientHelper" (which in turn invokes
     an RPC to the middlebox), or both.
     """
 
-    niraapad_backend_type = utils.BACKENDS.UR3_ARM
+    ratracer_backend_type = utils.BACKENDS.UR3_ARM
 
     def __init__(self, *args, **kwargs):
         return self.initialize(*args, **kwargs)
@@ -402,7 +402,7 @@ class VirtualUR3Arm(VirtualRobotArm, metaclass=AttributeMeta):
         return self.generic_method(*args, **kwargs)
 
 
-# class VirtualKortexConnection(NiraapadClient, metaclass=AttributeMeta):
+# class VirtualKortexConnection(RATracerClient, metaclass=AttributeMeta):
 #     """
 #     This class is just a facade. It's objective is to provide the same
 #     interface to all Hein Lab experiment scripts as the erstwhile "class
@@ -411,11 +411,11 @@ class VirtualUR3Arm(VirtualRobotArm, metaclass=AttributeMeta):
 #     forwards each function call to the respective function call in the
 #     respective original KortexConnection class object (class objects are not involved in
 #     the case of static functions), or to the respective function call in the
-#     global object of type "class NiraapadClientHelper" (which in turn invokes
+#     global object of type "class RATracerClientHelper" (which in turn invokes
 #     an RPC to the middlebox), or both.
 #     """
 
-#     niraapad_backend_type = utils.BACKENDS.KORTEX_CONNECTION
+#     ratracer_backend_type = utils.BACKENDS.KORTEX_CONNECTION
 
 #     def __init__(self, *args, **kwargs):
 #         return self.initialize(*args, **kwargs)
@@ -454,7 +454,7 @@ class VirtualUR3Arm(VirtualRobotArm, metaclass=AttributeMeta):
 #         return self.generic_method(*args, **kwargs)
 
 
-class VirtualBalance(NiraapadClient, metaclass=AttributeMeta):
+class VirtualBalance(RATracerClient, metaclass=AttributeMeta):
     """
     This class is just a facade. It's objective is to provide the same
     interface to all Hein Lab experiment scripts as the erstwhile "class
@@ -463,11 +463,11 @@ class VirtualBalance(NiraapadClient, metaclass=AttributeMeta):
     forwards each function call to the respective function call in the
     respective original Balance class object (class objects are not involved
     in the case of static functions), or to the respective function call in the
-    global object of type "class NiraapadClientHelper" (which in turn invokes
+    global object of type "class RATracerClientHelper" (which in turn invokes
     an RPC to the middlebox), or both.
     """
 
-    niraapad_backend_type = utils.BACKENDS.BALANCE
+    ratracer_backend_type = utils.BACKENDS.BALANCE
 
     def __init__(self, *args, **kwargs):
         return self.initialize(*args, **kwargs)
@@ -492,18 +492,18 @@ class VirtualBalance(NiraapadClient, metaclass=AttributeMeta):
 
     @staticmethod
     def package_and_encode(*args, **kwargs):
-        return NiraapadClient.static_method(
-            VirtualBalance.niraapad_backend_type, *args, **kwargs)
+        return RATracerClient.static_method(
+            VirtualBalance.ratracer_backend_type, *args, **kwargs)
 
     @staticmethod
     def _string_command_parse(*args, **kwargs):
-        return NiraapadClient.static_method(
-            VirtualBalance.niraapad_backend_type, *args, **kwargs)
+        return RATracerClient.static_method(
+            VirtualBalance.ratracer_backend_type, *args, **kwargs)
 
     @staticmethod
     def _string_response_parse(*args, **kwargs):
-        return NiraapadClient.static_method(
-            VirtualBalance.niraapad_backend_type, *args, **kwargs)
+        return RATracerClient.static_method(
+            VirtualBalance.ratracer_backend_type, *args, **kwargs)
 
     def _send_command(self, *args, **kwargs):
         return self.generic_method(*args, **kwargs)
@@ -551,11 +551,11 @@ class VirtualQuantos(VirtualBalance, metaclass=AttributeMeta):
     forwards each function call to the respective function call in the
     respective original Quantos class object (class objects are not involved in
     the case of static functions), or to the respective function call in the
-    global object of type "class NiraapadClientHelper" (which in turn invokes
+    global object of type "class RATracerClientHelper" (which in turn invokes
     an RPC to the middlebox), or both.
     """
 
-    niraapad_backend_type = utils.BACKENDS.QUANTOS
+    ratracer_backend_type = utils.BACKENDS.QUANTOS
 
     def __init__(self, *args, **kwargs):
         return self.initialize(*args, **kwargs)
@@ -568,13 +568,13 @@ class VirtualQuantos(VirtualBalance, metaclass=AttributeMeta):
 
     @staticmethod
     def _string_command_parse(*args, **kwargs):
-        return NiraapadClient.static_method(
-            VirtualQuantos.niraapad_backend_type, *args, **kwargs)
+        return RATracerClient.static_method(
+            VirtualQuantos.ratracer_backend_type, *args, **kwargs)
 
     @staticmethod
     def _string_response_parse(*args, **kwargs):
-        return NiraapadClient.static_method(
-            VirtualQuantos.niraapad_backend_type, *args, **kwargs)
+        return RATracerClient.static_method(
+            VirtualQuantos.ratracer_backend_type, *args, **kwargs)
 
     def _handle_response(self, *args, **kwargs):
         return self.generic_method(*args, **kwargs)
@@ -619,7 +619,7 @@ class VirtualQuantos(VirtualBalance, metaclass=AttributeMeta):
         return self.generic_method(*args, **kwargs)
 
 
-class VirtualArduinoAugment(NiraapadClient, metaclass=AttributeMeta):
+class VirtualArduinoAugment(RATracerClient, metaclass=AttributeMeta):
     """
     This class is just a facade. It's objective is to provide the same
     interface to all Hein Lab experiment scripts as the erstwhile "class
@@ -628,11 +628,11 @@ class VirtualArduinoAugment(NiraapadClient, metaclass=AttributeMeta):
     forwards each function call to the respective function call in the
     respective original ArduinoAugment class object (class objects are not involved in
     the case of static functions), or to the respective function call in the
-    global object of type "class NiraapadClientHelper" (which in turn invokes
+    global object of type "class RATracerClientHelper" (which in turn invokes
     an RPC to the middlebox), or both.
     """
 
-    niraapad_backend_type = utils.BACKENDS.ARDUINO_AUGMENT
+    ratracer_backend_type = utils.BACKENDS.ARDUINO_AUGMENT
 
     def __init__(self, *args, **kwargs):
         return self.initialize(*args, **kwargs)
@@ -658,11 +658,11 @@ class VirtualArduinoAugmentedQuantos(VirtualQuantos,
     forwards each function call to the respective function call in the
     respective original ArduinoAugmentedQuantos class object (class objects are not involved in
     the case of static functions), or to the respective function call in the
-    global object of type "class NiraapadClientHelper" (which in turn invokes
+    global object of type "class RATracerClientHelper" (which in turn invokes
     an RPC to the middlebox), or both.
     """
 
-    niraapad_backend_type = utils.BACKENDS.ARDUINO_AUGMENTED_QUANTOS
+    ratracer_backend_type = utils.BACKENDS.ARDUINO_AUGMENTED_QUANTOS
 
     def __init__(self, *args, **kwargs):
         return self.initialize(*args, **kwargs)

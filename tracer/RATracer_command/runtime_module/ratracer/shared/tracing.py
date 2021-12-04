@@ -2,9 +2,9 @@ from datetime import datetime
 
 import os
 
-import niraapad.shared.utils as utils
-import niraapad.protos.niraapad_pb2 as niraapad_pb2
-import niraapad.protos.niraapad_pb2_grpc as niraapad_pb2_grpc
+import ratracer.shared.utils as utils
+import ratracer.protos.ratracer_pb2 as ratracer_pb2
+import ratracer.protos.ratracer_pb2_grpc as ratracer_pb2_grpc
 
 
 class Tracer:
@@ -40,13 +40,13 @@ class Tracer:
         trace_msg_str = trace_msg.SerializeToString()
         trace_msg_type = (str(type(trace_msg))).split("'")[1].split(".")[-1]
 
-        trace_metadata = niraapad_pb2.TraceMetadata(
+        trace_metadata = ratracer_pb2.TraceMetadata(
             timestamp=now.strftime("%Y:%m:%d:%H:%M:%S.%f"),
             trace_msg_type=trace_msg_type,
             trace_msg_size=len(trace_msg_str))
         trace_metadata_str = trace_metadata.SerializeToString()
 
-        trace_header = niraapad_pb2.TraceHeader(
+        trace_header = ratracer_pb2.TraceHeader(
             metadata_size=len(trace_metadata_str))
         trace_header_str = trace_header.SerializeToString()
 
@@ -81,7 +81,7 @@ class Tracer:
 
     @staticmethod
     def get_trace_header_str_length():
-        trace_header = niraapad_pb2.TraceHeader(metadata_size=100)
+        trace_header = ratracer_pb2.TraceHeader(metadata_size=100)
         trace_header_str = trace_header.SerializeToString()
         return len(trace_header_str)
 
@@ -100,14 +100,14 @@ class Tracer:
                 trace_header_str_length = Tracer.get_trace_header_str_length()
                 if f.tell() + trace_header_str_length > file_size:
                     break
-                trace_header = niraapad_pb2.TraceHeader()
+                trace_header = ratracer_pb2.TraceHeader()
                 trace_header.ParseFromString(f.read(trace_header_str_length))
 
                 # Read the trace metadata next
                 trace_metadata_str_length = trace_header.metadata_size
                 if f.tell() + trace_metadata_str_length > file_size:
                     break
-                trace_metadata = niraapad_pb2.TraceMetadata()
+                trace_metadata = ratracer_pb2.TraceMetadata()
                 trace_metadata.ParseFromString(
                     f.read(trace_metadata_str_length))
 
@@ -115,7 +115,7 @@ class Tracer:
                 trace_msg_str_length = trace_metadata.trace_msg_size
                 if f.tell() + trace_msg_str_length > file_size:
                     break
-                trace_msg = getattr(niraapad_pb2,
+                trace_msg = getattr(ratracer_pb2,
                                     trace_metadata.trace_msg_type)()
                 trace_msg.ParseFromString(f.read(trace_msg_str_length))
 

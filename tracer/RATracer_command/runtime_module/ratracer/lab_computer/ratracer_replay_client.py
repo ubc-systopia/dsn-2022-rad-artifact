@@ -7,22 +7,22 @@ import argparse
 from datetime import datetime
 from timeit import default_timer
 
-# Path to this file test_niraapad.py
+# Path to this file test_ratracer.py
 file_path = os.path.dirname(os.path.abspath(__file__))
 
-# Path to the cps-security-code (aka project niraapad) git repo
-niraapad_path = os.path.dirname(os.path.dirname(file_path))
+# Path to the cps-security-code (aka project ratracer) git repo
+ratracer_path = os.path.dirname(os.path.dirname(file_path))
 
 # This import is needed if we are not testing using the PyPI (or TestPyPI)
-# niraapad package but instead using the niraapad files from source
-sys.path.append(niraapad_path)
+# ratracer package but instead using the ratracer files from source
+sys.path.append(ratracer_path)
 
-from niraapad.shared.tracing import Tracer
-from niraapad.middlebox.niraapad_server import NiraapadServer
-from niraapad.lab_computer.niraapad_client import NiraapadClient
+from ratracer.shared.tracing import Tracer
+from ratracer.middlebox.ratracer_server import RATracerServer
+from ratracer.lab_computer.ratracer_client import RATracerClient
 
-import niraapad.protos.niraapad_pb2 as niraapad_pb2
-import niraapad.protos.niraapad_pb2_grpc as niraapad_pb2_grpc
+import ratracer.protos.ratracer_pb2 as ratracer_pb2
+import ratracer.protos.ratracer_pb2_grpc as ratracer_pb2_grpc
 
 parser = argparse.ArgumentParser()
 parser.add_argument(
@@ -45,16 +45,16 @@ parser.add_argument('-P',
 parser.add_argument(
     '-K',
     '--keysdir',
-    default=os.path.join(niraapad_path, "niraapad", "keys", "localhost"),
+    default=os.path.join(ratracer_path, "ratracer", "keys", "localhost"),
     help=
-    'Provide path to the directory containing the "server.crt" file. Defaults to <project-dir>/niraapad/keys/localhost.',
+    'Provide path to the directory containing the "server.crt" file. Defaults to <project-dir>/ratracer/keys/localhost.',
     type=str)
 parser.add_argument(
     '-T',
     '--tracedir',
-    default=os.path.join(niraapad_path, "niraapad", "traces"),
+    default=os.path.join(ratracer_path, "ratracer", "traces"),
     help=
-    'Provide path to the trace directory. Defaults to <project-dir>/niraapad/traces/.',
+    'Provide path to the trace directory. Defaults to <project-dir>/ratracer/traces/.',
     type=str)
 parser.add_argument(
     '-t',
@@ -74,19 +74,19 @@ parser.add_argument(
 args = parser.parse_args()
 
 
-class NiraapadReplayClient:
+class RATracerReplayClient:
 
     def __init__(self):
-        print("NiraapadReplayClient: Initialize an insecure GRPC channel")
+        print("RATracerReplayClient: Initialize an insecure GRPC channel")
         channel = grpc.insecure_channel(args.host + ':' + args.port)
-        self.stub = niraapad_pb2_grpc.NiraapadStub(channel)
+        self.stub = ratracer_pb2_grpc.RATracerStub(channel)
 
     def load_trace(self, tracedir, trace_file):
-        print("NiraapadReplayClient: Load trace")
+        print("RATracerReplayClient: Load trace")
         self.trace_array = Tracer.get_trace_array(
             os.path.join(tracedir, trace_file))
         resp = self.stub.LoadTrace(
-            niraapad_pb2.LoadTraceReq(trace_file=trace_file))
+            ratracer_pb2.LoadTraceReq(trace_file=trace_file))
         return resp.status
 
     def sim_trace(self, trace_msg):
@@ -143,13 +143,13 @@ class NiraapadReplayClient:
 if __name__ == "__main__":
 
     if args.distributed == False:
-        niraapad_server = NiraapadServer(args.port,
+        ratracer_server = RATracerServer(args.port,
                                          args.tracedir,
                                          args.keysdir,
                                          replay=True)
-        niraapad_server.start()
+        ratracer_server.start()
 
-    client = NiraapadReplayClient()
+    client = RATracerReplayClient()
 
     load_status = client.load_trace(args.tracedir, args.trace_file)
     if load_status == False:
