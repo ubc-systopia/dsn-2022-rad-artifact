@@ -5,7 +5,7 @@
 
 
 The known_procedures are further divided in two folders: `anomaly` and `benign`. There are 
-25 files that have known procedures (See [procedure details](https://github.com/ubc-systopia/cps-security-code/blob/main/docs/Experiment_Steps.pdf)) and are used for our command analysis. The following table shows the labels and the description assigned to each tracing file.
+25 files that have known procedures (check [procedure details](https://github.com/ubc-systopia/cps-security-code/blob/main/docs/Experiment_Steps.pdf) for more information) and are used for our command analysis. The following table shows the labels and the description assigned to each tracing file.
 
 
 
