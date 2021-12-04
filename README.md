@@ -28,9 +28,9 @@ This README file provides the directory structure of this project, documentation
 * [Running Power Analysis](https://github.com/ubc-systopia/cps-security-code/tree/main/analysis/Dataset_PowerAnalysis)
 
 
-### Robotic Arm Dataset (RAD) and Description
+### Robotic Arm Dataset (RAD)
 * [Robotic Arm Dataset](https://github.com/ubc-systopia/cps-security-code/tree/main/dataset)
-* [RAD Description](https://github.com/ubc-systopia/cps-security-code/blob/main/docs/RAD_Description.pdf)
+* [Features Description](https://github.com/ubc-systopia/cps-security-code/blob/main/docs/RAD_Description.pdf)
 * [Experiment Steps](https://github.com/ubc-systopia/cps-security-code/blob/main/docs/Experiment_Steps.pdf)
 * [Labeled Tracing Files Description](https://github.com/ubc-systopia/cps-security-code/blob/main/dataset/README.md)
 
