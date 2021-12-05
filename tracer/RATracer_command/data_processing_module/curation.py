@@ -13,6 +13,7 @@ from itertools import repeat
 #Path to ratracer
 file_path = os.path.dirname(os.path.abspath(__file__))
 ratracer_path = os.path.dirname(file_path)
+ratracer_path = ratracer_path + "\\runtime_module"
 sys.path.append(ratracer_path)
 import ratracer.backends
 import ratracer.protos.ratracer_pb2 as ratracer_pb2
@@ -22,8 +23,13 @@ from ratracer.backends import DirectFtdiDevice, DirectPySerialDevice
 from ratracer.backends import DirectArduinoAugmentedQuantos
 from ratracer.shared.tracing import Tracer
 from commands import magneticstirrer_commands, tecancavro_commands, controller_commands
+import argparse
 
+parser = argparse.ArgumentParser()
+parser.add_argument('--database', default='tracingData', help='name of the MongoDB database')
+parser.add_argument('--collection', default='commandTraces', help='name of the MongoDB collection')
 
+args = parser.parse_args()
 
 
 class Curator:
@@ -38,8 +44,8 @@ class Curator:
                  trace_path=ratracer_path + "\\ratracer\\traces",
                  json_path=ratracer_path + "\\ratracer\\logs",
                  csv_path=ratracer_path + "\\ratracer\\csv",
-                 database="heinLabTracingData",
-                 collection="commandTraces"):
+                 database=args.database,
+                 collection=args.collection):
 
         self.trace_path = trace_path
         self.json_path = json_path
@@ -232,7 +238,7 @@ class Curator:
 
             #Creating the dictionary of traces
             traces['Traces'].append({
-                '_id': timestamp,
+                'Timestamp': timestamp,
                 'Trace Message Type': trace_msg_type,
                 'Trace Message': trace_msg_parse
             })
@@ -286,7 +292,7 @@ class Curator:
                             trace['Trace Message']['req']
                             ['backend_instance_id'])
                         writer.writerow([
-                            trace['_id'], "Magnetic Stirrer", "_init_",
+                            trace['Timestamp'], "Magnetic Stirrer", "_init_",
                             str(trace['Trace Message']['req']['args']).replace(
                                 "{", "").replace("}",
                                                  "").replace("{", "").replace(
@@ -300,7 +306,7 @@ class Curator:
                             trace['Trace Message']['req']
                             ['backend_instance_id'])
                         writer.writerow([
-                            trace['_id'], "C9", "_init_",
+                            trace['Timestamp'], "C9", "_init_",
                             str(trace['Trace Message']['req']['args']).replace(
                                 "{", "").replace("}",
                                                  "").replace("'",
@@ -315,7 +321,7 @@ class Curator:
                             trace['Trace Message']['req']
                             ['backend_instance_id'])
                         writer.writerow([
-                            trace['_id'], "Tecan Cavro", "_init_",
+                            trace['Timestamp'], "Tecan Cavro", "_init_",
                             str(trace['Trace Message']['req']['args']).replace(
                                 "{", "").replace("}",
                                                  "").replace("'",
@@ -335,7 +341,7 @@ class Curator:
                                 trace['Trace Message']['req']
                                 ['backend_instance_id'])
                         writer.writerow([
-                            trace['_id'], module, "_init_",
+                            trace['Timestamp'], module, "_init_",
                             str(trace['Trace Message']['req']['args']).replace(
                                 "{", "").replace("}",
                                                  "").replace("'",
@@ -353,7 +359,7 @@ class Curator:
                         ) and trace['Trace Message']['req']['args']['data'][
                                 'command_name']:
                             writer.writerow([
-                                trace['_id'], "Magnetic Stirrer",
+                                trace['Timestamp'], "Magnetic Stirrer",
                                 str(trace['Trace Message']['req']['args']
                                     ['data']['command_name']),
                                 trace['Trace Message']['req']['args']['data']
@@ -370,7 +376,7 @@ class Curator:
                             if "args" in trace['Trace Message']['req']['args'][
                                     'data'].keys():
                                 writer.writerow([
-                                    trace['_id'], "C9", trace['Trace Message']
+                                    trace['Timestamp'], "C9", trace['Trace Message']
                                     ['req']['args']['data']['command_name'],
                                     str(
                                         str(trace['Trace Message']['req']
@@ -388,7 +394,7 @@ class Curator:
                             elif "flags" in trace['Trace Message']['req'][
                                     'args']['data'].keys():
                                 writer.writerow([
-                                    trace['_id'], "C9", trace['Trace Message']
+                                    trace['Timestamp'], "C9", trace['Trace Message']
                                     ['req']['args']['data']['command_name'],
                                     str(trace['Trace Message']['req']
                                         ['args']['data']['flags']).replace(
@@ -399,7 +405,7 @@ class Curator:
                                 ])
                             else:
                                 writer.writerow([
-                                    trace['_id'], "C9", trace['Trace Message']
+                                    trace['Timestamp'], "C9", trace['Trace Message']
                                     ['req']['args']['data']['command_name'],
                                     None,
                                     trace['Trace Message']['resp']['resp'],
@@ -423,7 +429,7 @@ class Curator:
                                     ['data'].keys()
                                 ) and "command" not in commands_values[i + 1]:
                                     writer.writerow([
-                                        trace['_id'], "Tecan Cavro",
+                                        trace['Timestamp'], "Tecan Cavro",
                                         trace['Trace Message']['req']['args']
                                         ['data'][commands_values[i]],
                                         str(commands_values[i + 1] + ":" +
@@ -437,7 +443,7 @@ class Curator:
                                     i = i + 2
                                 else:
                                     writer.writerow([
-                                        trace['_id'], "Tecan Cavro",
+                                        trace['Timestamp'], "Tecan Cavro",
                                         trace['Trace Message']['req']['args']
                                         ['data'][commands_values[i]],
                                         trace['Trace Message']['resp']['resp'],
@@ -450,7 +456,7 @@ class Curator:
                         if trace['Trace Message']['req'][
                             'backend_type'].replace("Direct", "") == "UR3Arm":
                             writer.writerow([
-                                trace['_id'], "UR3Arm",
+                                trace['Timestamp'], "UR3Arm",
                                 trace['Trace Message']['req']['method_name'],
                                 str(trace['Trace Message']
                                     ['req']['args']).replace("{", "").replace(
@@ -462,7 +468,7 @@ class Curator:
                             'backend_type'].replace("Direct", "") == "ArduinoAugmentedQuantos":
                             try:
                                 writer.writerow([
-                                    trace['_id'], "ArduinoAugmentedQuantos",
+                                    trace['Timestamp'], "ArduinoAugmentedQuantos",
                                     trace['Trace Message']['req']
                                     ['method_name'],
                                     str(trace['Trace Message']['req']
@@ -474,7 +480,7 @@ class Curator:
                                 ])
                             except:
                                 writer.writerow([
-                                    trace['_id'], "ArduinoAugmentedQuantos",
+                                    trace['Timestamp'], "ArduinoAugmentedQuantos",
                                     trace['Trace Message']['req']
                                     ['property_name'],
                                     str(trace['Trace Message']['req']
@@ -513,7 +519,7 @@ class Curator:
                             trace['Trace Message']['req']
                             ['backend_instance_id'])
                         writer.writerow([
-                            trace['Trace Message']['req']['id'], trace['_id'],
+                            trace['Trace Message']['req']['id'], trace['Timestamp'],
                             "Magnetic Stirrer", "_init_",
                             str(trace['Trace Message']['req']['args']).replace(
                                 "{", "").replace("}",
@@ -529,7 +535,7 @@ class Curator:
                             trace['Trace Message']['req']
                             ['backend_instance_id'])
                         writer.writerow([
-                            trace['Trace Message']['req']['id'], trace['_id'],
+                            trace['Trace Message']['req']['id'], trace['Timestamp'],
                             "C9", "_init_",
                             str(trace['Trace Message']['req']['args']).replace(
                                 "{", "").replace("}",
@@ -546,7 +552,7 @@ class Curator:
                             trace['Trace Message']['req']
                             ['backend_instance_id'])
                         writer.writerow([
-                            trace['Trace Message']['req']['id'], trace['_id'],
+                            trace['Trace Message']['req']['id'], trace['Timestamp'],
                             "Tecan Cavro", "_init_",
                             str(trace['Trace Message']['req']['args']).replace(
                                 "{", "").replace("}",
@@ -568,7 +574,7 @@ class Curator:
                                 trace['Trace Message']['req']
                                 ['backend_instance_id'])
                         writer.writerow([
-                            trace['Trace Message']['req']['id'], trace['_id'],
+                            trace['Trace Message']['req']['id'], trace['Timestamp'],
                             module, "_init_",
                             str(trace['Trace Message']['req']['args']).replace(
                                 "{", "").replace("}",
@@ -589,7 +595,7 @@ class Curator:
                                 'command_name']:
                             writer.writerow([
                                 trace['Trace Message']['req']['id'],
-                                trace['_id'], "Magnetic Stirrer",
+                                trace['Timestamp'], "Magnetic Stirrer",
                                 str(trace['Trace Message']['req']['args']
                                     ['data']['command_name']),
                                 trace['Trace Message']['req']['args']['data']
@@ -609,7 +615,7 @@ class Curator:
                                     'data'].keys():
                                 writer.writerow([
                                     trace['Trace Message']['req']['id'],
-                                    trace['_id'], "C9", trace['Trace Message']
+                                    trace['Timestamp'], "C9", trace['Trace Message']
                                     ['req']['args']['data']['command_name'],
                                     str(
                                         str(trace['Trace Message']['req']
@@ -630,7 +636,7 @@ class Curator:
                                     'args']['data'].keys():
                                 writer.writerow([
                                     trace['Trace Message']['req']['id'],
-                                    trace['_id'], "C9", trace['Trace Message']
+                                    trace['Timestamp'], "C9", trace['Trace Message']
                                     ['req']['args']['data']['command_name'],
                                     str(trace['Trace Message']['req']
                                         ['args']['data']['flags']).replace(
@@ -644,7 +650,7 @@ class Curator:
                             else:
                                 writer.writerow([
                                     trace['Trace Message']['req']['id'],
-                                    trace['_id'], "C9", trace['Trace Message']
+                                    trace['Timestamp'], "C9", trace['Trace Message']
                                     ['req']['args']['data']['command_name'],
                                     None,
                                     trace['Trace Message']['resp']['resp'],
@@ -672,7 +678,7 @@ class Curator:
                                 ) and "command" not in commands_values[i + 1]:
                                     writer.writerow([
                                         trace['Trace Message']['req']['id'],
-                                        trace['_id'], "Tecan Cavro",
+                                        trace['Timestamp'], "Tecan Cavro",
                                         trace['Trace Message']['req']['args']
                                         ['data'][commands_values[i]],
                                         str(commands_values[i + 1] + ":" +
@@ -688,7 +694,7 @@ class Curator:
                                 else:
                                     writer.writerow([
                                         trace['Trace Message']['req']['id'],
-                                        trace['_id'], "Tecan Cavro",
+                                        trace['Timestamp'], "Tecan Cavro",
                                         trace['Trace Message']['req']['args']
                                         ['data'][commands_values[i]],
                                         trace['Trace Message']['resp']['resp'],
@@ -704,7 +710,7 @@ class Curator:
                             'backend_type'].replace("Direct", "") == "UR3Arm":
                             writer.writerow([
                                 trace['Trace Message']['req']['id'],
-                                trace['_id'], "UR3Arm",
+                                trace['Timestamp'], "UR3Arm",
                                 trace['Trace Message']['req']['method_name'],
                                 str(trace['Trace Message']
                                     ['req']['args']).replace("{", "").replace(
@@ -719,7 +725,7 @@ class Curator:
                             try:
                                 writer.writerow([
                                     trace['Trace Message']['req']['id'],
-                                    trace['_id'], "ArduinoAugmentedQuantos",
+                                    trace['Timestamp'], "ArduinoAugmentedQuantos",
                                     trace['Trace Message']['req']
                                     ['method_name'],
                                     str(trace['Trace Message']['req']
@@ -734,7 +740,7 @@ class Curator:
                             except:
                                 writer.writerow([
                                     trace['Trace Message']['req']['id'],
-                                    trace['_id'], "ArduinoAugmentedQuantos",
+                                    trace['Timestamp'], "ArduinoAugmentedQuantos",
                                     trace['Trace Message']['req']
                                     ['property_name'],
                                     str(trace['Trace Message']['req']
@@ -814,11 +820,10 @@ class Curator:
             self.backend_instance_id_arduino = []
             self.backend_instance_id_ur = []
 
-
         #Get the list of json files
         json_files = os.listdir(self.json_path)
 
-        #Convert all files to csv file and write it to the file
+        # #Convert all files to csv file and write it to the file
         print("Converting json to csv files")
         for file in json_files:
             json_log_file = self.json_path + "\\" + file
@@ -836,11 +841,11 @@ class Curator:
             self.backend_instance_id_ur = []
 
         #Dump it in db
-        # print("Dumping Json files to MongoDB")
-        # for file in json_files:
-        #     json_log_file = self.json_path + "\\" + file
-        #     print(json_log_file)
-        #     self.dumping_in_db(json_log_file)
+        print("Dumping Json files to MongoDB")
+        for file in json_files:
+            json_log_file = self.json_path + "\\" + file
+            print(json_log_file)
+            self.dumping_in_db(json_log_file)
 
 
 if __name__ == "__main__":
