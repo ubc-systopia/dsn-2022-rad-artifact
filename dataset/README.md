@@ -1,5 +1,10 @@
 # Repository Description
 
+## RAD_Power_Monitoring
+* [`csv`](https://github.com/ubc-systopia/cps-security-code/tree/main/dataset/RAD_Power_Monitoring) stores RAD Power Monitoring data in csv file format for all days on which the known and unknown procedures were run. 
+
+## RAD_Commands
+
 * [`csv`](https://github.com/ubc-systopia/cps-security-code/tree/main/dataset/csv) stores RAD in csv file format and is further divided in two folders of known_procedures and unknown_procedures.
 * [`MongoDB`](https://github.com/ubc-systopia/cps-security-code/tree/main/dataset/mongo_db) stores RAD in a MongoDB instance.
 

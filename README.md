@@ -1,20 +1,20 @@
 # RosyChem Lab
 
-This project was created in collaboration with RosyChem Lab, a research lab that uses Cyber Physical Systems (CPS) to automate chemical synthesis procedures, to bridge the gap of providing dataset for developing Intrusion Detection Systems (IDS) to secure the CPS in smart manufacturing. Towards this end, we provide the Robotic Arm Dataset (RAD) along with non-intrusive tracing framework, RATracer. Additionally, we also provide preliminary analyses on the command and power data in RAD. 
+This project was created in collaboration with RosyChem Lab, a research lab that uses Cyber Physical Systems (CPS) to automate chemical synthesis procedures. Our goal is to collect real-world CPU data from which we and others can develop Intrusion Detection Systems (IDS) to secure the CPS in smart laboratories and manufacturing floors. This repository includes the Robotic Arm Dataset (RAD) along with a non-intrusive tracing framework, RATracer. Additionally, we include scripts and results from preliminary analyses using command and power data.
 
-This README file provides the directory structure of this project, documentation on the supervised experiment steps carried out to create RAD, the description of RAD and running the UR Robot Simulator. Further, it describes the steps required to set up, build and run the RATracer along with the steps on running the analysis scripts for command and power data.
+This README file documents the directory structure of this project, documentation on the supervised experiment steps carried out to create RAD, the description of RAD and running the UR Robot Simulator. Further, it describes the steps required to set up, build and run the RATracer along with the steps on running the analysis scripts for command and power data.
 
 ## Resources
 
 ### Directory Structure
 
-* [`analysis`](https://github.com/ubc-systopia/cps-security-code/tree/main/analysis) contains the scripts, graphs and documentation for reproducing the analysis on command and power data. It also provides the scripts and documentation on performing the analysis to evaluate the performance of RATracer.
+* [`analysis`](https://github.com/ubc-systopia/cps-security-code/tree/main/analysis): The scripts, graphs and documentation for reproducing our analysis of command and power data. It also contains the scripts and documentation for evaluating the performance of RATracer.
 
-* [`dataset`](https://github.com/ubc-systopia/cps-security-code/tree/main/dataset) contains RAD that is stored in the form of .csv files where the supervised experiments are labeled as anamolous or benign and the rest are labeled as unknown procedures. It also contains the MongoDB instance for storing RAD.
+* [`dataset`](https://github.com/ubc-systopia/cps-security-code/tree/main/dataset): A collection of .csv files and a MongoDN instance. The MongoDB database contains all the original data; the .csv files are extractions from the database and contain labeled data for the supervised experiments as well as a collection of unknown procedures.
 
-* [`docs`](https://github.com/ubc-systopia/cps-security-code/tree/main/docs) contains additional docs that contains the description of the RAD along with the details of the supervised experiments and their steps. Further, they contain steps to install UR simulator and running it via Python script.
+* [`docs`](https://github.com/ubc-systopia/cps-security-code/tree/main/docs): Additional documents that contains the description of the dataset along with the details of the supervised experiments and their steps. Also documents the steps to install the UR simulator and run it from Python.
 
-* [`tracer`](https://github.com/ubc-systopia/cps-security-code/tree/main/tracer) contains the  non-intrusive tracing framework, RATracer that uses the middlebox to collect the command and power trace data and send commands to the modules.
+* [`tracer`](https://github.com/ubc-systopia/cps-security-code/tree/main/tracer): The  non-intrusive tracing framework, RATracer, which uses a middlebox to collect command and power trace data before sending commands to the specific modules.
 
 ### Getting Started
 
