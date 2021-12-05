@@ -10,7 +10,7 @@ This README file documents the directory structure of this project, documentatio
 
 * [`analysis`](https://github.com/ubc-systopia/cps-security-code/tree/dsn_artifact/analysis): The scripts, graphs and documentation for reproducing our analysis of command and power data. It also contains the scripts and documentation for evaluating the performance of RATracer.
 
-* [`dataset`](https://github.com/ubc-systopia/cps-security-code/tree/dsn_artifact/dataset): A collection of .csv files and a MongoDN instance. The MongoDB database contains all the original data; the .csv files are extractions from the database and contain labeled data for the supervised experiments as well as a collection of unknown procedures.
+* [`dataset`](https://github.com/ubc-systopia/cps-security-code/tree/dsn_artifact/dataset): A collection of .csv files and a MongoDB instance. The MongoDB database contains all the original data; the .csv files are extractions from the database and contain labeled data for the supervised experiments as well as a collection of unknown procedures.
 
 * [`docs`](https://github.com/ubc-systopia/cps-security-code/tree/dsn_artifact/docs): Additional documents that contains the description of the dataset along with the details of the supervised experiments and their steps. Also documents the steps to install the UR simulator and run it from Python.
 
