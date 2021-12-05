@@ -5,12 +5,12 @@
 
 ## RAD_Commands
 
-* [`csv`](/dataset/csv) stores RAD in csv file format and is further divided in two folders of known_procedures and unknown_procedures.
-* [`MongoDB`](/dataset/mongo_db) stores RAD in a MongoDB instance.
+* [`csv`](../dataset/csv) stores RAD in csv file format and is further divided in two folders of known_procedures and unknown_procedures.
+* [`MongoDB`](../dataset/mongo_db) stores RAD in a MongoDB instance.
 
 
 The known_procedures are further divided in two folders: `anomaly` and `benign`. There are 
-25 files that have known procedures (see [procedure details](/docs/Experiment_Steps.pdf) for more information) and are used for our command analysis. The following table shows the labels and the description assigned to each tracing file.
+25 files that have known procedures (see [procedure details](../docs/Experiment_Steps.pdf) for more information) and are used for our command analysis. The following table shows the labels and the description assigned to each tracing file.
 
 
 
