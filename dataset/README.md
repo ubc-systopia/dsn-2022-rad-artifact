@@ -6,7 +6,7 @@
 ## RAD_Commands
 
 * [`csv`](../dataset/RAD_Commands/csv.zip) stores RAD in csv file format and is further divided in two folders of known_procedures and unknown_procedures.
-* [`MongoDB`](../dataset//RAD_Commands/mongo_db.zip) stores RAD in a MongoDB instance.
+* [`MongoDB`](../dataset//RAD_Commands/mongodb.zip) stores RAD in a MongoDB instance.
 
 
 The known_procedures are further divided in two folders: `anomaly` and `benign`. There are 
