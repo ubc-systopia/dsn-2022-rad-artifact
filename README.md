@@ -8,41 +8,42 @@ This README file documents the directory structure of this project, documentatio
 
 ### Directory Structure
 
-* [`analysis`](https://github.com/ubc-systopia/cps-security-code/tree/main/analysis): The scripts, graphs and documentation for reproducing our analysis of command and power data. It also contains the scripts and documentation for evaluating the performance of RATracer.
+* [`analysis`](https://github.com/ubc-systopia/cps-security-code/tree/dsn_artifact/analysis): The scripts, graphs and documentation for reproducing our analysis of command and power data. It also contains the scripts and documentation for evaluating the performance of RATracer.
 
-* [`dataset`](https://github.com/ubc-systopia/cps-security-code/tree/main/dataset): A collection of .csv files and a MongoDN instance. The MongoDB database contains all the original data; the .csv files are extractions from the database and contain labeled data for the supervised experiments as well as a collection of unknown procedures.
+* [`dataset`](https://github.com/ubc-systopia/cps-security-code/tree/dsn_artifact/dataset): A collection of .csv files and a MongoDN instance. The MongoDB database contains all the original data; the .csv files are extractions from the database and contain labeled data for the supervised experiments as well as a collection of unknown procedures.
 
-* [`docs`](https://github.com/ubc-systopia/cps-security-code/tree/main/docs): Additional documents that contains the description of the dataset along with the details of the supervised experiments and their steps. Also documents the steps to install the UR simulator and run it from Python.
+* [`docs`](https://github.com/ubc-systopia/cps-security-code/tree/dsn_artifact/docs): Additional documents that contains the description of the dataset along with the details of the supervised experiments and their steps. Also documents the steps to install the UR simulator and run it from Python.
 
-* [`tracer`](https://github.com/ubc-systopia/cps-security-code/tree/main/tracer): The  non-intrusive tracing framework, RATracer, which uses a middlebox to collect command and power trace data before sending commands to the specific modules.
+* [`tracer`](https://github.com/ubc-systopia/cps-security-code/tree/dsn_artifact/tracer): The  non-intrusive tracing framework, RATracer, which uses a middlebox to collect command and power trace data before sending commands to the specific modules.
 
 ### Getting Started
 
 ##### Collecting Command Data
-* [Building and Testing RATracer - Command](https://github.com/ubc-systopia/cps-security-code/blob/main/tracer/README.md)
-* [Processing Tracing Files](https://github.com/ubc-systopia/cps-security-code/blob/main/tracer/data_processing/README.md)
-* [Running Command Analysis](https://github.com/ubc-systopia/cps-security-code/tree/main/analysis/Dataset_CommandAnalysis)
+* [Building and Testing RATracer - Command](https://github.com/ubc-systopia/cps-security-code/tree/dsn_artifact/tracer/RATracer_command/runtime_module)
+* [Processing Tracing Files](https://github.com/ubc-systopia/cps-security-code/tree/dsn_artifact/tracer/RATracer_command/data_processing_module)
+* [Running Command Analysis](https://github.com/ubc-systopia/cps-security-code/tree/dsn_artifact/analysis/Dataset_CommandAnalysis)
 
 ##### Collecting Power Monitoring Data
-* [Building and Testing RATracer - Power Monitoring](https://github.com/ubc-systopia/cps-security-code/blob/main/tracer/RATracer_power_monitoring/README.md)
-* [Running Power Analysis](https://github.com/ubc-systopia/cps-security-code/tree/main/analysis/Dataset_PowerAnalysis)
+* [Building and Testing RATracer - Power Monitoring](https://github.com/ubc-systopia/cps-security-code/tree/dsn_artifact/tracer/RATracer_power_monitoring)
+* [Running Power Analysis](https://github.com/ubc-systopia/cps-security-code/tree/dsn_artifact/analysis/Dataset_PowerAnalysis)
 
 
 ### Robotic Arm Dataset (RAD)
-* [Robotic Arm Dataset](https://github.com/ubc-systopia/cps-security-code/tree/main/dataset)
-* [Features Description](https://github.com/ubc-systopia/cps-security-code/blob/main/docs/RAD_Description.pdf)
-* [Experiment Steps](https://github.com/ubc-systopia/cps-security-code/blob/main/docs/Experiment_Steps.pdf)
-* [Labeled Tracing Files Description](https://github.com/ubc-systopia/cps-security-code/blob/main/dataset/README.md)
+* [Robotic Arm Dataset](https://github.com/ubc-systopia/cps-security-code/tree/dsn_artifact/dataset)
+* [Features Description](https://github.com/ubc-systopia/cps-security-code/blob/dsn_artifact/docs/RAD_Description.pdf)
+* [Experiment Steps](https://github.com/ubc-systopia/cps-security-code/blob/dsn_artifact/docs/Experiment_Steps.pdf)
+* [Labeled Tracing Files Description](https://github.com/ubc-systopia/cps-security-code/blob/dsn_artifact/dataset/README.md)
 
 
 ### Additional Documents
 
-* [Building and Running UR Robot Simulator](https://github.com/ubc-systopia/cps-security-code/blob/main/docs/URsim_Setup.pdf)
+* [Building and Running UR Robot Simulator](https://github.com/ubc-systopia/cps-security-code/blob/dsn_artifact/docs/URsim_Setup.pdf)
 
 
 # Contacts
 
 #### Mailing List
+
 
 #### People
 
