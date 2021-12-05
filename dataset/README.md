@@ -1,7 +1,7 @@
 # Repository Description
 
 ## RAD_Power_Monitoring
-* [`csv`](/dataset/RAD_Power_Monitoring) stores RAD Power Monitoring data in csv file format for all days on which the known and unknown procedures were run. 
+* [`csv`](/RAD_Power_Monitoring) stores RAD Power Monitoring data in csv file format for all days on which the known and unknown procedures were run. 
 
 ## RAD_Commands
 
