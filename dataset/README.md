@@ -1,16 +1,16 @@
 # Repository Description
 
 ## RAD_Power_Monitoring
-* [`csv`](https://github.com/ubc-systopia/cps-security-code/tree/main/dataset/RAD_Power_Monitoring) stores RAD Power Monitoring data in csv file format for all days on which the known and unknown procedures were run. 
+* [`csv`](/dataset/RAD_Power_Monitoring) stores RAD Power Monitoring data in csv file format for all days on which the known and unknown procedures were run. 
 
 ## RAD_Commands
 
-* [`csv`](https://github.com/ubc-systopia/cps-security-code/tree/main/dataset/csv) stores RAD in csv file format and is further divided in two folders of known_procedures and unknown_procedures.
-* [`MongoDB`](https://github.com/ubc-systopia/cps-security-code/tree/main/dataset/mongo_db) stores RAD in a MongoDB instance.
+* [`csv`](/dataset/csv) stores RAD in csv file format and is further divided in two folders of known_procedures and unknown_procedures.
+* [`MongoDB`](/dataset/mongo_db) stores RAD in a MongoDB instance.
 
 
 The known_procedures are further divided in two folders: `anomaly` and `benign`. There are 
-25 files that have known procedures (see [procedure details](https://github.com/ubc-systopia/cps-security-code/blob/main/docs/Experiment_Steps.pdf) for more information) and are used for our command analysis. The following table shows the labels and the description assigned to each tracing file.
+25 files that have known procedures (see [procedure details](/docs/Experiment_Steps.pdf) for more information) and are used for our command analysis. The following table shows the labels and the description assigned to each tracing file.
 
 
 
