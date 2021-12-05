@@ -1,4 +1,4 @@
-# RTDE
+# Python Real-Time Data Exchange (RTDE)
 
 Power Monitoring Tracer uses the Real-Time Data Exchange (RTDE) library in Python.
 
