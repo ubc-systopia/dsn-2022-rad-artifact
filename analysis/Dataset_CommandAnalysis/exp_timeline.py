@@ -14,6 +14,8 @@ parser.add_argument(
     '--idir',
     help='Provide path to the directory containing the .csv files. Default is the current directory.',
     type=str)
+args = parser.parse_args()
+
 
 def main():
     file_list = os.listdir(idir)
