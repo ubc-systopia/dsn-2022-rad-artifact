@@ -37,7 +37,7 @@ The package may work with earlier versions of these depenencies, but this has no
 
 #### Running UR simulator
 
-* Details on setting up UR simulator and connecting it with python script: [UR Simulator setup](../../../docs/URsim_Setup.pdf)
+* Details on setting up UR simulator and connecting it with python script: [UR Simulator Setup](../../../docs/URsim_Setup.pdf)
 
 * Test on a single machine as follows:
     * Turn on the VMware Player and run the UR simulator virtual machine
