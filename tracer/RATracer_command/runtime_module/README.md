@@ -31,8 +31,8 @@ The package may work with earlier versions of these depenencies, but this has no
     * Run task `test` defined in `.vscode/tasks.json` in Visual Studio Code
 
 * Test on two machines as follows:
-    * On the server machine, run `.\ratracer\middlebox\start_server.py -P 1337 -K .\ratracer\keys\ispy_cs_ubc_ca\ -S`
-    * On the client machine, run `.\ratracer\test\test_ratracer.py -D -H ispy.cs.ubc.ca -P 1337 -K .\ratracer\keys\ispy_cs_ubc_ca\ -S`
+    * On the server machine, run `.\ratracer\middlebox\start_server.py -P 1337 -K .\ratracer\keys\ispy\ -S`
+    * On the client machine, run `.\ratracer\test\test_ratracer.py -D -H ispy -P 1337 -K .\ratracer\keys\ispy\ -S`
     * (Use `.\ratracer\middlebox\start_server.py --help` or `.\ratracer\test\test_ratracer.py --help` for details)
 
 #### Running UR simulator
