@@ -6,8 +6,14 @@ import seaborn as sns
 from matplotlib import pyplot as plt
 
 
-idir="<dataset_location_path_name>"
-ifile_ext=".csv"
+import argparse
+
+parser = argparse.ArgumentParser()
+parser.add_argument(
+    '-I',
+    '--idir',
+    help='Provide path to the directory containing the .csv files. Default is the current directory.',
+    type=str)
 
 def main():
     file_list = os.listdir(idir)
@@ -18,7 +24,7 @@ def main():
     li = []
     for item in file_list:
         if item.startswith("2021"):
-            df = pd.read_csv(idir + item, index_col=False, header = 0)
+            df = pd.read_csv(args.idir + item, index_col=False, header = 0)
             num_list = range(0, len(df.index))
 
             df["Timeline"] = num_list
