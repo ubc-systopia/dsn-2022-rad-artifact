@@ -14,7 +14,7 @@ This README file documents the directory structure of this project, documentatio
 
 * [`docs`](./docs): Additional documents that contains the description of the dataset along with the details of the supervised experiments and their steps. Also documents the steps to install the UR simulator and run it from Python.
 
-* [`tracer`](./tracer/README.md): The  non-intrusive tracing framework, RATracer, which uses a middlebox to collect command and power trace data before sending commands to the specific modules.
+* [`tracer`](./tracer): The  non-intrusive tracing framework, RATracer, which uses a middlebox to collect command and power trace data before sending commands to the specific modules.
 
 ### Getting Started
 
