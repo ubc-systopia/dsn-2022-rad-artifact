@@ -8,11 +8,20 @@ from matplotlib import pyplot as plt
 from sklearn.feature_extraction.text import TfidfVectorizer
 
 
-idir="<dataset_location_path_name>"
-ifile_ext=".csv"
+mport argparse
+
+parser = argparse.ArgumentParser()
+parser.add_argument(
+    '-I',
+    '--idir',
+    default='./ngrams',
+    help='Input directory path which stores the csv files creating ngrams. Default is "./ngrams".',
+    type=str)
+args = parser.parse_args()
+
 
 def main():
-    file_list = os.listdir(idir)
+    file_list = os.listdir(args.idir)
     print(file_list)
 
     # Experiment,Timestamp,Module,Method_Name,Arguments,Responses,Exceptions,Anomaly (Yes/No)
@@ -21,7 +30,7 @@ def main():
     file_index=[]
     for item in file_list:
         if item.startswith("2021"):
-            df = pd.read_csv(idir + item, index_col=False, header = 0)
+            df = pd.read_csv(args.idir + item, index_col=False, header = 0)
             if (len(df.index) > 1):
                 print(item)
                 print(list(df))
@@ -33,7 +42,7 @@ def main():
                 li.append(procedure_list)
                 file_index.append(item)
 
-    ofile = idir + "procedure_list_all.csv"
+    ofile = args.idir + "procedure_list_all.csv"
 
     print("... %s" %ofile)
     if os.path.isfile(ofile):
