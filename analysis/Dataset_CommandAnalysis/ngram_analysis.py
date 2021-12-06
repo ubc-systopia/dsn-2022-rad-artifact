@@ -16,6 +16,12 @@ parser.add_argument(
     default='./ngrams',
     help='Input directory path which stores the csv files creating ngrams. Default is "./ngrams".',
     type=str)
+parser.add_argument(
+    '-E',
+    '--ifile_ext',
+    default='.csv',
+    help='Default file extension is ".csv". If the default extension is not used, provide an alternative.',
+    type=str)
 args = parser.parse_args()
 
 ifiles = ['bigram.csv','trigram.csv','fourgram.csv','fivegram.csv']
