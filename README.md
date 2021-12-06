@@ -8,7 +8,7 @@ This README file documents the directory structure of this project, documentatio
 
 ### Directory Structure
 
-* [`analysis`](/analysis): The scripts, graphs and documentation for reproducing our analysis of command and power data. It also contains the scripts and documentation for evaluating the performance of RATracer.
+* [`analysis`](./analysis): The scripts, graphs and documentation for reproducing our analysis of command and power data. It also contains the scripts and documentation for evaluating the performance of RATracer.
 
 * [`dataset`](/dataset): A collection of .csv files and a MongoDB instance. The MongoDB database contains all the original data; the .csv files are extractions from the database and contain labeled data for the supervised experiments as well as a collection of unknown procedures.
 
