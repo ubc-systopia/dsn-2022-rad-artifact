@@ -38,23 +38,3 @@ This README file documents the directory structure of this project, documentatio
 ### Additional Documents
 
 * [Building and Running UR Robot Simulator](/docs/URsim_Setup.pdf)
-
-
-# Contacts
-
-#### Mailing List
-
-
-#### People
-
-
-#### Organization
-
-University of British Columbia
-
-
-
-
-
-
-
