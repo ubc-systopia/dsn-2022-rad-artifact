@@ -19,6 +19,12 @@ parser.add_argument(
     default='./ngrams',
     help='Input directory path to the csv folder containing ground_truth files. Default is "./ngrams"',
     type=str)
+parser.add_argument(
+    '-E',
+    '--ifile_ext',
+    default='.csv',
+    help='Default file extension is ".csv". If the default extension is not used, provide an alternative.',
+    type=str)
 args = parser.parse_args()
 
 idir=args.dir + "\\"
