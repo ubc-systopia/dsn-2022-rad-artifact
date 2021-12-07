@@ -257,15 +257,6 @@ def main():
         corpus.append(str_val)
         print(len(corpus),file_index[index])
 
-    #for item in li:
-    #    str_val = " ".join(item)
-    #    corpus.append(str_val)
-
-    """ Old text
-    for index in [0,33,34,6,9,11,12,13,20,16,2,23,4,29,3,14,18,21,24,32,1,17,19,22,25,26,28,31,7,15,5,8,10,35,30,36,27]:
-    str_val = " ".join(li[index])
-    corpus.append(str_val)
-    """
 
     vect = TfidfVectorizer(min_df=1)
     tfidf = vect.fit_transform(corpus)
@@ -293,11 +284,6 @@ def main():
     #plt.show()
     plt.clf()
 
-    #print(">>>>>")
-    #print(corpus)
-    #print(">>>>>>")
-    #print(li)
-    #print("Li printed")
 
     return 0
 
