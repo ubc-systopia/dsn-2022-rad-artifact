@@ -272,7 +272,6 @@ def compute_ngram():
     return 0
 """
 
-
 def main():
     compute_ngram()
 
