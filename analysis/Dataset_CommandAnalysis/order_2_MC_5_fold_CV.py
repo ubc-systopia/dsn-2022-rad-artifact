@@ -7,9 +7,21 @@ from matplotlib import pyplot as plt
 from sklearn.model_selection import KFold
 import jenkspy
 
+import argparse
 
-idir=<dataset file path>
-ifile_ext=".csv"
+parser = argparse.ArgumentParser()
+parser.add_argument(
+    '-I',
+    '--idir',
+    help='Provide path to the directory containing the .csv files. Default is the current directory.',
+    type=str)
+parser.add_argument(
+    '-E',
+    '--ifile_ext',
+    default='.csv',
+    help='Default file extension is ".csv". If the default extension is not used, provide an alternative.',
+    type=str)
+args = parser.parse_args()
 
 file_index_anon = ["20211013110848-1",  # A
                     "20211013113911-1",  # A
@@ -71,7 +83,7 @@ def compute_transition_prob():
             test.append(file_index2[index])
 
         for item2 in train:
-            df = pd.read_csv(idir + item2 + ifile_ext, index_col=False, header = 0)
+            df = pd.read_csv(args.idir + item2 + args.ifile_ext, index_col=False, header = 0)
             if (len(df.index) > 1):
                 print(item2)
                 #print(list(df))
@@ -92,19 +104,19 @@ def compute_transition_prob():
                     trigram_dict[value] = 1
 
         # Save the transition probability of the current training set using the name of the leave-one-out sample
-        with open(idir + t_regex + "fold" + str(fold) + ".csv", 'w') as f:
+        with open(args.idir + t_regex + "fold" + str(fold) + ".csv", 'w') as f:
             for k, v in sorted(trigram_dict.items()):
                 f.write('{},{},{},{}\n'.format(k.split(":")[0], k.split(":")[1], k.split(":")[2], v))
 
-        df_transition = pd.read_csv(idir + t_regex + "fold" + str(fold) + ".csv", index_col=False, names = ["prev_state", "current_state", "next_state", "count"])
+        df_transition = pd.read_csv(args.idir + t_regex + "fold" + str(fold) + ".csv", index_col=False, names = ["prev_state", "current_state", "next_state", "count"])
 
         # compute the probability of each transition
         df_transition['marginal'] = df_transition.groupby(['prev_state','current_state'])['count'].transform('sum')
         df_transition["probability"] = df_transition['count']/df_transition['marginal']
         print(df_transition)
 
-        df_transition.to_csv(idir + t_regex + "fold" + str(fold) + ".csv", index=False)
-        print(idir + t_regex + "fold" + str(fold) + ".csv")
+        df_transition.to_csv(args.idir + t_regex + "fold" + str(fold) + ".csv", index=False)
+        print(args.idir + t_regex + "fold" + str(fold) + ".csv")
         #break
 
         # Now, compute the perplexity scores for the test dataset
@@ -117,7 +129,7 @@ def compute_transition_prob():
             df_transition["next_state_clean"] = df_transition.apply(clean_next_state, axis=1)
 
             # Now read the command sequence (the leave one out sample)
-            df_cmd = pd.read_csv(idir + item + ifile_ext, index_col=False, header=0)
+            df_cmd = pd.read_csv(args.idir + item + args.ifile_ext, index_col=False, header=0)
             test_procedure_list = df_cmd['Method_Name'].to_list()
 
             # Now calculate the perplexity as log probability
