@@ -270,7 +270,7 @@ def compute_ngram():
     plt.clf()
 
     return 0
-
+"""
 
 def main():
     compute_ngram()
