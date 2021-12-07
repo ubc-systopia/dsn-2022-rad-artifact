@@ -1,7 +1,7 @@
 # Prepare the Dataset Folder for Command Analysis
 
 ## Step 1:
-Download all csv datafiles from [RAD_Commands](../../dataset/RAD_Commands). 
+Download all csv datafiles from [RAD_Commands](../../dataset/RAD_Commands/csv.zip). 
 
 ## Step 2:
 Unzip the `csv.zip` folder. 
