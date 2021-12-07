@@ -33,7 +33,7 @@ To plot command patterns within a module run the script cmd_analysis.py using th
 
 
 ## File Name Mapping to Procedure ID for TF-IDF
-The selected 25 known procedural runs are mapped to the their respective procedure ID that are used for TF-IDF.
+The selected 25 known procedural runs are mapped to the their respective procedure IDs that are used for TF-IDF.
 
 | Procedure ID | File Name        |
 |--------------|------------------|
