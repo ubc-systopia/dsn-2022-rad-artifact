@@ -1,6 +1,4 @@
-# RAD_Commands
-
-## Extracting RAD Commands
+# Extracting RAD Commands
 
 ## Extracing csv.zip
 
