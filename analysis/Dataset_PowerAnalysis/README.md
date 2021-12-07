@@ -12,4 +12,4 @@ This script needs three input files including the followings:
 - VELOCITY-PLOT.csv
 - WEIGHT-PLOT.csv
 
-Alternatively, plotting steps has been shown in Plotting-in-JupyterNotebook.pdf file, and running the code in Jupiter notebook should be enough to plot the graphs.
+Alternatively, plotting steps has been shown in Plotting-in-JupyterNotebook.pdf file, and running the code in Jupyter notebook should be enough to plot the graphs.
