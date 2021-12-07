@@ -15,7 +15,7 @@ import argparse
 parser = argparse.ArgumentParser()
 parser.add_argument(
     '-I',
-    '--dir',
+    '--idir',
     default='./ngrams',
     help='Input directory path to the csv folder containing ground_truth files. Default is "./ngrams"',
     type=str)
@@ -27,11 +27,10 @@ parser.add_argument(
     type=str)
 args = parser.parse_args()
 
-idir=args.dir + "\\"
-ifile_ext=".csv"
+
 
 def compute_ngram():
-    file_list = os.listdir(idir)
+    file_list = os.listdir(args.idir)
     print(file_list)
 
     # Experiment,Timestamp,Module,Method_Name,Arguments,Responses,Exceptions,Anomaly (Yes/No)
@@ -40,7 +39,7 @@ def compute_ngram():
     file_index=[]
     for item in file_list:
         if item.startswith("2021"):
-            df = pd.read_csv(idir + item, index_col=False, header = 0)
+            df = pd.read_csv(args.idir + item, index_col=False, header = 0)
             if (len(df.index) > 1):
                 print(item)
                 print(list(df))
@@ -52,7 +51,7 @@ def compute_ngram():
                 li.append(procedure_list)
                 file_index.append(item)
 
-    ofile = idir + "\\procedure_list_all.csv"
+    ofile = args.idir + "\\procedure_list_all.csv"
 
     print("... %s" %ofile)
     if os.path.isfile(ofile):
@@ -113,24 +112,24 @@ def compute_ngram():
 
 
     # Save the ngrams generated into csv files
-    with open(idir + 'bigram.csv', 'w') as f:
+    with open(args.idir + 'bigram.csv', 'w') as f:
         for k, v in sorted(bigram_dict.items()):
             f.write('{}, {}, {} \n'.format(k.split(":")[0],k.split(":")[1],v))
 
-    with open(idir + 'trigram.csv', 'w') as f:
+    with open(args.idir + 'trigram.csv', 'w') as f:
         for k, v in sorted(trigram_dict.items()):
             f.write('{},{},{},{}\n'.format(k.split(":")[0], k.split(":")[1], k.split(":")[2],v))
 
-    with open(idir + 'fourgram.csv', 'w') as f:
+    with open(args.idir + 'fourgram.csv', 'w') as f:
         for k, v in sorted(fourgram_dict.items()):
             f.write('{},{},{},{},{}\n'.format(k.split(":")[0], k.split(":")[1],k.split(":")[2],k.split(":")[3], v))
 
-    with open(idir + 'fivegram.csv', 'w') as f:
+    with open(args.idir + 'fivegram.csv', 'w') as f:
         for k, v in sorted(fivegram_dict.items()):
             f.write('{},{},{},{},{},{}\n'.format(k.split(":")[0], k.split(":")[1],k.split(":")[2],k.split(":")[3],k.split(":")[4], v))
 
     # Model the bigram
-    #file_list = os.listdir(idir)
+    #file_list = os.listdir(args.idir)
     #print(file_list)
 
 """
