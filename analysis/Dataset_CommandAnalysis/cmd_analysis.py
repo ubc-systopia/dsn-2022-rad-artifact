@@ -262,22 +262,6 @@ def module_freq():
         plt.savefig("./" + group["Module"].unique()[0] + "_exception.pdf")
         plt.clf()
 
-        # sns.catplot(data=group, x="Arguments", y="Responses", col="Method_Name")
-        # plt.tight_layout()
-
-        # sns.catplot(data=group, x="Arguments", y="Exceptions", col="Method_Name")
-        # plt.tight_layout()
-
-        # sns.catplot(data=group, x="Group_row_id", y="Arguments", col="Method_Name", kind="strip")
-        # plt.set_xticklabels(plt.get_xticks()[::100], rotation=45)
-        # plt.xticks(np.arange(0,group.size,100), np.arange(0,group.size,100))
-        # plt.tight_layout()
-
-        # sns.catplot(data=group, x="Arguments", y="Responses", col="Method_Name", kind="strip")
-        # plt.tight_layout()
-
-        # sns.catplot(data=group, x="Arguments", y="Exceptions", col="Method_Name", kind="strip")
-        # plt.tight_layout()
 
         print(">>> Next group <<<")
 
