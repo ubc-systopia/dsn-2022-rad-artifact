@@ -27,8 +27,25 @@ To plot command patterns within a module run the script cmd_analysis.py using th
 
 `python cmd_analysis.py --ifile <concat file name>`
 
-# LCSS, N-Gram Analysis, TF-IDF
+# N-Gram Analysis
 
+# Step 1
+To generate ngrams run the script ngram.py using the command:
+
+`python ngram.py --idir <dataset folder> --ifile_ext <file extension (.csv)>`
+
+It will store the ngrams in the csv file format in the dataset folder.
+
+# Step 2
+To plot the ngrams run the script ngram_analysis.py using the command:
+
+`python ngram_analysis.py --idir <dataset folder containing the ngrams csv files>`
+
+# TF-IDF
+
+To perform TF-IDF analysis run the script ngram_tfidf.py uisng the command:
+
+`python ngram_tfidf.py --idir <dataset folder> --ifile_ext <file extension (.csv)>`
 
 
 
@@ -66,7 +83,7 @@ The selected 25 known procedural runs are mapped to the their respective procedu
 
 # Perplexity Scores
 
-* `python order_1_MC.py --idir <dataset folder> --ifile_ext <file extension (.csv)>`
+* `python similarity_score.py --idir <dataset folder> --ifile_ext <file extension (.csv)>`
 * `python order_1_MC_5_fold_CV.py --idir <dataset folder> --ifile_ext <file extension (.csv)>`
 * `python order_2_MC_5_fold_CV.py --idir <dataset folder> --ifile_ext <file extension (.csv)>`
 * `python order_3_MC_5_fold_CV.py --idir <dataset folder> --ifile_ext <file extension (.csv)>`
