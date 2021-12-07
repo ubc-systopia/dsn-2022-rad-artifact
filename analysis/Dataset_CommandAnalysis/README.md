@@ -1,7 +1,7 @@
 # Prepare the Dataset Folder for Command Analysis
 
 ## Step 1:
-Download all csv datafiles from [RAD_Commands](../../dataset/RAD_Commands/csv.zip). 
+Download all csv datafiles from [RAD_Commands](../../dataset/RAD_Commands/csv.zip).
 
 ## Step 2:
 Unzip the `csv.zip` folder. 
@@ -87,3 +87,4 @@ The selected 25 known procedural runs are mapped to the their respective procedu
 * `python order_1_MC_5_fold_CV.py --idir <dataset folder> --ifile_ext <file extension (.csv)>`
 * `python order_2_MC_5_fold_CV.py --idir <dataset folder> --ifile_ext <file extension (.csv)>`
 * `python order_3_MC_5_fold_CV.py --idir <dataset folder> --ifile_ext <file extension (.csv)>`
+
