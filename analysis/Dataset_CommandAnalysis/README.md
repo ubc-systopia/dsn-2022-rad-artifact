@@ -25,7 +25,7 @@ To plot individual experiment timelines execute the script exp_timeline.py using
 ## Step 3:
 To plot command patterns within a module run the script cmd_analysis.py using the command:
 
-`python cmd_analysis.py --ifile <concat file>`
+`python cmd_analysis.py --ifile <concat file name>`
 
 # LCSS, N-Gram Analysis, TF-IDF
 
