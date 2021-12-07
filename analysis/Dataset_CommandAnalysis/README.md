@@ -1,28 +1,37 @@
-# Steps to Run
-Step 1:
-Download all datafiles named: experiment_2021XXX.zip in a folder
+# Prepare the Dataset Folder for Command Analysis
 
-Step 2:
-Unzip all the experiment_2021XXX.zip files into a datasets folder
+## Step 1:
+Download all csv datafiles from (RAD_Commands)[../dataset/RAD_Commands/csv.zip]. 
 
-Step 3:
-- Update idir path (line#9 in merge_all.py, line#12 exp_timeline.py and line #12 in cmd_analysis.py) with the path to "datasets" folder
-i.e. update the below line in merge_all.py, exp_timeline.py, and cmd_analysis.py file.
-idir="<dataset file path>" with the output of pwd command when in shell terminal of the above step 2.
+## Step 2:
+Unzip the `csv.zip` folder. 
 
-Step 4:
-The first script to run should be merge_all.py file using the following command
-python merge_all.py
+## Step 3:
+From the `known_procedures` folder, copy all the csv files from the `anomaly` and `benign` folder in a separate folder that will have all the 25 files where this folder will be passed as `--idir` argument for most of the command analysis files. 
 
-(My Python version is : Python 3.7.4, it should work on python2 or python3)
 
-Step 5:
-To plot individual experiment timelines execute the script exp_timeline.py using the command
-python exp_timeline.py
+# Plotting Individual Experiments and Command Patterns
 
-Step 6:
+## Step 1:
+The first script to run should be merge_all.py file using the following command:
+ `python merge_all.py --idir <dataset folder> --ifile_ext <file extension (.csv)> --ofile <output concat file path>`
+ 
+ ## Step 2:
+To plot individual experiment timelines execute the script exp_timeline.py using the command:
+`python exp_timeline.py --idir <dataset folder>`
+
+## Step 3:
 To plot command patterns within a module run the script cmd_analysis.py using the command
-python cmd_analysis.py
+`python cmd_analysis.py --ifile <concat file>
+
+# LCSS, N-Gram Analysis, TF-IDF
+
+# Perplexity Scores
+
+* `python order_1_MC.py --idir <dataset folder> --ifile_ext <file extension (.csv)>`
+* `python order_1_MC_5_fold_CV.py --idir <dataset folder> --ifile_ext <file extension (.csv)>`
+* `python order_2_MC_5_fold_CV.py --idir <dataset folder> --ifile_ext <file extension (.csv)>`
+* `python order_3_MC_5_fold_CV.py --idir <dataset folder> --ifile_ext <file extension (.csv)>`
 
 
 # File Name Mapping to Procedures
