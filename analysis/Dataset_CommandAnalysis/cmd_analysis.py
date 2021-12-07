@@ -166,7 +166,6 @@ def module_freq():
     plt.xticks(rotation=90)
     plt.tight_layout()
     plt.savefig("./module_histogram.pdf")
-    # # # # # plt.show()
     plt.clf()
 
     fig, ax = plt.subplots()
@@ -181,7 +180,6 @@ def module_freq():
     plt.xticks(rotation=90)
     plt.tight_layout()
     plt.savefig("./module_histogram_log.pdf")
-    # # # # plt.show()
     plt.clf()
 
     #plt.rcParams["figure.figsize"] = (390, 120)
@@ -191,7 +189,6 @@ def module_freq():
     plt.ylabel("Count", fontsize=20)
     plt.tight_layout()
     plt.savefig("./method_name_histogram.pdf")
-    # # # # plt.show()
     plt.clf()
 
     print(df_new.groupby(['Method_Name', 'Abbr_Module']).size())
@@ -201,29 +198,6 @@ def module_freq():
     print(g1['log_count'].tolist())
     print(g1['count'].tolist())
     print(g1)
-
-    # sns.barplot(x="Method_Name", y="count", data=g1, hue="Abbr_Module")
-    # #plt.ylim(0, 100000)
-    # plt.yscale("log")
-    # plt.xlabel("Method_Name", fontsize = 20)
-    # plt.ylabel("Log Count", fontsize=20)
-    # plt.xticks(rotation=90)
-    # plt.tight_layout()
-    # plt.savefig("./method_name_reduced_loghistogram.pdf")
-    # # # # # plt.show()
-    # plt.clf()
-
-    # g1_noinit=g1[g1["Method_Name"] != "_init_"]
-    # sns.barplot(x="Method_Name", y="count", data=g1_noinit, hue="Abbr_Module")
-    # #plt.ylim(0, 100000)
-    # plt.yscale("log")
-    # plt.xlabel("Method_Name", fontsize = 20)
-    # plt.ylabel("Count", fontsize=20)
-    # plt.xticks(rotation=90)
-    # plt.tight_layout()
-    # plt.savefig("./method_name_reduced_loghistogram_noinit.pdf")
-    # # # # # plt.show()
-    # plt.clf()
 
     plt.rcParams["figure.figsize"] = (390, 150)
     df_new_noinit = df_new[df_new["Method_Name"] != "_init_"]
@@ -250,34 +224,11 @@ def module_freq():
     plt.show()
     plt.clf()
 
-    # sns.histplot(data=df_new, x="Method_Name", hue="Module")
-    # g=sns.histplot(data=df_new_noinit, x="Method_Name", hue="Abbr_Module")
-    # plt.xticks(rotation=90)
-    # plt.yscale("log")
-    # plt.xlabel("Method_Name", fontsize = 20)
-    # plt.ylabel("Count", fontsize=20)
-    # g.legend_.set_title(None)
-    # plt.tight_layout()
-    # plt.savefig("./method_name_loghistogram_hue.pdf")
-    # # # # # plt.show()
-    # plt.clf()
-
-    # g1_new = g1[g1["Percentage"] > 1]
-    # sns.barplot(x="Method_Name", y="count", data=g1_new)
-    # plt.xlabel("Method_Name", fontsize = 20)
-    # plt.ylabel("Count", fontsize=20)
-    # plt.tight_layout()
-    # plt.savefig("./method_name_reduced_histogram.pdf")
-    # # # # # plt.show()
-    # plt.clf()
-
     method_list = df_new["Method_Name"].unique()
     for method in method_list:
         df_method = df_new[df_new["Method_Name"] == method]
         print(df_method.head(10))
         print("-------")
-        #sns.pairplot(df_method)
-        # # # # plt.show()
 
     df_new['Group_row_id'] = df_new.groupby(['Module']).cumcount() + 1
     group_df = df_new.groupby(["Module"])
@@ -293,7 +244,6 @@ def module_freq():
         ofig = "./" + group["Module"].unique()[0] + "_method.pdf"
         print(ofig)
         plt.savefig(ofig)
-        # # # # plt.show()
         plt.clf()
 
         sns.stripplot(data=group, x="Group_row_id", y="Responses", jitter=False)
@@ -302,7 +252,6 @@ def module_freq():
         plt.ylabel("Response", fontsize=15)
         plt.tight_layout()
         plt.savefig("./" + group["Module"].unique()[0] + "_response.pdf")
-        # # # # plt.show()
         plt.clf()
 
         sns.stripplot(data=group, x="Group_row_id", y="Exceptions", jitter=False)
@@ -311,61 +260,31 @@ def module_freq():
         plt.ylabel("Exceptions", fontsize=15)
         plt.tight_layout()
         plt.savefig("./" + group["Module"].unique()[0] + "_exception.pdf")
-        # # # # plt.show()
         plt.clf()
 
         # sns.catplot(data=group, x="Arguments", y="Responses", col="Method_Name")
         # plt.tight_layout()
-        # # # # # plt.show()
 
         # sns.catplot(data=group, x="Arguments", y="Exceptions", col="Method_Name")
         # plt.tight_layout()
-        # # # # # plt.show()
 
         # sns.catplot(data=group, x="Group_row_id", y="Arguments", col="Method_Name", kind="strip")
         # plt.set_xticklabels(plt.get_xticks()[::100], rotation=45)
         # plt.xticks(np.arange(0,group.size,100), np.arange(0,group.size,100))
         # plt.tight_layout()
-        # # # # # plt.show()
 
         # sns.catplot(data=group, x="Arguments", y="Responses", col="Method_Name", kind="strip")
         # plt.tight_layout()
-        # # # # # plt.show()
 
         # sns.catplot(data=group, x="Arguments", y="Exceptions", col="Method_Name", kind="strip")
         # plt.tight_layout()
-        # # # # # plt.show()
 
         print(">>> Next group <<<")
-
-    """
-        sns.catplot(data=group, x="Group_row_id", y="Method_Name", kind="strip")
-        plt.tight_layout()
-        # # # # plt.show()
-
-        sns.catplot(data=group, x="Group_row_id", y="Responses", kind="strip")
-        plt.tight_layout()
-        # # # # plt.show()
-
-        sns.catplot(data=group, x="Group_row_id", y="Exceptions", kind="strip")
-        plt.tight_layout()
-        # # # # plt.show()
-    # Pairplot
-
-    df_pair = df_new[['Method_Name', 'Arguments', 'Responses', 'Exceptions']]
-    print(df_pair.head(10))
-    sns.pairplot(df_pair, hue="Method_Name")
-    # # # # plt.show()
-    """
-    
-
-#def cmd_arg_plot():
-#    # group by command and analyze the arguents
 
 
 def main():
     # Q1,2. Module & Method_Name frequency
-    module_freq() # APT: commented out coz analysis is done
+    module_freq() 
     # Q5. Command arguments plots
     #cmd_arg_plot()
 
