@@ -299,33 +299,6 @@ def main():
     #print(li)
     #print("Li printed")
 
-    """
-    lcss_str = []
-    lcss_scores=[]
-
-    for i in range(0,len(corpus)):
-        row_scores = []
-        row_string=[]
-        for j in range(0, len(corpus)):
-            #print(li[i], li[j])
-            score = lcs(",".join(li[i]), ",".join(li[j]))
-            print(score, i,j,len(li), len(score))
-            print("****>>>>****")
-            row_string.append(score)
-            row_scores.append(len(score))
-        lcss_str.append(row_string)
-        lcss_scores.append(row_scores)
-
-    #print(len(lcss_scores), len(lcss_scores[0]), len(lcss_scores[-1]),len(li))
-    #print(lcss_str)
-    print(lcss_scores)
-    """
-
-    #for i in lcss_scores:
-    #    for j in i:
-    #        print(j)
-    #    print("\n")
-
     return 0
 
 if __name__ == "__main__":
