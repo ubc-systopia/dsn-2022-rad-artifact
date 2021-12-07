@@ -14,14 +14,17 @@ From the `known_procedures` folder, copy all the csv files from the `anomaly` an
 
 ## Step 1:
 The first script to run should be merge_all.py file using the following command:
+
  `python merge_all.py --idir <dataset folder> --ifile_ext <file extension (.csv)> --ofile <output concat file path>`
  
  ## Step 2:
 To plot individual experiment timelines execute the script exp_timeline.py using the command:
+
 `python exp_timeline.py --idir <dataset folder>`
 
 ## Step 3:
-To plot command patterns within a module run the script cmd_analysis.py using the command
+To plot command patterns within a module run the script cmd_analysis.py using the command:
+
 `python cmd_analysis.py --ifile <concat file>
 
 # LCSS, N-Gram Analysis, TF-IDF
