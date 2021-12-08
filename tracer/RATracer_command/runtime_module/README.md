@@ -13,26 +13,19 @@ The package may work with earlier versions of these depenencies, but this has no
 
 ## Styleguide
 
-* We try to follw the [Google Python Style Guide](https://google.github.io/styleguide/pyguide.html)
+* We try to follow the [Google Python Style Guide](https://google.github.io/styleguide/pyguide.html)
 * In order to use a tool like [YAPF](https://github.com/google/yapf) (Yet Another Python Formatter) for auto-formatting:
     * Run `yapf --style google -i -r -vv files .` in the ratracer folder, or
     * Run `yapf --style google -i -vv files <filepath>` to format a specific file
-
-## Build Steps
-
-* Generate the gRPC stubs using one of the following methods:
-    * Run `scripts/compile_proto_files.sh` script in bash
-    * Run task `build` defined in `.vscode/tasks.json` in Visual Studio Code
-
+    
 ## Testing Steps
 
-* Test on a single machine using one of the following methods:
-    * Run `.\ratracer\test\test_middlebox.py`
-    * Run task `test` defined in `.vscode/tasks.json` in Visual Studio Code
+* Test on a single machine as follows:
+    * Run `.\ratracer\test\test_ratracer.py`
 
 * Test on two machines as follows:
-    * On the server machine, run `.\ratracer\middlebox\start_server.py -P 1337 -K .\ratracer\keys\ispy\ -S`
-    * On the client machine, run `.\ratracer\test\test_ratracer.py -D -H ispy -P 1337 -K .\ratracer\keys\ispy\ -S`
+    * On the server machine, run `.\ratracer\middlebox\start_server.py -P 1337`
+    * On the client machine, run `.\ratracer\test\test_ratracer.py -D -P 1337`
     * (Use `.\ratracer\middlebox\start_server.py --help` or `.\ratracer\test\test_ratracer.py --help` for details)
 
 #### Running UR simulator
@@ -42,4 +35,5 @@ The package may work with earlier versions of these depenencies, but this has no
 * Test on a single machine as follows:
     * Turn on the VMware Player and run the UR simulator virtual machine
     * Run the UR3 robot simulator and turn on the robot from the button on the bottom left
+    * Uncomment `test_init_vm` test from `ratracer/test/test_middlebox.py` and add the respective IP address of the simulator
     * Run the `test_init_vm` test using `ratracer/test/test_middlebox.py`
