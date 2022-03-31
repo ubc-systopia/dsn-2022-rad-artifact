@@ -42,9 +42,8 @@ def plot_resp_times(source_files):
 
         dfs = []
         for source_file in source_files:
-            if 'SMALL' in source_file: continue
-            if 'LARGE' in source_file: continue
-            # print("Parsing", source_file)
+            # if 'REPLAYED' in source_file: continue
+            print("Parsing", source_file)
 
             col_names=['id','ts', 'module', 'method', 'arguments', 'responses', 'exceptions', 'exe_time_sec', 'arrival_time', 'departure_time']
             df = pandas.read_csv(args.source + source_file, index_col=False, header = 0, names=col_names)
@@ -56,8 +55,8 @@ def plot_resp_times(source_files):
             df['exe_time_ms'] = df.apply(lambda row : row['exe_time_sec'] * 1000, axis='columns')
 
             df = pandas.DataFrame(df['resp_time_ms'])
-            if 'LARGE' in source_file:
-                df['source'] = 'MB-REMOTE-' + source_file.split('-')[0][-1]
+            if 'replayed' in source_file:
+                df['source'] = 'V' + source_file.split('-')[0][-1]
             elif 'DIRECT' in source_file:
                 df['source'] = 'D' + source_file.split('-')[0][-1]
             else:
@@ -69,16 +68,16 @@ def plot_resp_times(source_files):
         mdf = pandas.melt(cdf, id_vars=['source'])
         mdf.sort_values('source', inplace=True)
 
-        plt.figure(figsize=(6,3))
+        plt.figure(figsize=(6.5,3))
         plt.grid(True, which='both', linestyle='dashed')
-        ax = seaborn.boxplot(x='source', y='value', hue='variable', data=mdf)
+        ax = seaborn.boxplot(x='source', y='value', hue='variable', data=mdf) #, showfliers=False)
         ax.set_axisbelow(True)
         # ax.set_ylim((0, cdf['resp_time_ms'].max()))
-        ax.set_ylim((4, 40))
+        ax.set_ylim((3, 100))
         ax.get_legend().remove()
         ax.set(xlabel=None)
         plotfile = args.target + "RESPONSE-TIMES-FOR-" + command + ".pdf"
-        plt.xlabel("Command Modes and Sequences (D = DIRECT, R = REMOTE)")
+        plt.xlabel("Command Modes and Sequences (D = DIRECT, R = REMOTE, V = CLOUD VM)")
         plt.ylabel("Response Time (ms)")
         plt.xticks(rotation=90, fontsize=10)
         # plt.title(plotfile.split('/')[-1].split('.')[0])
@@ -98,7 +97,7 @@ def plot_durations(source_files):
         labels = []
         for source_file in source_files:
             if exp_id != int(source_file.split('-')[0][-1]): continue
-            if 'SMALL' in source_file: continue
+            if 'SMALL' in source_file: continue 
             # print("Parsing", source_file)
 
             col_names=['id','ts', 'module', 'method', 'arguments', 'responses', 'exceptions', 'exe_time_sec', 'arrival_time', 'departure_time']
@@ -193,5 +192,5 @@ def plot_arguments(source_files):
 if __name__ == "__main__":
     source_files = os.listdir(args.source)
     plot_resp_times(source_files)
-    plot_durations(source_files)
-    plot_arguments(source_files)
+    # plot_durations(source_files)
+    # plot_arguments(source_files)
