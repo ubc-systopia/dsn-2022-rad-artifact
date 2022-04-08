@@ -78,7 +78,7 @@ def plot_resp_times(source_files):
         ax.set(xlabel=None)
         plotfile = args.target + "RESPONSE-TIMES-FOR-" + command + ".pdf"
         plt.xlabel("Command Modes and Sequences (D = DIRECT, R = REMOTE, V = CLOUD VM)")
-        plt.ylabel("Response Time (ms)")
+        plt.ylabel("Response Time (ms) (log scale)")
         plt.xticks(rotation=90, fontsize=10)
         # plt.title(plotfile.split('/')[-1].split('.')[0])
         plt.yscale('log')
