@@ -1,0 +1,3 @@
+[submodule "tracer/RATracer_command/runtime_module/ratracer"]
+	path = tracer/RATracer_command/runtime_module/ratracer
+	url = https://github.com/ubc-systopia/niraapad.git
