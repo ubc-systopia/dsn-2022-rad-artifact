@@ -1,3 +1,0 @@
-include ratracer/keys/localhost/*
-include ratracer/keys/ispy/*
-include .vscode/*
