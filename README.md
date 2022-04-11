@@ -19,7 +19,7 @@ This README file documents the directory structure of this project, documentatio
 ### Getting Started
 
 ##### Collecting Command Data
-* [Building and Testing RATracer - Command](./tracer/RATracer_command/runtime_module/README.md)
+* [Building and Testing RATracer - Command](./tracer/RATracer_command)
 * [Processing Tracing Files](./tracer/RATracer_command/data_processing_module/README.md)
 * [Running Command Analysis](./analysis/Dataset_CommandAnalysis/README.md)
 
