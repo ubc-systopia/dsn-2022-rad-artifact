@@ -8,7 +8,7 @@ from matplotlib import pyplot as plt
 from sklearn.feature_extraction.text import TfidfVectorizer
 
 
-mport argparse
+import argparse
 
 parser = argparse.ArgumentParser()
 parser.add_argument(
