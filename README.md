@@ -38,3 +38,12 @@ This README file documents the directory structure of this project, documentatio
 ### Additional Documents
 
 * [Building and Running UR Robot Simulator](./docs/UR_Sim_Setup.pdf)
+
+## Contact
+
+### People
+Arpan Gujarati : arbanbg@gmail.com
+Zainab Saeed Wattoo : zswattoo@gmail.com
+
+### Organization
+University of British Columbia
