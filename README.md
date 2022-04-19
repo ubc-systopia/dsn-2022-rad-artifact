@@ -43,6 +43,7 @@ This README file documents the directory structure of this project, documentatio
 
 ### People
 Arpan Gujarati : arbanbg@gmail.com
+
 Zainab Saeed Wattoo : zswattoo@gmail.com
 
 ### Organization
