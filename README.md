@@ -9,7 +9,7 @@ analyses based on the command and power data in RAD.
 
 This repository includes the Robotic Arm Dataset (RAD) along with a non-intrusive tracing framework, RATracer (published with the python package index by the name of niraapad). Additionally, we include scripts and results from preliminary analyses using command and power data.
 
-Details about RATracer and preliminary analyses can be found here: Research Paper Link 
+Details about RATracer and preliminary analyses can be found in our Research Paper: <<<Research Paper Link>>> 
 
 This README file documents the directory structure of this project, documentation on the supervised experiment steps carried out to create RAD, the description of RAD and running the UR Robot Simulator. Further, it describes the steps required to set up, build and run the RATracer along with the steps on running the analysis scripts for command and power data.
 
